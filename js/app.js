@@ -3,7 +3,7 @@ import { buildConfig, buildTrojanConfig, buildJsonConfig } from './config-builde
 import { buildSingboxConfig } from './singbox-builder.js';
 import { buildClashConfig } from './clash-builder.js';
 import { parseChainConfig } from './chain-parser.js';
-import { toast, getChecked, row, downloadFile, renderCodeBlock, highlightJsonLine, highlightYamlLine, highlightJsLine } from './ui.js';
+import { toast, getChecked, row, downloadFile, renderCodeBlock, highlightJsonLine, highlightYamlLine, highlightJsLine, flashCopied } from './ui.js';
 import { exportSettingsToString, isValidImportPayload, applyImportedSettings } from './settings-io.js';
 import { generateQRMatrix, qrMatrixToSvg } from './qrcode.js';
 
@@ -45,10 +45,10 @@ function mkToken() {
   toast('Token جدید — کد Worker آپدیت شد');
 }
 
-function cpToken() {
+function cpToken(e) {
   const v = document.getElementById('uid').value.trim();
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => toast('Token کپی شد'));
+  navigator.clipboard.writeText(v).then(() => { toast('Token کپی شد'); flashCopied(e.currentTarget); });
 }
 
 function mkPassword() {
@@ -58,18 +58,18 @@ function mkPassword() {
   toast('Password جدید — کد Worker آپدیت شد');
 }
 
-function cpPassword() {
+function cpPassword(e) {
   const v = document.getElementById('tpw').value.trim();
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => toast('Password کپی شد'));
+  navigator.clipboard.writeText(v).then(() => { toast('Password کپی شد'); flashCopied(e.currentTarget); });
 }
 
-async function cpWorker() {
+async function cpWorker(e) {
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
   if (!token || !password) { toast('ابتدا Token و Password بساز'); return; }
   const code = await buildWorker(token, password);
-  navigator.clipboard.writeText(code).then(() => toast('کد Worker کپی شد'));
+  navigator.clipboard.writeText(code).then(() => { toast('کد Worker کپی شد'); flashCopied(e.currentTarget); });
 }
 
 async function dlWorker() {
@@ -193,6 +193,7 @@ function gen() {
   const btn = document.getElementById('gb');
   btn.innerHTML = '<span class="sp"></span> در حال ساخت...';
   btn.disabled = true;
+  btn.classList.add('loading');
 
   setTimeout(() => {
     allC = [];
@@ -251,13 +252,14 @@ function gen() {
     document.getElementById('sn4').className = 'step active';
     btn.innerHTML = '✓ ساخته شد — دوباره بساز';
     btn.disabled = false;
+    btn.classList.remove('loading');
     toast(`${allC.length} کانفیگ ساخته شد (${tlsCount} TLS + ${wsCount} WS)`);
   }, 400);
 }
 
-function cpJson() {
+function cpJson(e) {
   if (!lastJsonStr) return;
-  navigator.clipboard.writeText(lastJsonStr).then(() => toast('کانفیگ JSON کپی شد'));
+  navigator.clipboard.writeText(lastJsonStr).then(() => { toast('کانفیگ JSON کپی شد'); flashCopied(e.currentTarget); });
 }
 
 function dlJson() {
@@ -268,9 +270,9 @@ function dlJson() {
   toast('فایل ' + fileName + ' دانلود شد');
 }
 
-function cpSingbox() {
+function cpSingbox(e) {
   if (!lastSingboxStr) return;
-  navigator.clipboard.writeText(lastSingboxStr).then(() => toast('کانفیگ Sing-box کپی شد'));
+  navigator.clipboard.writeText(lastSingboxStr).then(() => { toast('کانفیگ Sing-box کپی شد'); flashCopied(e.currentTarget); });
 }
 
 function dlSingbox() {
@@ -281,9 +283,9 @@ function dlSingbox() {
   toast('فایل ' + fileName + ' دانلود شد');
 }
 
-function cpClash() {
+function cpClash(e) {
   if (!lastClashStr) return;
-  navigator.clipboard.writeText(lastClashStr).then(() => toast('کانفیگ Clash کپی شد'));
+  navigator.clipboard.writeText(lastClashStr).then(() => { toast('کانفیگ Clash کپی شد'); flashCopied(e.currentTarget); });
 }
 
 function dlClash() {
@@ -293,9 +295,9 @@ function dlClash() {
   toast('فایل ' + fileName + ' دانلود شد');
 }
 
-function cpAll() {
+function cpAll(e) {
   navigator.clipboard.writeText(allC.map(c => c.cfg).join('\n'))
-    .then(() => toast(`${allC.length} کانفیگ کپی شد`));
+    .then(() => { toast(`${allC.length} کانفیگ کپی شد`); flashCopied(e.currentTarget); });
 }
 
 function dlAll() {
@@ -382,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hdr.addEventListener('click', () => {
       const target = document.getElementById(hdr.dataset.target);
       if (!target) return;
-      target.classList.toggle('collapsed');
+      target.classList.toggle('open');
       hdr.classList.toggle('open');
     });
   });
@@ -412,9 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = e.target.closest('.bcp');
     if (!btn) return;
     navigator.clipboard.writeText(decodeURIComponent(btn.dataset.cfg)).then(() => {
-      btn.textContent = '✓';
-      btn.classList.add('ok');
-      setTimeout(() => { btn.textContent = 'کپی'; btn.classList.remove('ok'); }, 1800);
+      flashCopied(btn);
     });
   });
 
