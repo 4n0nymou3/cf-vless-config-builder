@@ -5,6 +5,20 @@ export function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 2400);
 }
 
+export function flashCopied(btn) {
+  if (!btn) return;
+  if (btn.dataset.flashing === '1') return;
+  const original = btn.innerHTML;
+  btn.dataset.flashing = '1';
+  btn.innerHTML = '<svg class="chk-ico" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3 3 7-7"/></svg>';
+  btn.classList.add('copied-pop', 'is-copied');
+  setTimeout(() => {
+    btn.innerHTML = original;
+    btn.classList.remove('copied-pop', 'is-copied');
+    btn.dataset.flashing = '0';
+  }, 1500);
+}
+
 export function getChecked(cls) {
   return [...document.querySelectorAll('.' + cls + ':checked')].map(el => el.value);
 }
