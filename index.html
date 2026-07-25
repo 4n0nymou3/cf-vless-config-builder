@@ -15,9 +15,13 @@
     <div class="hdr">
       <div class="hdr-top">
         <div class="hdr-dot"></div>
-        <h1>Tunnel Config Builder (TCB) v5.0</h1>
+        <h1>Tunnel Config Builder (TCB)</h1>
       </div>
       <p class="hdr-sub">ساخت کانفیگ VLESS برای Cloudflare Worker — بدون نیاز به VPS</p>
+      <div class="badges">
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.0</span></span>
+        <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
+      </div>
     </div>
 
     <div class="steps">
@@ -33,10 +37,11 @@
 
 <div class="sec">
   <div class="sec-hdr sec-hdr-toggle" data-target="secBody1">
-    <div class="sec-title"><i></i>مرحله ۱ — ساخت Cloudflare Worker (یک‌بار)</div>
+    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.5-5.95 3.5 3.5 0 0 1 6.7-1.44A3 3 0 0 1 12.5 12.5h-8z"/></svg>مرحله ۱ — ساخت Cloudflare Worker (یک‌بار)</div>
     <span class="chevron"></span>
   </div>
-  <div class="sec-body collapsed" id="secBody1">
+  <div class="sec-body-wrap" id="secBody1">
+   <div class="sec-body">
     <div class="guide">
       <div class="gitem">
         <div class="gn"></div>
@@ -79,6 +84,7 @@
         </div>
       </div>
     </div>
+   </div>
   </div>
 </div>
 
@@ -90,10 +96,11 @@
 
 <div class="sec">
   <div class="sec-hdr sec-hdr-toggle" data-target="secBody2">
-    <div class="sec-title"><i></i>مرحله ۲ — شناسه‌ها و آدرس Worker</div>
+    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="8" r="3"/><path d="M7.8 8h6.2M11.6 8v2.3M13.6 8v2.3"/></svg>مرحله ۲ — شناسه‌ها و آدرس Worker</div>
     <span class="chevron"></span>
   </div>
-  <div class="sec-body collapsed" id="secBody2">
+  <div class="sec-body-wrap" id="secBody2">
+   <div class="sec-body">
     <div class="fg">
       <label class="lbl-ltr">Token</label>
       <div class="urow">
@@ -125,15 +132,17 @@
       <input type="text" id="wdom" placeholder="myworker.username.workers.dev"/>
       <p class="hint">آدرسی که Cloudflare بعد از Deploy به Worker داد</p>
     </div>
+   </div>
   </div>
 </div>
 
 <div class="sec">
   <div class="sec-hdr sec-hdr-toggle" data-target="secBody3">
-    <div class="sec-title"><i></i>مرحله ۳ — IP های سالم و تنظیمات پیشرفته</div>
+    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5h6M11 4.5h3M2 8h3M8 8h6M2 11.5h9M13.6 11.5h0.4"/><circle cx="8.5" cy="4.5" r="1.3" fill="var(--card)"/><circle cx="5.5" cy="8" r="1.3" fill="var(--card)"/><circle cx="11.5" cy="11.5" r="1.3" fill="var(--card)"/></svg>مرحله ۳ — IP های سالم و تنظیمات پیشرفته</div>
     <span class="chevron"></span>
   </div>
-  <div class="sec-body collapsed" id="secBody3">
+  <div class="sec-body-wrap" id="secBody3">
+   <div class="sec-body">
 
     <div class="fg">
       <label>آدرس‌های IP (هر خط یک IP)</label>
@@ -341,6 +350,7 @@
       <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود"/>
       <p class="hint">اگر خالی بماند، پنل نام پیش‌فرض را برای کانفیگ Normal یا Fragment انتخاب خواهد کرد.</p>
     </div>
+   </div>
   </div>
 </div>
 
@@ -398,7 +408,7 @@
   </div>
   <div class="sec">
     <div class="sec-hdr">
-      <div class="sec-title"><i></i>کانفیگ JSON — Clash 🐱</div>
+      <div class="sec-title"><i class="dot-purple"></i>کانفیگ JSON — Clash 🐱</div>
       <div class="flex-gap-6">
         <button class="cb" id="btn-cp-clash">⎘ کپی JSON</button>
         <button class="cb" id="btn-dl-clash">↓ دانلود TCB.yaml</button>
@@ -427,7 +437,7 @@
   </div>
   <div class="sec">
     <div class="sec-hdr">
-      <div class="sec-title"><i></i>کانفیگ‌های تولید شده</div>
+      <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="2.5" cy="4" r="0.9" fill="currentColor" stroke="none"/><circle cx="2.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="2.5" cy="12" r="0.9" fill="currentColor" stroke="none"/><path d="M5.5 4h8M5.5 8h8M5.5 12h8"/></svg>کانفیگ‌های تولید شده</div>
       <span class="cnt" id="cb2">0</span>
     </div>
     <div class="sec-body">
