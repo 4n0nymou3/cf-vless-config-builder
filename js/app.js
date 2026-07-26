@@ -46,9 +46,10 @@ function mkToken() {
 }
 
 function cpToken(e) {
+  const btn = e.currentTarget;
   const v = document.getElementById('uid').value.trim();
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => { toast('Token کپی شد'); flashCopied(e.currentTarget); });
+  navigator.clipboard.writeText(v).then(() => { toast('Token کپی شد'); flashCopied(btn); });
 }
 
 function mkPassword() {
@@ -59,17 +60,19 @@ function mkPassword() {
 }
 
 function cpPassword(e) {
+  const btn = e.currentTarget;
   const v = document.getElementById('tpw').value.trim();
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => { toast('Password کپی شد'); flashCopied(e.currentTarget); });
+  navigator.clipboard.writeText(v).then(() => { toast('Password کپی شد'); flashCopied(btn); });
 }
 
 async function cpWorker(e) {
+  const btn = e.currentTarget;
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
   if (!token || !password) { toast('ابتدا Token و Password بساز'); return; }
   const code = await buildWorker(token, password);
-  navigator.clipboard.writeText(code).then(() => { toast('کد Worker کپی شد'); flashCopied(e.currentTarget); });
+  navigator.clipboard.writeText(code).then(() => { toast('کد Worker کپی شد'); flashCopied(btn); });
 }
 
 async function dlWorker() {
@@ -258,8 +261,9 @@ function gen() {
 }
 
 function cpJson(e) {
+  const btn = e.currentTarget;
   if (!lastJsonStr) return;
-  navigator.clipboard.writeText(lastJsonStr).then(() => { toast('کانفیگ JSON کپی شد'); flashCopied(e.currentTarget); });
+  navigator.clipboard.writeText(lastJsonStr).then(() => { toast('کانفیگ JSON کپی شد'); flashCopied(btn); });
 }
 
 function dlJson() {
@@ -271,8 +275,9 @@ function dlJson() {
 }
 
 function cpSingbox(e) {
+  const btn = e.currentTarget;
   if (!lastSingboxStr) return;
-  navigator.clipboard.writeText(lastSingboxStr).then(() => { toast('کانفیگ Sing-box کپی شد'); flashCopied(e.currentTarget); });
+  navigator.clipboard.writeText(lastSingboxStr).then(() => { toast('کانفیگ Sing-box کپی شد'); flashCopied(btn); });
 }
 
 function dlSingbox() {
@@ -284,8 +289,9 @@ function dlSingbox() {
 }
 
 function cpClash(e) {
+  const btn = e.currentTarget;
   if (!lastClashStr) return;
-  navigator.clipboard.writeText(lastClashStr).then(() => { toast('کانفیگ Clash کپی شد'); flashCopied(e.currentTarget); });
+  navigator.clipboard.writeText(lastClashStr).then(() => { toast('کانفیگ Clash کپی شد'); flashCopied(btn); });
 }
 
 function dlClash() {
@@ -296,8 +302,9 @@ function dlClash() {
 }
 
 function cpAll(e) {
+  const btn = e.currentTarget;
   navigator.clipboard.writeText(allC.map(c => c.cfg).join('\n'))
-    .then(() => { toast(`${allC.length} کانفیگ کپی شد`); flashCopied(e.currentTarget); });
+    .then(() => { toast(`${allC.length} کانفیگ کپی شد`); flashCopied(btn); });
 }
 
 function dlAll() {
