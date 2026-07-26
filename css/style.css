@@ -85,6 +85,8 @@ a.lk:hover{text-decoration:underline}
 .dot-js{background:var(--orange)}
 .dot-json{background:var(--blue)}
 .dot-yaml{background:var(--purple)}
+.dot-json-orange{background:var(--orange)}
+.dot-json-green{background:var(--green)}
 .code-viewer-actions{display:flex;gap:5px;flex-shrink:0}
 .code-viewer-body{max-height:230px;overflow:auto;direction:ltr;-webkit-overflow-scrolling:touch}
 .code-viewer-body.lg{max-height:320px}
