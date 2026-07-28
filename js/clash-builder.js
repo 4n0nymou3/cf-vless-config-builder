@@ -1,4 +1,4 @@
-import { parseChainConfig } from './chain-parser.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules } from './proxy-utils.js';
 
 const CLASH_COUNTRY_RULES = {
   ir: {
@@ -34,26 +34,6 @@ const CLASH_BLOCK_RULES = {
     { name: 'cryptominers', behavior: 'domain', path: './ruleset/cryptominers.txt', url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/cryptominers.txt' }
   ]
 };
-
-function resolveSelectedCountries(routingCountries) {
-  const codes = ['ir', 'cn', 'ru'];
-  const selected = codes.filter(c => routingCountries && routingCountries[c]);
-  return selected.length ? selected : ['ir'];
-}
-
-function randomizeCase(str) {
-  let out = '';
-  for (let i = 0; i < str.length; i++) {
-    const ch = str[i];
-    out += Math.random() < 0.5 ? ch.toUpperCase() : ch.toLowerCase();
-  }
-  return out;
-}
-
-function resolveSelectedBlockRules(blockRules) {
-  const codes = ['ads', 'porn', 'malware', 'phishing', 'cryptominers'];
-  return codes.filter(c => blockRules && blockRules[c]);
-}
 
 function buildChainTransportClash(pc) {
   if (pc.network === 'ws') {
@@ -120,10 +100,8 @@ function buildChainProxyClash(pc, dialerProxyName, name) {
 export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, pingInterval, chainConfig
+    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, pingInterval, parsedChain
   } = settings;
-
-  const parsedChain = parseChainConfig(chainConfig);
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
   const selectedBlockRules = resolveSelectedBlockRules(blockRules);
