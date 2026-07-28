@@ -1,3 +1,5 @@
+import { t } from './i18n.js';
+
 function b64UrlDecode(str) {
   let s = str.replace(/-/g, '+').replace(/_/g, '/');
   while (s.length % 4) s += '=';
@@ -26,7 +28,7 @@ function splitFragment(url) {
 function splitHostPort(hostPort) {
   if (hostPort.startsWith('[')) {
     const closeIdx = hostPort.indexOf(']');
-    if (closeIdx === -1) throw new Error('آدرس IPv6 در لینک Chain Proxy معتبر نیست.');
+    if (closeIdx === -1) throw new Error(t('err.ipv6Invalid'));
     const address = hostPort.slice(1, closeIdx);
     const portPart = hostPort.slice(closeIdx + 2);
     return { address, port: portPart };
@@ -41,13 +43,13 @@ const SUPPORTED_SECURITY = ['none', 'tls', 'reality'];
 
 function validateNetworkSecurity(pc) {
   if (!SUPPORTED_NETWORKS.includes(pc.network)) {
-    throw new Error('نوع شبکه («' + pc.network + '») در لینک Chain Proxy پشتیبانی نمی‌شود. انواع پشتیبانی‌شده: tcp, ws, grpc');
+    throw new Error(t('err.networkUnsupported', { network: pc.network }));
   }
   if (!SUPPORTED_SECURITY.includes(pc.security)) {
-    throw new Error('نوع امنیت («' + pc.security + '») در لینک Chain Proxy پشتیبانی نمی‌شود. انواع پشتیبانی‌شده: none, tls, reality');
+    throw new Error(t('err.securityUnsupported', { security: pc.security }));
   }
   if (pc.security === 'reality' && !pc.pbk) {
-    throw new Error('لینک Chain Proxy با Reality نیاز به Public Key (pbk) دارد.');
+    throw new Error(t('err.realityPbkRequired'));
   }
 }
 
@@ -55,7 +57,7 @@ function parseVless(input) {
   const { base, remark } = splitFragment(input);
   const withoutScheme = base.slice('vless://'.length);
   const atIdx = withoutScheme.lastIndexOf('@');
-  if (atIdx === -1) throw new Error('لینک VLESS معتبر نیست: UUID یا آدرس سرور یافت نشد.');
+  if (atIdx === -1) throw new Error(t('err.vlessInvalidUuidAddr'));
   const uuid = withoutScheme.slice(0, atIdx);
   const rest = withoutScheme.slice(atIdx + 1);
   const qIdx = rest.indexOf('?');
@@ -64,8 +66,8 @@ function parseVless(input) {
   const { address, port } = splitHostPort(hostPort);
   const params = new URLSearchParams(queryStr);
 
-  if (!uuid) throw new Error('لینک VLESS معتبر نیست: UUID یافت نشد.');
-  if (!address || !port) throw new Error('لینک VLESS معتبر نیست: آدرس یا پورت سرور یافت نشد.');
+  if (!uuid) throw new Error(t('err.vlessInvalidUuid'));
+  if (!address || !port) throw new Error(t('err.vlessInvalidAddrPort'));
 
   const pc = {
     protocol: 'vless',
@@ -94,7 +96,7 @@ function parseTrojan(input) {
   const { base, remark } = splitFragment(input);
   const withoutScheme = base.slice('trojan://'.length);
   const atIdx = withoutScheme.lastIndexOf('@');
-  if (atIdx === -1) throw new Error('لینک Trojan معتبر نیست: Password یا آدرس سرور یافت نشد.');
+  if (atIdx === -1) throw new Error(t('err.trojanInvalidPwdAddr'));
   const password = decodeURIComponent(withoutScheme.slice(0, atIdx));
   const rest = withoutScheme.slice(atIdx + 1);
   const qIdx = rest.indexOf('?');
@@ -103,8 +105,8 @@ function parseTrojan(input) {
   const { address, port } = splitHostPort(hostPort);
   const params = new URLSearchParams(queryStr);
 
-  if (!password) throw new Error('لینک Trojan معتبر نیست: Password یافت نشد.');
-  if (!address || !port) throw new Error('لینک Trojan معتبر نیست: آدرس یا پورت سرور یافت نشد.');
+  if (!password) throw new Error(t('err.trojanInvalidPwd'));
+  if (!address || !port) throw new Error(t('err.trojanInvalidAddrPort'));
 
   const pc = {
     protocol: 'trojan',
@@ -142,7 +144,7 @@ function parseShadowsocks(input) {
     if (!decoded) decoded = decodeURIComponent(userInfoRaw);
     const colonIdx = decoded.indexOf(':');
     if (colonIdx === -1 || !address || !port) {
-      throw new Error('لینک Shadowsocks معتبر نیست.');
+      throw new Error(t('err.ssInvalid'));
     }
     return {
       protocol: 'shadowsocks',
@@ -159,15 +161,15 @@ function parseShadowsocks(input) {
   const qIdx = withoutScheme.indexOf('?');
   const mainPart = qIdx === -1 ? withoutScheme : withoutScheme.slice(0, qIdx);
   const decoded = tryB64Decode(mainPart);
-  if (!decoded) throw new Error('لینک Shadowsocks معتبر نیست.');
+  if (!decoded) throw new Error(t('err.ssInvalid'));
   const atIdx2 = decoded.lastIndexOf('@');
-  if (atIdx2 === -1) throw new Error('لینک Shadowsocks معتبر نیست.');
+  if (atIdx2 === -1) throw new Error(t('err.ssInvalid'));
   const methodPass = decoded.slice(0, atIdx2);
   const hostPort = decoded.slice(atIdx2 + 1);
   const colonIdx = methodPass.indexOf(':');
   const { address, port } = splitHostPort(hostPort);
   if (colonIdx === -1 || !address || !port) {
-    throw new Error('لینک Shadowsocks معتبر نیست.');
+    throw new Error(t('err.ssInvalid'));
   }
   return {
     protocol: 'shadowsocks',
@@ -211,7 +213,7 @@ function parseSocksHttp(input, protocol) {
   const qIdx = hostPort.indexOf('?');
   if (qIdx !== -1) hostPort = hostPort.slice(0, qIdx);
   const { address, port } = splitHostPort(hostPort);
-  if (!address || !port) throw new Error('لینک ' + (protocol === 'socks' ? 'SOCKS' : 'HTTP') + ' معتبر نیست.');
+  if (!address || !port) throw new Error(t('err.socksHttpInvalid', { proto: protocol === 'socks' ? 'SOCKS' : 'HTTP' }));
 
   return {
     protocol: protocol,
@@ -232,7 +234,7 @@ export function parseChainConfig(raw) {
   if (!input) return null;
 
   const schemeMatch = input.match(/^([a-zA-Z0-9+.-]+):\/\//);
-  if (!schemeMatch) throw new Error('لینک کانفیگ Chain Proxy معتبر نیست.');
+  if (!schemeMatch) throw new Error(t('err.chainLinkInvalid'));
   const scheme = schemeMatch[1].toLowerCase();
 
   if (scheme === 'vless') return parseVless(input);
@@ -241,5 +243,5 @@ export function parseChainConfig(raw) {
   if (scheme === 'socks' || scheme === 'socks5') return parseSocksHttp(input, 'socks');
   if (scheme === 'http' || scheme === 'https') return parseSocksHttp(input, 'http');
 
-  throw new Error('کانفیگ Chain Proxy پشتیبانی نمی‌شود.');
+  throw new Error(t('err.chainUnsupported'));
 }
