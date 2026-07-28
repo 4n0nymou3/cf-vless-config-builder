@@ -1,3 +1,5 @@
+import { t } from './i18n.js';
+
 export function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -30,8 +32,8 @@ export function row(c, n) {
     <span class="cn">${String(n).padStart(2, '0')}</span>
     <span class="ctg" style="color:${color};background:${color}1a">${c.tag}</span>
     <span class="ctx" title="${c.cfg}">${c.cfg}</span>
-    <button class="bqr" data-cfg="${s}" title="نمایش QR Code">▦</button>
-    <button class="bcp" data-cfg="${s}">کپی</button>
+    <button class="bqr" data-cfg="${s}" title="${t('title.showQr')}">▦</button>
+    <button class="bcp" data-cfg="${s}">${t('btn.copyPlain')}</button>
   </div>`;
 }
 
