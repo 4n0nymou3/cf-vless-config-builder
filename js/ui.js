@@ -27,11 +27,12 @@ export function getChecked(cls) {
 
 export function row(c, n) {
   const s = encodeURIComponent(c.cfg);
+  const safeCfg = escapeHtml(c.cfg);
   const color = c.tagColor || 'var(--blue)';
   return `<div class="cfi" style="border-right-color:${color}">
     <span class="cn">${String(n).padStart(2, '0')}</span>
     <span class="ctg" style="color:${color};background:${color}1a">${c.tag}</span>
-    <span class="ctx" title="${c.cfg}">${c.cfg}</span>
+    <span class="ctx" title="${safeCfg}">${safeCfg}</span>
     <button class="bqr" data-cfg="${s}" title="${t('title.showQr')}">▦</button>
     <button class="bcp" data-cfg="${s}">${t('btn.copyPlain')}</button>
   </div>`;
