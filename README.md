@@ -1,6 +1,12 @@
+<div align="center">
+
+[**فارسی**](README.md) | [English](README_EN.md)
+
+</div>
+
 <div align="right" dir="rtl">
 
-# Tunnel Config Builder (TCB) v5.0
+# Tunnel Config Builder (TCB) v5.1
 
 ابزار ساخت کانفیگ VLESS و Trojan برای Cloudflare Workers — بدون نیاز به VPS یا سرور شخصی
 
