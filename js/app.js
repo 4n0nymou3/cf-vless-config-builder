@@ -175,13 +175,11 @@ function gen() {
     toast(t('toast.pingIntervalPositive'));
     return;
   }
-  if (settings.chainConfig) {
-    try {
-      parseChainConfig(settings.chainConfig);
-    } catch (e) {
-      toast(e.message);
-      return;
-    }
+  try {
+    settings.parsedChain = parseChainConfig(settings.chainConfig);
+  } catch (e) {
+    toast(e.message);
+    return;
   }
   const allIps    = raw.split('\n').map(s => s.trim()).filter(Boolean);
   const ips       = settings.ipv6Enable ? allIps : allIps.filter(ip => !ip.includes(':'));
