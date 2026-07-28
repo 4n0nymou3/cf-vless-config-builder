@@ -15,6 +15,7 @@
   --btn-teal-bg:#1a3a4d;--btn-teal-bg-hover:#1e4a63;--btn-teal-border:#2080b0;
   --btn-emerald-bg:#1a6b3a;--btn-emerald-bg-hover:#1f7c43;--btn-emerald-border:#2ea043;
   --btn-forest-bg:#1a4d3a;--btn-forest-bg-hover:#1f5c45;
+  --on-accent-text:#000;
 }
 html.light{
   --bg:#ffffff;--card:#f6f8fa;--dark:#f6f8fa;--overlay:#eaeef2;
@@ -32,6 +33,7 @@ html.light{
   --btn-teal-bg:#0969da;--btn-teal-bg-hover:#0860ca;--btn-teal-border:#0969da;
   --btn-emerald-bg:#1a7f37;--btn-emerald-bg-hover:#197935;--btn-emerald-border:#1a7f37;
   --btn-forest-bg:#116329;--btn-forest-bg-hover:#0f5626;
+  --on-accent-text:#fff;
 }
 html.light body{background-image:radial-gradient(ellipse 900px 500px at 50% -10%,rgba(9,105,218,.08),transparent)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -89,7 +91,7 @@ h1{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:600;color:v
 .guide{counter-reset:g}
 .gitem{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--border2)}
 .gitem:last-child{border-bottom:none;padding-bottom:0}
-.gn{counter-increment:g;width:21px;height:21px;border-radius:50%;background:var(--blue);color:#000;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.gn{counter-increment:g;width:21px;height:21px;border-radius:50%;background:var(--blue);color:var(--on-accent-text);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace}
 .gn::after{content:counter(g)}
 .gb2{flex:1;min-width:0}
 .gtitle{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text)}
@@ -183,7 +185,7 @@ select option{background:var(--card);color:var(--text)}
 .rh{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:13px}
 .rt{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace}
 .rh-buttons{display:flex;gap:6px}
-.cnt{background:var(--green);color:#000;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px}
+.cnt{background:var(--green);color:var(--on-accent-text);font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px}
 .cb{
   padding:5px 12px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;
   display:flex;align-items:center;gap:4px;transition:.15s;border:1px solid;
