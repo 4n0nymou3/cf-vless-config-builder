@@ -12,23 +12,33 @@
 <body>
 <div class="topbar">
   <div class="topbar-inner">
+    <div class="topbar-controls">
+      <div class="lang-switch" role="group">
+        <button class="lang-btn active" id="btn-lang-fa" type="button">FA</button>
+        <button class="lang-btn" id="btn-lang-en" type="button">EN</button>
+      </div>
+      <button class="ctrl-btn theme-btn" id="btn-theme-toggle" type="button" data-i18n-title="ctrl.themeToggle" title="تغییر تم">
+        <svg class="icon-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.2v1.6M8 13.2v1.6M1.2 8h1.6M13.2 8h1.6M3.3 3.3l1.1 1.1M11.6 11.6l1.1 1.1M3.3 12.7l1.1-1.1M11.6 4.4l1.1-1.1"/></svg>
+        <svg class="icon-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 9.3A5.8 5.8 0 1 1 6.7 2.5a4.6 4.6 0 0 0 6.8 6.8z"/></svg>
+      </button>
+    </div>
     <div class="hdr">
       <div class="hdr-top">
         <div class="hdr-dot"></div>
         <h1>Tunnel Config Builder (TCB)</h1>
       </div>
-      <p class="hdr-sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker</p>
+      <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.0</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.1</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
 
     <div class="steps">
-      <div class="step active" id="sn1"><div class="step-n">1</div><span>ساخت Worker</span></div>
-      <div class="step" id="sn2"><div class="step-n">2</div><span>Token + دامنه</span></div>
-      <div class="step" id="sn3"><div class="step-n">3</div><span>IP های سالم</span></div>
-      <div class="step" id="sn4"><div class="step-n">4</div><span>کانفیگ‌ها</span></div>
+      <div class="step active" id="sn1"><div class="step-n">1</div><span data-i18n="steps.1">ساخت Worker</span></div>
+      <div class="step" id="sn2"><div class="step-n">2</div><span data-i18n="steps.2">Token + دامنه</span></div>
+      <div class="step" id="sn3"><div class="step-n">3</div><span data-i18n="steps.3">IP های سالم</span></div>
+      <div class="step" id="sn4"><div class="step-n">4</div><span data-i18n="steps.4">کانفیگ‌ها</span></div>
     </div>
   </div>
 </div>
@@ -37,7 +47,7 @@
 
 <div class="sec">
   <div class="sec-hdr sec-hdr-toggle" data-target="secBody1">
-    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.5-5.95 3.5 3.5 0 0 1 6.7-1.44A3 3 0 0 1 12.5 12.5h-8z"/></svg>مرحله ۱ — ساخت Cloudflare Worker (یک‌بار)</div>
+    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5a3 3 0 0 1-.5-5.95 3.5 3.5 0 0 1 6.7-1.44A3 3 0 0 1 12.5 12.5h-8z"/></svg><span data-i18n="sec1.title">مرحله ۱ — ساخت Cloudflare Worker (یک‌بار)</span></div>
     <span class="chevron"></span>
   </div>
   <div class="sec-body-wrap" id="secBody1">
@@ -46,28 +56,28 @@
       <div class="gitem">
         <div class="gn"></div>
         <div class="gb2">
-          <div class="gtitle">ثبت‌نام در Cloudflare (رایگان)</div>
-          <div class="gdesc">به <a class="lk" href="https://dash.cloudflare.com/sign-up" target="_blank">dash.cloudflare.com</a> برو و با ایمیل اکانت بساز.</div>
+          <div class="gtitle" data-i18n="g1.title">ثبت‌نام در Cloudflare (رایگان)</div>
+          <div class="gdesc" data-i18n="g1.desc">به <a class="lk" href="https://dash.cloudflare.com/sign-up" target="_blank">dash.cloudflare.com</a> برو و با ایمیل اکانت بساز.</div>
         </div>
       </div>
       <div class="gitem">
         <div class="gn"></div>
         <div class="gb2">
-          <div class="gtitle">ساخت Worker جدید</div>
-          <div class="gdesc">از داشبورد: <code>Workers &amp; Pages</code> ← <code>Create Application</code> ← <code>Create Worker</code> — یه اسم بده و <code>Deploy</code> کن.</div>
+          <div class="gtitle" data-i18n="g2.title">ساخت Worker جدید</div>
+          <div class="gdesc" data-i18n="g2.desc">از داشبورد: <code>Workers &amp; Pages</code> ← <code>Create Application</code> ← <code>Create Worker</code> — یه اسم بده و <code>Deploy</code> کن.</div>
         </div>
       </div>
       <div class="gitem">
         <div class="gn"></div>
         <div class="gb2">
-          <div class="gtitle">اول به مرحله ۲ برو، Token بساز، سپس کد را کپی یا دانلود کن</div>
-          <div class="gdesc">Token به‌صورت خودکار داخل کد جاگذاری می‌شود. می‌توانی کد را کپی کنی یا فایل <code>worker.js</code> را مستقیم دانلود کنی. در Worker: <code>Edit Code</code> ← همه را پاک کن ← Paste کن ← <code>Deploy</code>. برای آپلود فایل نیز می‌توانی از گزینه Upload در داشبورد استفاده کنی.</div>
+          <div class="gtitle" data-i18n="g3.title">اول به مرحله ۲ برو، Token بساز، سپس کد را کپی یا دانلود کن</div>
+          <div class="gdesc" data-i18n="g3.desc">Token به‌صورت خودکار داخل کد جاگذاری می‌شود. می‌توانی کد را کپی کنی یا فایل <code>worker.js</code> را مستقیم دانلود کنی. در Worker: <code>Edit Code</code> ← همه را پاک کن ← Paste کن ← <code>Deploy</code>. برای آپلود فایل نیز می‌توانی از گزینه Upload در داشبورد استفاده کنی.</div>
           <div class="code-viewer">
             <div class="code-viewer-header">
               <div class="code-viewer-filename"><span class="lang-dot dot-js"></span><span class="fname">worker.js</span></div>
               <div class="code-viewer-actions">
-                <button class="btn-cpscript" id="btn-cp-worker">⎘ کپی کد</button>
-                <button class="btn-cpscript" id="btn-dl-worker">↓ دانلود .js</button>
+                <button class="btn-cpscript" id="btn-cp-worker" data-i18n="btn.copyCode">⎘ کپی کد</button>
+                <button class="btn-cpscript" id="btn-dl-worker" data-i18n="btn.dlJs">↓ دانلود .js</button>
               </div>
             </div>
             <div class="code-viewer-body">
@@ -79,8 +89,8 @@
       <div class="gitem">
         <div class="gn"></div>
         <div class="gb2">
-          <div class="gtitle">آدرس Worker را بردار</div>
-          <div class="gdesc">بعد از Deploy، CF آدرسی مثل <code>myworker.username.workers.dev</code> نشون میده. آن را در مرحله ۲ وارد کن.</div>
+          <div class="gtitle" data-i18n="g4.title">آدرس Worker را بردار</div>
+          <div class="gdesc" data-i18n="g4.desc">بعد از Deploy، CF آدرسی مثل <code>myworker.username.workers.dev</code> نشون میده. آن را در مرحله ۲ وارد کن.</div>
         </div>
       </div>
     </div>
@@ -89,14 +99,14 @@
 </div>
 
 <div class="io-row">
-  <button class="btn-io btn-export" id="btn-export-settings">📤 اکسپورت تنظیمات</button>
-  <button class="btn-io btn-import" id="btn-import-settings">📥 ایمپورت تنظیمات</button>
+  <button class="btn-io btn-export" id="btn-export-settings" data-i18n="btn.exportSettings">📤 اکسپورت تنظیمات</button>
+  <button class="btn-io btn-import" id="btn-import-settings" data-i18n="btn.importSettings">📥 ایمپورت تنظیمات</button>
   <input type="file" id="importFileInput" accept="application/json,.json" style="display:none"/>
 </div>
 
 <div class="sec">
   <div class="sec-hdr sec-hdr-toggle" data-target="secBody2">
-    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="8" r="3"/><path d="M7.8 8h6.2M11.6 8v2.3M13.6 8v2.3"/></svg>مرحله ۲ — شناسه‌ها و آدرس Worker</div>
+    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="8" r="3"/><path d="M7.8 8h6.2M11.6 8v2.3M13.6 8v2.3"/></svg><span data-i18n="sec2.title">مرحله ۲ — شناسه‌ها و آدرس Worker</span></div>
     <span class="chevron"></span>
   </div>
   <div class="sec-body-wrap" id="secBody2">
@@ -106,31 +116,31 @@
       <div class="urow">
         <input type="text" id="uid" placeholder="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"/>
         <div class="ubtns">
-          <button class="bsm" id="btn-mk-token">↺ جدید</button>
-          <button class="bsm" id="btn-cp-token">⎘ کپی</button>
+          <button class="bsm" id="btn-mk-token" data-i18n="btn.new">↺ جدید</button>
+          <button class="bsm" id="btn-cp-token" data-i18n="btn.copy">⎘ کپی</button>
         </div>
       </div>
-      <p class="hint">با هر بار تولید Token جدید، کد Worker بالا نیز به‌صورت خودکار آپدیت می‌شود.</p>
+      <p class="hint" data-i18n="hint.tokenRegenerate">با هر بار تولید Token جدید، کد Worker بالا نیز به‌صورت خودکار آپدیت می‌شود.</p>
     </div>
     <div class="fg mt-14">
       <label class="lbl-ltr">Password (Trojan)</label>
       <div class="urow">
         <input type="text" id="tpw" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"/>
         <div class="ubtns">
-          <button class="bsm" id="btn-mk-pw">↺ جدید</button>
-          <button class="bsm" id="btn-cp-pw">⎘ کپی</button>
+          <button class="bsm" id="btn-mk-pw" data-i18n="btn.new">↺ جدید</button>
+          <button class="bsm" id="btn-cp-pw" data-i18n="btn.copy">⎘ کپی</button>
         </div>
       </div>
-      <p class="hint">این مقدار برای ساخت کانفیگ‌های پروتکل Trojan استفاده می‌شود — همانند Token، با تغییر آن در کد Worker، کانفیگ‌های Trojan قدیمی از کار می‌افتند. با هر بار تولید Password جدید، کد Worker بالا نیز به‌صورت خودکار آپدیت می‌شود.</p>
+      <p class="hint" data-i18n="hint.passwordInfo">این مقدار برای ساخت کانفیگ‌های پروتکل Trojan استفاده می‌شود — همانند Token، با تغییر آن در کد Worker، کانفیگ‌های Trojan قدیمی از کار می‌افتند. با هر بار تولید Password جدید، کد Worker بالا نیز به‌صورت خودکار آپدیت می‌شود.</p>
     </div>
     <div class="fg">
-      <label>آدرس دامنه Worker</label>
+      <label data-i18n="lbl.workerDomain">آدرس دامنه Worker</label>
       <div class="alert ao mb-8">
         <span class="aico">⚠</span>
-        <div>فقط نام دامنه را وارد کنید — مثال: <code>myworker.username.workers.dev</code> — در صورت وارد کردن <code>https://</code> یا <code>/</code> اضافه، به‌صورت خودکار اصلاح می‌شود.</div>
+        <div data-i18n="alert.domainOnly">فقط نام دامنه را وارد کنید — مثال: <code>myworker.username.workers.dev</code> — در صورت وارد کردن <code>https://</code> یا <code>/</code> اضافه، به‌صورت خودکار اصلاح می‌شود.</div>
       </div>
       <input type="text" id="wdom" placeholder="myworker.username.workers.dev"/>
-      <p class="hint">آدرسی که Cloudflare بعد از Deploy به Worker داد</p>
+      <p class="hint" data-i18n="hint.domainGiven">آدرسی که Cloudflare بعد از Deploy به Worker داد</p>
     </div>
    </div>
   </div>
@@ -138,38 +148,38 @@
 
 <div class="sec">
   <div class="sec-hdr sec-hdr-toggle" data-target="secBody3">
-    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5h6M11 4.5h3M2 8h3M8 8h6M2 11.5h9M13.6 11.5h0.4"/><circle cx="8.5" cy="4.5" r="1.3" fill="var(--card)"/><circle cx="5.5" cy="8" r="1.3" fill="var(--card)"/><circle cx="11.5" cy="11.5" r="1.3" fill="var(--card)"/></svg>مرحله ۳ — IP های سالم و تنظیمات پیشرفته</div>
+    <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5h6M11 4.5h3M2 8h3M8 8h6M2 11.5h9M13.6 11.5h0.4"/><circle cx="8.5" cy="4.5" r="1.3" fill="var(--card)"/><circle cx="5.5" cy="8" r="1.3" fill="var(--card)"/><circle cx="11.5" cy="11.5" r="1.3" fill="var(--card)"/></svg><span data-i18n="sec3.title">مرحله ۳ — IP های سالم و تنظیمات پیشرفته</span></div>
     <span class="chevron"></span>
   </div>
   <div class="sec-body-wrap" id="secBody3">
    <div class="sec-body">
 
     <div class="fg">
-      <label>آدرس‌های IP (هر خط یک IP)</label>
+      <label data-i18n="lbl.ipAddresses">آدرس‌های IP (هر خط یک IP)</label>
       <div class="alert ab mb-10">
         <span class="aico">ℹ</span>
-        <div>برای یافتن IP های سالم Cloudflare می‌توانید از ابزار Clean IP Scanner استفاده کنید. این ابزار مبتنی بر Termux بوده و روی اندروید اجرا می‌شود — نتیجه اسکن را مستقیم در کادر زیر وارد کنید.</div>
+        <div data-i18n="alert.scannerInfo">برای یافتن IP های سالم Cloudflare می‌توانید از ابزار Clean IP Scanner استفاده کنید. این ابزار مبتنی بر Termux بوده و روی اندروید اجرا می‌شود — نتیجه اسکن را مستقیم در کادر زیر وارد کنید.</div>
       </div>
       <a href="https://github.com/4n0nymou3/Clean-IP-Scanner" target="_blank" class="btn-link mb-10">
         <button class="bgen btn-scanner">
-          <span class="ico">🔍</span> ابزار Clean IP Scanner — یافتن IP سالم با Termux
+          <span class="ico">🔍</span> <span data-i18n="btn.scannerTool">ابزار Clean IP Scanner — یافتن IP سالم با Termux</span>
         </button>
       </a>
       <textarea id="ips" placeholder="www.speedtest.net&#10;chatgpt.com&#10;104.16.0.1&#10;104.17.0.1&#10;104.18.0.1&#10;104.19.0.1&#10;104.20.0.1"></textarea>
-      <p class="hint">هر تعداد IP قابل قبول است — از هر IP چند کانفیگ با پورت‌های مختلف ساخته می‌شود. علاوه بر IP، می‌توانید از برخی دامنه‌ها نیز استفاده کنید (مثلاً chatgpt.com)</p>
+      <p class="hint" data-i18n="hint.ipCount">هر تعداد IP قابل قبول است — از هر IP چند کانفیگ با پورت‌های مختلف ساخته می‌شود. علاوه بر IP، می‌توانید از برخی دامنه‌ها نیز استفاده کنید (مثلاً chatgpt.com)</p>
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl">پروتکل‌های خروجی</label>
+      <label class="box-lbl" data-i18n="lbl.outputProtocols">پروتکل‌های خروجی</label>
       <div class="port-row">
         <label class="ck-lbl"><input type="checkbox" id="protoVless" checked> VLESS</label>
         <label class="ck-lbl"><input type="checkbox" id="protoTrojan"> Trojan</label>
       </div>
-      <p class="hint mt-8">می‌توانید فقط VLESS، فقط Trojan یا هر دو را همزمان فعال کنید — تمام کانفیگ‌های Link و فایل‌های JSON/YAML بر اساس همین انتخاب ساخته می‌شوند.</p>
+      <p class="hint mt-8" data-i18n="hint.protocolChoice">می‌توانید فقط VLESS، فقط Trojan یا هر دو را همزمان فعال کنید — تمام کانفیگ‌های Link و فایل‌های JSON/YAML بر اساس همین انتخاب ساخته می‌شوند.</p>
     </div>
 
     <div class="fg mt-14">
-      <label class="mb-9">پورت‌های TLS (امن‌تر — برای یوتیوب، اینستاگرام، اکس)</label>
+      <label class="mb-9" data-i18n="lbl.tlsPorts">پورت‌های TLS (امن‌تر — برای یوتیوب، اینستاگرام، اکس)</label>
       <div class="port-row">
         <label class="ck-lbl"><input type="checkbox" class="ptls" value="443" checked> 443</label>
         <label class="ck-lbl"><input type="checkbox" class="ptls" value="8443"> 8443</label>
@@ -181,7 +191,7 @@
     </div>
 
     <div class="fg mt-10">
-      <label class="mb-9">پورت‌های WebSocket بدون TLS (برای شبکه‌هایی که TLS بلاک است)</label>
+      <label class="mb-9" data-i18n="lbl.wsPorts">پورت‌های WebSocket بدون TLS (برای شبکه‌هایی که TLS بلاک است)</label>
       <div class="port-row">
         <label class="ck-lbl"><input type="checkbox" class="pws" value="80" checked> 80</label>
         <label class="ck-lbl"><input type="checkbox" class="pws" value="8080"> 8080</label>
@@ -195,11 +205,11 @@
 
     <div class="alert ao mt-14 mb-0">
       <span class="aico">ℹ</span>
-      <div>هر ترکیب پورت یک کانفیگ مجزاست. با انتخاب بیشتر، کانفیگ‌های متنوع‌تری برای دور زدن فیلترینگ هوشمند ساخته می‌شه. پیشنهاد: ابتدا فقط پورت 443 را تست کنید و اگر کار نکرد پورت‌های دیگر را هم فعال کنید.</div>
+      <div data-i18n="alert.portCombo">هر ترکیب پورت یک کانفیگ مجزاست. با انتخاب بیشتر، کانفیگ‌های متنوع‌تری برای دور زدن فیلترینگ هوشمند ساخته می‌شه. پیشنهاد: ابتدا فقط پورت 443 را تست کنید و اگر کار نکرد پورت‌های دیگر را هم فعال کنید.</div>
     </div>
 
     <div class="fg mt-10">
-      <label class="mb-9">TLS Fingerprint — جهت دور زدن DPI</label>
+      <label class="mb-9" data-i18n="lbl.fingerprint">TLS Fingerprint — جهت دور زدن DPI</label>
       <select id="fpSelect">
         <option value="chrome" selected>chrome</option>
         <option value="firefox">firefox</option>
@@ -215,7 +225,7 @@
     </div>
 
     <div class="fg mt-10">
-      <label class="mb-9">مسیر WebSocket Path</label>
+      <label class="mb-9" data-i18n="lbl.wsPath">مسیر WebSocket Path</label>
       <select id="pathSelect">
         <option value="/proxy">/proxy</option>
         <option value="/v2ray">/v2ray</option>
@@ -226,14 +236,14 @@
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl">تنظیمات Fragment</label>
+      <label class="box-lbl" data-i18n="lbl.fragmentSettings">تنظیمات Fragment</label>
       <div class="toggle-row mb-10">
         <label class="ck-lbl"><input type="checkbox" id="fragEnable"> Fragment</label>
       </div>
       <div class="frag-grid disabled" id="fragFields">
         <div>
           <label class="adv-lbl">Fragment Packets</label>
-          <input type="text" id="fragPackets" value="tlshello" placeholder="tlshello یا 1-2"/>
+          <input type="text" id="fragPackets" value="tlshello" placeholder="tlshello یا 1-2" data-i18n-placeholder="ph.fragPackets"/>
         </div>
         <div>
           <label class="adv-lbl">Fragment Interval</label>
@@ -249,11 +259,11 @@
         </div>
       </div>
 
-      <p class="hint mt-10">در صورت فعال بودن، تنظیمات fragment فقط در کانفیگ‌های JSON اعمال می‌شود و روی کانفیگ‌های URL تأثیری ندارد.</p>
+      <p class="hint mt-10" data-i18n="hint.fragmentApply">در صورت فعال بودن، تنظیمات fragment فقط در کانفیگ‌های JSON اعمال می‌شود و روی کانفیگ‌های URL تأثیری ندارد.</p>
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl">تنظیمات پیشرفته JSON</label>
+      <label class="box-lbl" data-i18n="lbl.advancedJson">تنظیمات پیشرفته JSON</label>
       <div class="adv-grid">
         <div>
           <label class="adv-lbl">Fake DNS</label>
@@ -289,9 +299,9 @@
           <label class="ck-lbl"><input type="checkbox" id="echEnable"> ECH</label>
         </div>
         <div id="echFields" class="ech-field disabled">
-          <label class="adv-lbl mt-8">DNS سرور برای دریافت کلید ECH</label>
+          <label class="adv-lbl mt-8" data-i18n="lbl.echDnsServer">DNS سرور برای دریافت کلید ECH</label>
           <input type="text" id="echDns" value="https://cloudflare-dns.com/dns-query" placeholder="https://cloudflare-dns.com/dns-query"/>
-          <p class="hint mt-6">فعال کردن چک‌باکس کافی است — کلید رمزنگاری دامنه Worker شما به صورت خودکار از این سرور DNS دریافت می‌شود. ECH روی هر چهار فرمت خروجی (لینک VLESS/Trojan، JSON برای Xray، JSON برای Sing-box و JSON برای Clash) اعمال می‌شود. آدرس پیش‌فرض (DoH Cloudflare) بهترین گزینه برای ایران است زیرا یک آدرس <code>https://</code> رمزگذاری‌شده است و برخلاف <code>udp://8.8.8.8</code> در برابر دستکاری DNS توسط ISPها مقاوم است. اگر DoH Proxy شخصی دارید، آدرس آن را اینجا وارد کنید.</p>
+          <p class="hint mt-6" data-i18n="hint.echInfo">فعال کردن چک‌باکس کافی است — کلید رمزنگاری دامنه Worker شما به صورت خودکار از این سرور DNS دریافت می‌شود. ECH روی هر چهار فرمت خروجی (لینک VLESS/Trojan، JSON برای Xray، JSON برای Sing-box و JSON برای Clash) اعمال می‌شود. آدرس پیش‌فرض (DoH Cloudflare) بهترین گزینه برای ایران است زیرا یک آدرس <code>https://</code> رمزگذاری‌شده است و برخلاف <code>udp://8.8.8.8</code> در برابر دستکاری DNS توسط ISPها مقاوم است. اگر DoH Proxy شخصی دارید، آدرس آن را اینجا وارد کنید.</p>
         </div>
       </div>
       <div class="adv-dns-grid mt-12">
@@ -303,25 +313,25 @@
           <label class="adv-lbl">Remote DNS / DoH</label>
           <a href="https://github.com/4n0nymou3/cloudflare-doh-proxy" target="_blank" class="btn-link mb-8">
             <button class="bgen btn-doh">
-              <span class="ico">🌐</span> ابزار DoH Proxy — ساخت DNS اختصاصی با Cloudflare
+              <span class="ico">🌐</span> <span data-i18n="btn.dohTool">ابزار DoH Proxy — ساخت DNS اختصاصی با Cloudflare</span>
             </button>
           </a>
           <input type="text" id="remoteDns" value="https://cloudflare-dns.com/dns-query" placeholder="https://cloudflare-dns.com/dns-query"/>
         </div>
       </div>
-      <p class="hint mt-10">Local DNS برای resolve دامنه‌های داخلی کشورهای انتخاب‌شده استفاده می‌شود. Remote DNS به‌صورت پیشفرض روی Cloudflare DoH تنظیم است و می‌توانید آن را با هر آدرس DoH دلخواه جایگزین کنید. با ابزار DoH Proxy می‌توانید یک سرور DoH اختصاصی روی Cloudflare بسازید و آدرس آن را اینجا وارد کنید. Allow LAN اتصال سایر دستگاه‌های شبکه محلی را فعال می‌کند. ECH فقط در حالت Normal (بدون Fragment) روی هر چهار فرمت خروجی اعمال می‌شود؛ Fragment و ECH را نمی‌توان همزمان فعال کرد.</p>
+      <p class="hint mt-10" data-i18n="hint.dnsInfo">Local DNS برای resolve دامنه‌های داخلی کشورهای انتخاب‌شده استفاده می‌شود. Remote DNS به‌صورت پیشفرض روی Cloudflare DoH تنظیم است و می‌توانید آن را با هر آدرس DoH دلخواه جایگزین کنید. با ابزار DoH Proxy می‌توانید یک سرور DoH اختصاصی روی Cloudflare بسازید و آدرس آن را اینجا وارد کنید. Allow LAN اتصال سایر دستگاه‌های شبکه محلی را فعال می‌کند. ECH فقط در حالت Normal (بدون Fragment) روی هر چهار فرمت خروجی اعمال می‌شود؛ Fragment و ECH را نمی‌توان همزمان فعال کرد.</p>
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl">قوانین مسیریابی</label>
-      <label class="adv-lbl mb-8">Bypass rules — کشورهایی که به‌صورت مستقیم مسیریابی شوند</label>
+      <label class="box-lbl" data-i18n="lbl.routingRules">قوانین مسیریابی</label>
+      <label class="adv-lbl mb-8" data-i18n="lbl.bypassRules">Bypass rules — کشورهایی که به‌صورت مستقیم مسیریابی شوند</label>
       <div class="port-row mb-10">
-        <label class="ck-lbl"><input type="checkbox" id="routeIr" checked> ایران</label>
-        <label class="ck-lbl"><input type="checkbox" id="routeCn"> چین</label>
-        <label class="ck-lbl"><input type="checkbox" id="routeRu"> روسیه</label>
+        <label class="ck-lbl"><input type="checkbox" id="routeIr" checked> <span data-i18n="country.ir">ایران</span></label>
+        <label class="ck-lbl"><input type="checkbox" id="routeCn"> <span data-i18n="country.cn">چین</span></label>
+        <label class="ck-lbl"><input type="checkbox" id="routeRu"> <span data-i18n="country.ru">روسیه</span></label>
       </div>
-      <p class="hint mt-8">کشورهایی که تیک می‌زنید، ترافیک و DNS مربوط به دامنه‌ها و آی‌پی‌های همان کشور به‌صورت مستقیم (بدون عبور از پروکسی) مسیریابی می‌شود؛ این قوانین در هر سه فرمت خروجی JSON، Sing-box و Clash اعمال می‌شوند. حداقل یک کشور باید انتخاب شده باشد.</p>
-      <label class="adv-lbl mb-8 mt-12">Block rules — دسته‌هایی که مسدود شوند</label>
+      <p class="hint mt-8" data-i18n="hint.bypassInfo">کشورهایی که تیک می‌زنید، ترافیک و DNS مربوط به دامنه‌ها و آی‌پی‌های همان کشور به‌صورت مستقیم (بدون عبور از پروکسی) مسیریابی می‌شود؛ این قوانین در هر سه فرمت خروجی JSON، Sing-box و Clash اعمال می‌شوند. حداقل یک کشور باید انتخاب شده باشد.</p>
+      <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.blockRules">Block rules — دسته‌هایی که مسدود شوند</label>
       <div class="port-row mb-10">
         <label class="ck-lbl"><input type="checkbox" id="blockAds" checked> Ads</label>
         <label class="ck-lbl"><input type="checkbox" id="blockPorn" checked> Porn</label>
@@ -330,40 +340,40 @@
         <label class="ck-lbl"><input type="checkbox" id="blockPhishing" checked> Phishing</label>
         <label class="ck-lbl"><input type="checkbox" id="blockCryptominers" checked> Cryptominers</label>
       </div>
-      <p class="hint mt-8">دسته‌هایی که تیک می‌زنید در هر سه فرمت خروجی مسدود می‌شوند. QUIC یعنی مسدود شدن ترافیک UDP (شامل HTTP/3) تا مرورگر به‌صورت خودکار روی HTTPS معمولی که از تانل شما عبور می‌کند سوییچ کند.</p>
+      <p class="hint mt-8" data-i18n="hint.blockInfo">دسته‌هایی که تیک می‌زنید در هر سه فرمت خروجی مسدود می‌شوند. QUIC یعنی مسدود شدن ترافیک UDP (شامل HTTP/3) تا مرورگر به‌صورت خودکار روی HTTPS معمولی که از تانل شما عبور می‌کند سوییچ کند.</p>
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl">فاصله زمانی تست بهترین پینگ</label>
+      <label class="box-lbl" data-i18n="lbl.pingInterval">فاصله زمانی تست بهترین پینگ</label>
       <input type="text" id="pingInterval" value="180" placeholder="180"/>
-      <p class="hint mt-8">فاصله زمانی (بر حسب ثانیه) بین تست‌های Best Ping برای انتخاب سریع‌ترین سرور. مقدار پیش‌فرض ۱۸۰ ثانیه (۳ دقیقه) است؛ برخی کاربران عدد ۳۰ ثانیه را ترجیح می‌دهند. عدد کمتر یعنی سوییچ سریع‌تر بین سرورها اما مصرف بیشتر شبکه برای تست.</p>
+      <p class="hint mt-8" data-i18n="hint.pingIntervalInfo">فاصله زمانی (بر حسب ثانیه) بین تست‌های Best Ping برای انتخاب سریع‌ترین سرور. مقدار پیش‌فرض ۱۸۰ ثانیه (۳ دقیقه) است؛ برخی کاربران عدد ۳۰ ثانیه را ترجیح می‌دهند. عدد کمتر یعنی سوییچ سریع‌تر بین سرورها اما مصرف بیشتر شبکه برای تست.</p>
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl">Chain Proxy — ثابت کردن IP خروجی (اختیاری)</label>
-      <textarea id="chainConfig" placeholder="vless://... یا trojan://... یا ss://... یا socks://... یا http://..."></textarea>
-      <p class="hint mt-8">یک کانفیگ با فرمت URL از یک سرور دیگر (مثلاً یک VPS با IP ثابت) اینجا وارد کنید تا کانفیگ‌های TCB به آن Chain شوند: ابتدا از طریق Worker شما (برای عبور از فیلترینگ) و سپس از طریق این سرور به اینترنت متصل می‌شوید — یعنی IP خروجی شما همیشه ثابت و برابر با IP همان سرور خواهد بود. فرمت‌های پشتیبانی‌شده: VLESS (tcp/ws/grpc با none/tls/reality)، Trojan (tcp/ws/grpc با tls)، Shadowsocks، SOCKS5 و HTTP. این قابلیت فقط روی کانفیگ‌های JSON برای Xray، Sing-box و Clash اعمال می‌شود (نه روی کانفیگ‌های تکی فرمت لینک)، چون Chain به دو گره هماهنگ نیاز دارد که فقط در یک فایل کانفیگ کامل قابل تعریف است. وقتی این قابلیت فعال باشد، ایموجی ⛓️ کنار نام کانفیگ‌های JSON اضافه می‌شود. برای غیرفعال کردن، این کادر را خالی بگذارید. نکته مهم: کانفیگی که اینجا وارد می‌کنید نباید مربوط به یک Cloudflare Worker دیگر باشد، چون Workerها آی‌پی اختصاصی و ثابت ندارند؛ حتماً از کانفیگ یک سرور واقعی (مثل VPS) با آی‌پی اختصاصی خودش استفاده کنید تا هدف ثابت ماندن IP خروجی برآورده شود.</p>
+      <label class="box-lbl" data-i18n="lbl.chainProxy">Chain Proxy — ثابت کردن IP خروجی (اختیاری)</label>
+      <textarea id="chainConfig" placeholder="vless://... یا trojan://... یا ss://... یا socks://... یا http://..." data-i18n-placeholder="ph.chainConfig"></textarea>
+      <p class="hint mt-8" data-i18n="hint.chainInfo">یک کانفیگ با فرمت URL از یک سرور دیگر (مثلاً یک VPS با IP ثابت) اینجا وارد کنید تا کانفیگ‌های TCB به آن Chain شوند: ابتدا از طریق Worker شما (برای عبور از فیلترینگ) و سپس از طریق این سرور به اینترنت متصل می‌شوید — یعنی IP خروجی شما همیشه ثابت و برابر با IP همان سرور خواهد بود. فرمت‌های پشتیبانی‌شده: VLESS (tcp/ws/grpc با none/tls/reality)، Trojan (tcp/ws/grpc با tls)، Shadowsocks، SOCKS5 و HTTP. این قابلیت فقط روی کانفیگ‌های JSON برای Xray، Sing-box و Clash اعمال می‌شود (نه روی کانفیگ‌های تکی فرمت لینک)، چون Chain به دو گره هماهنگ نیاز دارد که فقط در یک فایل کانفیگ کامل قابل تعریف است. وقتی این قابلیت فعال باشد، ایموجی ⛓️ کنار نام کانفیگ‌های JSON اضافه می‌شود. برای غیرفعال کردن، این کادر را خالی بگذارید. نکته مهم: کانفیگی که اینجا وارد می‌کنید نباید مربوط به یک Cloudflare Worker دیگر باشد، چون Workerها آی‌پی اختصاصی و ثابت ندارند؛ حتماً از کانفیگ یک سرور واقعی (مثل VPS) با آی‌پی اختصاصی خودش استفاده کنید تا هدف ثابت ماندن IP خروجی برآورده شود.</p>
     </div>
 
     <div class="fg mt-14">
-      <label>نام کانفیگ JSON Xray (اختیاری)</label>
-      <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود"/>
-      <p class="hint">اگر خالی بماند، پنل نام پیش‌فرض را برای کانفیگ Normal یا Fragment انتخاب خواهد کرد.</p>
+      <label data-i18n="lbl.jsonName">نام کانفیگ JSON Xray (اختیاری)</label>
+      <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود" data-i18n-placeholder="ph.jsonName"/>
+      <p class="hint" data-i18n="hint.jsonNameInfo">اگر خالی بماند، پنل نام پیش‌فرض را برای کانفیگ Normal یا Fragment انتخاب خواهد کرد.</p>
     </div>
    </div>
   </div>
 </div>
 
-<button class="bgen mt-14" id="gb">⚙ ساخت کانفیگ</button>
+<button class="bgen mt-14" id="gb" data-i18n="btn.generate">⚙ ساخت کانفیگ</button>
 
 <div id="results">
   <hr class="dv"/>
   <div class="sec">
     <div class="sec-hdr">
-      <div class="sec-title"><i class="dot-orange"></i>کانفیگ JSON — Xray 🚀</div>
+      <div class="sec-title"><i class="dot-orange"></i><span data-i18n="res.xrayTitle">کانفیگ JSON — Xray 🚀</span></div>
       <div class="flex-gap-6">
-        <button class="cb" id="btn-cp-json">⎘ کپی JSON</button>
-        <button class="cb" id="btn-dl-json">↓ دانلود TCB.json</button>
+        <button class="cb" id="btn-cp-json" data-i18n="btn.copyJson">⎘ کپی JSON</button>
+        <button class="cb" id="btn-dl-json" data-i18n="btn.dlJsonFile">↓ دانلود TCB.json</button>
       </div>
     </div>
     <div class="sec-body">
@@ -371,23 +381,23 @@
         <div class="code-viewer-header">
           <div class="code-viewer-filename"><span class="lang-dot dot-json-orange"></span><span class="fname">TCB.json</span></div>
           <div class="code-viewer-actions">
-            <button class="btn-cpscript" id="btn-cp-json-2">⎘ کپی</button>
-            <button class="btn-cpscript" id="btn-dl-json-2">↓ دانلود</button>
+            <button class="btn-cpscript" id="btn-cp-json-2" data-i18n="btn.copy">⎘ کپی</button>
+            <button class="btn-cpscript" id="btn-dl-json-2" data-i18n="btn.download">↓ دانلود</button>
           </div>
         </div>
         <div class="code-viewer-body lg">
           <div class="code-box" id="jsonDisplay"></div>
         </div>
       </div>
-      <p class="hint mt-10">این کانفیگ را در v2rayNG یا هر کلاینت سازگار با Xray وارد کن — از حالت least ping برای انتخاب سریع‌ترین سرور استفاده می‌کند.</p>
+      <p class="hint mt-10" data-i18n="hint.xrayUsage">این کانفیگ را در v2rayNG یا هر کلاینت سازگار با Xray وارد کن — از حالت least ping برای انتخاب سریع‌ترین سرور استفاده می‌کند.</p>
     </div>
   </div>
   <div class="sec sec-green">
     <div class="sec-hdr sec-hdr-green">
-      <div class="sec-title"><i class="dot-green"></i>کانفیگ JSON — Sing-box 📦</div>
+      <div class="sec-title"><i class="dot-green"></i><span data-i18n="res.singboxTitle">کانفیگ JSON — Sing-box 📦</span></div>
       <div class="flex-gap-6">
-        <button class="cb" id="btn-cp-singbox">⎘ کپی JSON</button>
-        <button class="cb" id="btn-dl-singbox">↓ دانلود TCB.json</button>
+        <button class="cb" id="btn-cp-singbox" data-i18n="btn.copyJson">⎘ کپی JSON</button>
+        <button class="cb" id="btn-dl-singbox" data-i18n="btn.dlJsonFile">↓ دانلود TCB.json</button>
       </div>
     </div>
     <div class="sec-body">
@@ -395,23 +405,23 @@
         <div class="code-viewer-header">
           <div class="code-viewer-filename"><span class="lang-dot dot-json-green"></span><span class="fname">TCB_Singbox.json</span></div>
           <div class="code-viewer-actions">
-            <button class="btn-cpscript" id="btn-cp-singbox-2">⎘ کپی</button>
-            <button class="btn-cpscript" id="btn-dl-singbox-2">↓ دانلود</button>
+            <button class="btn-cpscript" id="btn-cp-singbox-2" data-i18n="btn.copy">⎘ کپی</button>
+            <button class="btn-cpscript" id="btn-dl-singbox-2" data-i18n="btn.download">↓ دانلود</button>
           </div>
         </div>
         <div class="code-viewer-body lg">
           <div class="code-box" id="singboxDisplay"></div>
         </div>
       </div>
-      <p class="hint mt-10">این کانفیگ مستقیماً برای Sing-box و کلاینت‌های مبتنی بر هسته‌ی Sing-box ساخته شده و در صورت فعال بودن ECH، این قابلیت روی آن نیز اعمال می‌شود (Fragment و سایر تنظیمات شما نیز اعمال شده‌اند).</p>
+      <p class="hint mt-10" data-i18n="hint.singboxUsage">این کانفیگ مستقیماً برای Sing-box و کلاینت‌های مبتنی بر هسته‌ی Sing-box ساخته شده و در صورت فعال بودن ECH، این قابلیت روی آن نیز اعمال می‌شود (Fragment و سایر تنظیمات شما نیز اعمال شده‌اند).</p>
     </div>
   </div>
   <div class="sec">
     <div class="sec-hdr">
-      <div class="sec-title"><i class="dot-purple"></i>کانفیگ JSON — Clash 🐱</div>
+      <div class="sec-title"><i class="dot-purple"></i><span data-i18n="res.clashTitle">کانفیگ JSON — Clash 🐱</span></div>
       <div class="flex-gap-6">
-        <button class="cb" id="btn-cp-clash">⎘ کپی JSON</button>
-        <button class="cb" id="btn-dl-clash">↓ دانلود TCB.yaml</button>
+        <button class="cb" id="btn-cp-clash" data-i18n="btn.copyJson">⎘ کپی JSON</button>
+        <button class="cb" id="btn-dl-clash" data-i18n="btn.dlYamlFile">↓ دانلود TCB.yaml</button>
       </div>
     </div>
     <div class="sec-body">
@@ -419,33 +429,33 @@
         <div class="code-viewer-header">
           <div class="code-viewer-filename"><span class="lang-dot dot-yaml"></span><span class="fname">TCB.yaml</span></div>
           <div class="code-viewer-actions">
-            <button class="btn-cpscript" id="btn-cp-clash-2">⎘ کپی</button>
-            <button class="btn-cpscript" id="btn-dl-clash-2">↓ دانلود</button>
+            <button class="btn-cpscript" id="btn-cp-clash-2" data-i18n="btn.copy">⎘ کپی</button>
+            <button class="btn-cpscript" id="btn-dl-clash-2" data-i18n="btn.download">↓ دانلود</button>
           </div>
         </div>
         <div class="code-viewer-body lg">
           <div class="code-box" id="clashDisplay"></div>
         </div>
       </div>
-      <p class="hint mt-10">فرمت و دانلود این کانفیگ با پسوند <code>.yaml</code> انجام می‌شود تا کلاینت‌های Clash/Mihomo آن را به‌عنوان پروفایل بشناسند. در صورت فعال بودن ECH، این قابلیت روی این کانفیگ نیز اعمال می‌شود. توجه: فرمت Clash/Mihomo اصولاً قابلیت Fragment ندارد، بنابراین تنظیمات Fragment روی این کانفیگ اعمال نمی‌شود.</p>
+      <p class="hint mt-10" data-i18n="hint.clashUsage">فرمت و دانلود این کانفیگ با پسوند <code>.yaml</code> انجام می‌شود تا کلاینت‌های Clash/Mihomo آن را به‌عنوان پروفایل بشناسند. در صورت فعال بودن ECH، این قابلیت روی این کانفیگ نیز اعمال می‌شود. توجه: فرمت Clash/Mihomo اصولاً قابلیت Fragment ندارد، بنابراین تنظیمات Fragment روی این کانفیگ اعمال نمی‌شود.</p>
     </div>
   </div>
   <div class="stats">
-    <div class="stat"><span class="sn sn-blue" id="sv">0</span><div class="sl">کانفیگ TLS</div></div>
-    <div class="stat"><span class="sn sn-orange" id="si">0</span><div class="sl">کانفیگ WS</div></div>
-    <div class="stat"><span class="sn sn-green" id="sa">0</span><div class="sl">مجموع</div></div>
+    <div class="stat"><span class="sn sn-blue" id="sv">0</span><div class="sl" data-i18n="stat.tls">کانفیگ TLS</div></div>
+    <div class="stat"><span class="sn sn-orange" id="si">0</span><div class="sl" data-i18n="stat.ws">کانفیگ WS</div></div>
+    <div class="stat"><span class="sn sn-green" id="sa">0</span><div class="sl" data-i18n="stat.total">مجموع</div></div>
   </div>
   <div class="sec">
     <div class="sec-hdr">
-      <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="2.5" cy="4" r="0.9" fill="currentColor" stroke="none"/><circle cx="2.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="2.5" cy="12" r="0.9" fill="currentColor" stroke="none"/><path d="M5.5 4h8M5.5 8h8M5.5 12h8"/></svg>کانفیگ‌های تولید شده</div>
+      <div class="sec-title"><svg class="sec-icon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="2.5" cy="4" r="0.9" fill="currentColor" stroke="none"/><circle cx="2.5" cy="8" r="0.9" fill="currentColor" stroke="none"/><circle cx="2.5" cy="12" r="0.9" fill="currentColor" stroke="none"/><path d="M5.5 4h8M5.5 8h8M5.5 12h8"/></svg><span data-i18n="res.generatedTitle">کانفیگ‌های تولید شده</span></div>
       <span class="cnt" id="cb2">0</span>
     </div>
     <div class="sec-body">
       <div class="rh">
-        <div class="rt">کانفیگ‌های Link</div>
+        <div class="rt" data-i18n="res.linkConfigs">کانفیگ‌های Link</div>
         <div class="rh-buttons">
-          <button class="cb" id="btn-cp-all">⎘ کپی همه</button>
-          <button class="cb" id="btn-dl-all">↓ دانلود TCB.txt</button>
+          <button class="cb" id="btn-cp-all" data-i18n="btn.copyAll">⎘ کپی همه</button>
+          <button class="cb" id="btn-dl-all" data-i18n="btn.dlTxtFile">↓ دانلود TCB.txt</button>
         </div>
       </div>
       <div class="cfgl" id="lAll"></div>
@@ -453,7 +463,7 @@
   </div>
   <div class="alert ag">
     <span class="aico">✓</span>
-    <div>کانفیگ‌ها آماده‌اند. کانفیگ JSON متناسب با کلاینت خودت را انتخاب کن: کانفیگ <strong class="txt-strong">Xray</strong> برای v2rayNG و تمام کلاینت‌های مبتنی بر هسته‌ی Xray، کانفیگ <strong class="txt-strong">Sing-box</strong> برای NekoBox/Hiddify و تمام کلاینت‌های مبتنی بر هسته‌ی Sing-box، و کانفیگ <strong class="txt-strong">Clash</strong> برای Mihomo/Clash Verge و... .</div>
+    <div data-i18n="alert.configsReady">کانفیگ‌ها آماده‌اند. کانفیگ JSON متناسب با کلاینت خودت را انتخاب کن: کانفیگ <strong class="txt-strong">Xray</strong> برای v2rayNG و تمام کلاینت‌های مبتنی بر هسته‌ی Xray، کانفیگ <strong class="txt-strong">Sing-box</strong> برای NekoBox/Hiddify و تمام کلاینت‌های مبتنی بر هسته‌ی Sing-box، و کانفیگ <strong class="txt-strong">Clash</strong> برای Mihomo/Clash Verge و... .</div>
   </div>
 </div>
 
@@ -468,7 +478,7 @@
   <div class="qr-modal-inner">
     <button class="qr-modal-close" id="qrModalClose">✕</button>
     <div class="qr-modal-box" id="qrModalBox"></div>
-    <p class="qr-modal-hint">این QR Code مخصوص همین کانفیگ است</p>
+    <p class="qr-modal-hint" data-i18n="qr.hint">این QR Code مخصوص همین کانفیگ است</p>
   </div>
 </div>
 
