@@ -1,16 +1,7 @@
-import { parseChainConfig } from './chain-parser.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules } from './proxy-utils.js';
 
 function isDomainAddr(addr) {
   return /^(?!-)(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,}$/.test(addr);
-}
-
-function randomizeCase(str) {
-  let out = '';
-  for (let i = 0; i < str.length; i++) {
-    const ch = str[i];
-    out += Math.random() < 0.5 ? ch.toUpperCase() : ch.toLowerCase();
-  }
-  return out;
 }
 
 function buildChainTransportSingbox(pc) {
@@ -95,17 +86,6 @@ const SINGBOX_BLOCK_RULESET_URLS = {
   'geosite-cryptominers': 'geosite-cryptominers.srs'
 };
 
-function resolveSelectedCountries(routingCountries) {
-  const codes = ['ir', 'cn', 'ru'];
-  const selected = codes.filter(c => routingCountries && routingCountries[c]);
-  return selected.length ? selected : ['ir'];
-}
-
-function resolveSelectedBlockRules(blockRules) {
-  const codes = ['ads', 'porn', 'malware', 'phishing', 'cryptominers'];
-  return codes.filter(c => blockRules && blockRules[c]);
-}
-
 function parseDnsUrl(value) {
   try {
     const u = new URL(value);
@@ -119,10 +99,8 @@ function parseDnsUrl(value) {
 export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, pingInterval, echEnable, chainConfig
+    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, pingInterval, echEnable, parsedChain
   } = settings;
-
-  const parsedChain = parseChainConfig(chainConfig);
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
   const geositeTags = selectedCountries.map(c => 'geosite-' + SINGBOX_GEOSITE_SUFFIX[c]);
