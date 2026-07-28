@@ -1,13 +1,4 @@
-import { parseChainConfig } from './chain-parser.js';
-
-function randomizeCase(str) {
-  let out = '';
-  for (let i = 0; i < str.length; i++) {
-    const ch = str[i];
-    out += Math.random() < 0.5 ? ch.toUpperCase() : ch.toLowerCase();
-  }
-  return out;
-}
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules } from './proxy-utils.js';
 
 export function buildConfig(token, dom, ip, port, security, fp, path, label, echActive, echDns) {
   const h = ip.includes(':') ? `[${ip}]` : ip;
@@ -71,17 +62,6 @@ const BLOCK_IP_TAGS = {
   malware: ['geoip:malware'],
   phishing: ['geoip:phishing']
 };
-
-function resolveSelectedCountries(routingCountries) {
-  const codes = ['ir', 'cn', 'ru'];
-  const selected = codes.filter(c => routingCountries && routingCountries[c]);
-  return selected.length ? selected : ['ir'];
-}
-
-function resolveSelectedBlockRules(blockRules) {
-  const codes = ['ads', 'porn', 'malware', 'phishing', 'cryptominers'];
-  return codes.filter(c => blockRules && blockRules[c]);
-}
 
 function buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt) {
   const streamSettings = { network: 'ws', wsSettings: { headers: { Host: dom }, path: path }, sockopt: outboundSockopt };
@@ -173,10 +153,8 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
   const {
     basePath, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit,
     fakeDnsEnable, ipv6Enable, lanAccess, remoteDnsVal, localDnsVal,
-    tcpFastOpen, echEnable, echDns, jsonName, routingCountries, blockRules, pingInterval, chainConfig
+    tcpFastOpen, echEnable, echDns, jsonName, routingCountries, blockRules, pingInterval, parsedChain
   } = settings;
-
-  const parsedChain = parseChainConfig(chainConfig);
 
   const path = basePath + '?ed=2560';
   const useVless = !protocols || protocols.vless !== false;
