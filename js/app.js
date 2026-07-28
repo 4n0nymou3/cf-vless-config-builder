@@ -6,6 +6,7 @@ import { parseChainConfig } from './chain-parser.js';
 import { toast, getChecked, row, downloadFile, renderCodeBlock, highlightJsonLine, highlightYamlLine, highlightJsLine, flashCopied } from './ui.js';
 import { exportSettingsToString, isValidImportPayload, applyImportedSettings } from './settings-io.js';
 import { generateQRMatrix, qrMatrixToSvg } from './qrcode.js';
+import { t, getLang, setLang, applyI18n } from './i18n.js';
 
 let allC = [];
 let lastJsonStr = '';
@@ -39,49 +40,49 @@ function currentPassword() {
 }
 
 function mkToken() {
-  const t = uuid4();
-  document.getElementById('uid').value = t;
-  renderWorker(t, currentPassword());
-  toast('Token جدید — کد Worker آپدیت شد');
+  const tok = uuid4();
+  document.getElementById('uid').value = tok;
+  renderWorker(tok, currentPassword());
+  toast(t('toast.tokenUpdated'));
 }
 
 function cpToken(e) {
   const btn = e.currentTarget;
   const v = document.getElementById('uid').value.trim();
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => { toast('Token کپی شد'); flashCopied(btn); });
+  navigator.clipboard.writeText(v).then(() => { toast(t('toast.tokenCopied')); flashCopied(btn); });
 }
 
 function mkPassword() {
   const p = genPassword();
   document.getElementById('tpw').value = p;
   renderWorker(document.getElementById('uid').value.trim(), p);
-  toast('Password جدید — کد Worker آپدیت شد');
+  toast(t('toast.passwordUpdated'));
 }
 
 function cpPassword(e) {
   const btn = e.currentTarget;
   const v = document.getElementById('tpw').value.trim();
   if (!v) return;
-  navigator.clipboard.writeText(v).then(() => { toast('Password کپی شد'); flashCopied(btn); });
+  navigator.clipboard.writeText(v).then(() => { toast(t('toast.passwordCopied')); flashCopied(btn); });
 }
 
 async function cpWorker(e) {
   const btn = e.currentTarget;
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
-  if (!token || !password) { toast('ابتدا Token و Password بساز'); return; }
+  if (!token || !password) { toast(t('toast.needTokenPassword')); return; }
   const code = await buildWorker(token, password);
-  navigator.clipboard.writeText(code).then(() => { toast('کد Worker کپی شد'); flashCopied(btn); });
+  navigator.clipboard.writeText(code).then(() => { toast(t('toast.workerCopied')); flashCopied(btn); });
 }
 
 async function dlWorker() {
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
-  if (!token || !password) { toast('ابتدا Token و Password وارد کن'); return; }
+  if (!token || !password) { toast(t('toast.needTokenPasswordEnter')); return; }
   const code = await buildWorker(token, password);
   downloadFile(code, 'worker.js', 'text/javascript');
-  toast('فایل worker.js دانلود شد');
+  toast(t('toast.workerDownloaded'));
 }
 
 function toggleFrag() {
@@ -157,21 +158,21 @@ function gen() {
   const dom      = raw_dom.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
   const raw      = document.getElementById('ips').value.trim();
 
-  if (!token)    { toast('Token موجود نیست'); return; }
-  if (!password) { toast('Password موجود نیست'); return; }
-  if (!dom)      { toast('آدرس Worker را وارد کن'); return; }
-  if (!raw)      { toast('حداقل یک IP وارد کن'); return; }
+  if (!token)    { toast(t('toast.noToken')); return; }
+  if (!password) { toast(t('toast.noPassword')); return; }
+  if (!dom)      { toast(t('toast.enterWorkerAddress')); return; }
+  if (!raw)      { toast(t('toast.enterOneIp')); return; }
 
   const protocols = collectProtocols();
-  if (!protocols.vless && !protocols.trojan) { toast('حداقل یک پروتکل (VLESS یا Trojan) انتخاب کن'); return; }
+  if (!protocols.vless && !protocols.trojan) { toast(t('toast.selectOneProtocol')); return; }
 
   const settings  = collectSettings();
   if (!settings.routingCountries.ir && !settings.routingCountries.cn && !settings.routingCountries.ru) {
-    toast('حداقل یک کشور برای قوانین مسیریابی انتخاب کن');
+    toast(t('toast.selectOneCountry'));
     return;
   }
   if (!(parseInt(settings.pingInterval) > 0)) {
-    toast('Best Ping Interval باید یک عدد مثبت باشد');
+    toast(t('toast.pingIntervalPositive'));
     return;
   }
   if (settings.chainConfig) {
@@ -185,16 +186,16 @@ function gen() {
   const allIps    = raw.split('\n').map(s => s.trim()).filter(Boolean);
   const ips       = settings.ipv6Enable ? allIps : allIps.filter(ip => !ip.includes(':'));
 
-  if (!ips.length) { toast('پس از فیلتر IPv6 هیچ IP‌ای باقی نماند'); return; }
+  if (!ips.length) { toast(t('toast.noIpAfterFilter')); return; }
 
   const tlsPorts = getChecked('ptls');
   const wsPorts  = getChecked('pws');
   const fp       = document.getElementById('fpSelect').value;
 
-  if (!tlsPorts.length && !wsPorts.length) { toast('حداقل یک پورت انتخاب کن'); return; }
+  if (!tlsPorts.length && !wsPorts.length) { toast(t('toast.selectOnePort')); return; }
 
   const btn = document.getElementById('gb');
-  btn.innerHTML = '<span class="sp"></span> در حال ساخت...';
+  btn.innerHTML = '<span class="sp"></span> ' + t('gen.building');
   btn.disabled = true;
   btn.classList.add('loading');
 
@@ -253,17 +254,17 @@ function gen() {
 
     ['sn1', 'sn2', 'sn3'].forEach(id => { document.getElementById(id).className = 'step done'; });
     document.getElementById('sn4').className = 'step active';
-    btn.innerHTML = '✓ ساخته شد — دوباره بساز';
+    btn.innerHTML = t('gen.built');
     btn.disabled = false;
     btn.classList.remove('loading');
-    toast(`${allC.length} کانفیگ ساخته شد (${tlsCount} TLS + ${wsCount} WS)`);
+    toast(t('toast.configsBuilt', { count: allC.length, tls: tlsCount, ws: wsCount }));
   }, 400);
 }
 
 function cpJson(e) {
   const btn = e.currentTarget;
   if (!lastJsonStr) return;
-  navigator.clipboard.writeText(lastJsonStr).then(() => { toast('کانفیگ JSON کپی شد'); flashCopied(btn); });
+  navigator.clipboard.writeText(lastJsonStr).then(() => { toast(t('toast.jsonCopied')); flashCopied(btn); });
 }
 
 function dlJson() {
@@ -271,13 +272,13 @@ function dlJson() {
   const fragEnabled = document.getElementById('fragEnable').checked;
   const fileName = fragEnabled ? 'TCB_Fragment.json' : 'TCB_Normal.json';
   downloadFile(lastJsonStr, fileName, 'application/json');
-  toast('فایل ' + fileName + ' دانلود شد');
+  toast(t('toast.fileDownloaded', { name: fileName }));
 }
 
 function cpSingbox(e) {
   const btn = e.currentTarget;
   if (!lastSingboxStr) return;
-  navigator.clipboard.writeText(lastSingboxStr).then(() => { toast('کانفیگ Sing-box کپی شد'); flashCopied(btn); });
+  navigator.clipboard.writeText(lastSingboxStr).then(() => { toast(t('toast.singboxCopied')); flashCopied(btn); });
 }
 
 function dlSingbox() {
@@ -285,38 +286,38 @@ function dlSingbox() {
   const fragEnabled = document.getElementById('fragEnable').checked;
   const fileName = fragEnabled ? 'TCB_Singbox_Fragment.json' : 'TCB_Singbox_Normal.json';
   downloadFile(lastSingboxStr, fileName, 'application/json');
-  toast('فایل ' + fileName + ' دانلود شد');
+  toast(t('toast.fileDownloaded', { name: fileName }));
 }
 
 function cpClash(e) {
   const btn = e.currentTarget;
   if (!lastClashStr) return;
-  navigator.clipboard.writeText(lastClashStr).then(() => { toast('کانفیگ Clash کپی شد'); flashCopied(btn); });
+  navigator.clipboard.writeText(lastClashStr).then(() => { toast(t('toast.clashCopied')); flashCopied(btn); });
 }
 
 function dlClash() {
   if (!lastClashStr) return;
   const fileName = 'TCB_Clash.yaml';
   downloadFile(lastClashStr, fileName, 'text/yaml');
-  toast('فایل ' + fileName + ' دانلود شد');
+  toast(t('toast.fileDownloaded', { name: fileName }));
 }
 
 function cpAll(e) {
   const btn = e.currentTarget;
   navigator.clipboard.writeText(allC.map(c => c.cfg).join('\n'))
-    .then(() => { toast(`${allC.length} کانفیگ کپی شد`); flashCopied(btn); });
+    .then(() => { toast(t('toast.allCopied', { count: allC.length })); flashCopied(btn); });
 }
 
 function dlAll() {
   if (!allC.length) return;
   downloadFile(allC.map(c => c.cfg).join('\n'), 'TCB.txt', 'text/plain');
-  toast(`فایل TCB.txt با ${allC.length} کانفیگ دانلود شد`);
+  toast(t('toast.allDownloaded', { count: allC.length }));
 }
 
 function exportSettings() {
   const json = exportSettingsToString();
   downloadFile(json, 'TCB_Settings.json', 'application/json');
-  toast('فایل تنظیمات دانلود شد');
+  toast(t('toast.settingsDownloaded'));
 }
 
 function importSettings(file) {
@@ -327,20 +328,20 @@ function importSettings(file) {
     try {
       parsed = JSON.parse(reader.result);
     } catch (e) {
-      toast('فایل انتخاب‌شده یک فایل JSON معتبر نیست');
+      toast(t('toast.invalidJsonFile'));
       return;
     }
     if (!isValidImportPayload(parsed)) {
-      toast('این فایل مخصوص TCB نیست و قابل ایمپورت نمی‌باشد');
+      toast(t('toast.notTcbFile'));
       return;
     }
     applyImportedSettings(parsed);
     toggleFrag();
     toggleEch();
     renderWorker(document.getElementById('uid').value.trim(), currentPassword());
-    toast('تنظیمات با موفقیت ایمپورت شد');
+    toast(t('toast.settingsImported'));
   };
-  reader.onerror = () => toast('خطا در خواندن فایل');
+  reader.onerror = () => toast(t('toast.fileReadError'));
   reader.readAsText(file);
 }
 
@@ -350,7 +351,7 @@ function showQrModal(cfgText) {
     const qr = generateQRMatrix(cfgText, 'M');
     box.innerHTML = qrMatrixToSvg(qr, 4);
   } catch (e) {
-    toast('این کانفیگ برای تولید QR Code بیش از حد طولانی است');
+    toast(t('toast.qrTooLong'));
     return;
   }
   document.getElementById('qrModal').classList.add('show');
@@ -361,12 +362,66 @@ function hideQrModal() {
   document.getElementById('qrModalBox').innerHTML = '';
 }
 
+const STORAGE_THEME_KEY = 'tcb_theme';
+const STORAGE_LANG_KEY = 'tcb_lang';
+
+function readStoredValue(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeStoredValue(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {}
+}
+
+function setTheme(mode, persist) {
+  document.documentElement.classList.toggle('light', mode === 'light');
+  const btn = document.getElementById('btn-theme-toggle');
+  if (btn) btn.setAttribute('aria-pressed', mode === 'light' ? 'true' : 'false');
+  if (persist) writeStoredValue(STORAGE_THEME_KEY, mode);
+}
+
+function toggleTheme() {
+  const isLight = document.documentElement.classList.contains('light');
+  setTheme(isLight ? 'dark' : 'light', true);
+}
+
+function updateGenButtonText() {
+  const btn = document.getElementById('gb');
+  if (!btn) return;
+  const resultsVisible = document.getElementById('results').style.display === 'block';
+  btn.innerHTML = resultsVisible ? t('gen.built') : t('btn.generate');
+}
+
+function switchLang(lang, persist) {
+  setLang(lang);
+  applyI18n();
+  document.getElementById('btn-lang-fa').classList.toggle('active', lang === 'fa');
+  document.getElementById('btn-lang-en').classList.toggle('active', lang === 'en');
+  updateGenButtonText();
+  if (persist) writeStoredValue(STORAGE_LANG_KEY, lang);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  const t = uuid4();
+  const storedTheme = readStoredValue(STORAGE_THEME_KEY);
+  const storedLang = readStoredValue(STORAGE_LANG_KEY);
+  switchLang(storedLang === 'en' ? 'en' : 'fa', false);
+  setTheme(storedTheme === 'light' ? 'light' : 'dark', false);
+
+  document.getElementById('btn-theme-toggle').addEventListener('click', toggleTheme);
+  document.getElementById('btn-lang-fa').addEventListener('click', () => switchLang('fa', true));
+  document.getElementById('btn-lang-en').addEventListener('click', () => switchLang('en', true));
+
+  const tok = uuid4();
   const p = genPassword();
-  document.getElementById('uid').value = t;
+  document.getElementById('uid').value = tok;
   document.getElementById('tpw').value = p;
-  renderWorker(t, p);
+  renderWorker(tok, p);
 
   document.getElementById('uid').addEventListener('input', e => renderWorker(e.target.value.trim(), currentPassword()));
   document.getElementById('tpw').addEventListener('input', e => renderWorker(document.getElementById('uid').value.trim(), e.target.value.trim()));
