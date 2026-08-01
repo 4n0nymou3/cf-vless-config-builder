@@ -29,7 +29,7 @@
       </div>
       <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.1</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.2</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
@@ -333,7 +333,7 @@
       <p class="hint mt-8" data-i18n="hint.bypassInfo">کشورهایی که تیک می‌زنید، ترافیک و DNS مربوط به دامنه‌ها و آی‌پی‌های همان کشور به‌صورت مستقیم (بدون عبور از پروکسی) مسیریابی می‌شود؛ این قوانین در هر سه فرمت خروجی JSON، Sing-box و Clash اعمال می‌شوند. حداقل یک کشور باید انتخاب شده باشد.</p>
       <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.blockRules">Block rules — دسته‌هایی که مسدود شوند</label>
       <div class="port-row mb-10">
-        <label class="ck-lbl"><input type="checkbox" id="blockAds" checked> Ads</label>
+        <label class="ck-lbl"><input type="checkbox" id="blockPromo" checked> Ads</label>
         <label class="ck-lbl"><input type="checkbox" id="blockPorn" checked> Porn</label>
         <label class="ck-lbl"><input type="checkbox" id="blockQuic" checked> QUIC</label>
         <label class="ck-lbl"><input type="checkbox" id="blockMalware" checked> Malware</label>
@@ -344,9 +344,33 @@
     </div>
 
     <div class="fg mt-14 settings-box">
-      <label class="box-lbl" data-i18n="lbl.pingInterval">فاصله زمانی تست بهترین پینگ</label>
-      <input type="text" id="pingInterval" value="180" placeholder="180"/>
-      <p class="hint mt-8" data-i18n="hint.pingIntervalInfo">فاصله زمانی (بر حسب ثانیه) بین تست‌های Best Ping برای انتخاب سریع‌ترین سرور. مقدار پیش‌فرض ۱۸۰ ثانیه (۳ دقیقه) است؛ برخی کاربران عدد ۳۰ ثانیه را ترجیح می‌دهند. عدد کمتر یعنی سوییچ سریع‌تر بین سرورها اما مصرف بیشتر شبکه برای تست.</p>
+      <label class="box-lbl" data-i18n="lbl.observatorySettings">تنظیمات Observatory</label>
+      <div class="observatory-grid">
+        <div>
+          <label class="adv-lbl" data-i18n="lbl.leastPingInterval">leastPing Interval</label>
+          <input type="text" id="leastPingInterval" value="3m" placeholder="3m"/>
+        </div>
+        <div>
+          <label class="adv-lbl" data-i18n="lbl.leastLoadInterval">leastLoad Interval</label>
+          <input type="text" id="leastLoadInterval" value="5m" placeholder="5m"/>
+        </div>
+        <div>
+          <label class="adv-lbl" data-i18n="lbl.leastLoadMode">leastLoad Mode</label>
+          <select id="leastLoadMode">
+            <option value="HEAD" selected>HEAD</option>
+            <option value="GET">GET</option>
+          </select>
+        </div>
+        <div>
+          <label class="adv-lbl" data-i18n="lbl.leastLoadSampling">leastLoad Sampling</label>
+          <input type="text" id="leastLoadSampling" value="2" placeholder="2"/>
+        </div>
+        <div>
+          <label class="adv-lbl" data-i18n="lbl.leastLoadTimeout">leastLoad Timeout</label>
+          <input type="text" id="leastLoadTimeout" value="30s" placeholder="30s"/>
+        </div>
+      </div>
+      <p class="hint mt-10" data-i18n="hint.observatoryInfo">این تنظیمات نحوه‌ی تست و انتخاب بهترین سرور توسط هسته‌ی Xray را کنترل می‌کنند. مقادیر زمانی را با پسوند m (دقیقه) یا s (ثانیه) وارد کنید؛ مثلاً 3m یا 30s. leastLoad Sampling باید یک عدد صحیح مثبت باشد.</p>
     </div>
 
     <div class="fg mt-14 settings-box">
