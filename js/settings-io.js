@@ -46,14 +46,20 @@ export function collectExportData() {
         ru: document.getElementById('routeRu').checked
       },
       blockRules: {
-        ads: document.getElementById('blockAds').checked,
+        ads: document.getElementById('blockPromo').checked,
         porn: document.getElementById('blockPorn').checked,
         quic: document.getElementById('blockQuic').checked,
         malware: document.getElementById('blockMalware').checked,
         phishing: document.getElementById('blockPhishing').checked,
         cryptominers: document.getElementById('blockCryptominers').checked
       },
-      pingInterval: document.getElementById('pingInterval').value,
+      observatory: {
+        leastPingInterval: document.getElementById('leastPingInterval').value,
+        leastLoadInterval: document.getElementById('leastLoadInterval').value,
+        leastLoadMode: document.getElementById('leastLoadMode').value,
+        leastLoadSampling: document.getElementById('leastLoadSampling').value,
+        leastLoadTimeout: document.getElementById('leastLoadTimeout').value
+      },
       chainConfig: document.getElementById('chainConfig').value,
       jsonName: document.getElementById('jsonName').value
     }
@@ -131,14 +137,14 @@ export function applyImportedSettings(payload) {
   }
 
   if (d.blockRules && typeof d.blockRules === 'object') {
-    document.getElementById('blockAds').checked = d.blockRules.ads !== false;
+    document.getElementById('blockPromo').checked = d.blockRules.ads !== false;
     document.getElementById('blockPorn').checked = d.blockRules.porn !== false;
     document.getElementById('blockQuic').checked = d.blockRules.quic !== false;
     document.getElementById('blockMalware').checked = d.blockRules.malware !== false;
     document.getElementById('blockPhishing').checked = d.blockRules.phishing !== false;
     document.getElementById('blockCryptominers').checked = d.blockRules.cryptominers !== false;
   } else {
-    document.getElementById('blockAds').checked = true;
+    document.getElementById('blockPromo').checked = true;
     document.getElementById('blockPorn').checked = true;
     document.getElementById('blockQuic').checked = true;
     document.getElementById('blockMalware').checked = true;
@@ -146,10 +152,24 @@ export function applyImportedSettings(payload) {
     document.getElementById('blockCryptominers').checked = true;
   }
 
-  if (typeof d.pingInterval === 'string' && d.pingInterval.trim()) {
-    document.getElementById('pingInterval').value = d.pingInterval;
+  if (d.observatory && typeof d.observatory === 'object') {
+    document.getElementById('leastPingInterval').value = typeof d.observatory.leastPingInterval === 'string' && d.observatory.leastPingInterval.trim() ? d.observatory.leastPingInterval : '3m';
+    document.getElementById('leastLoadInterval').value = typeof d.observatory.leastLoadInterval === 'string' && d.observatory.leastLoadInterval.trim() ? d.observatory.leastLoadInterval : '5m';
+    document.getElementById('leastLoadMode').value = d.observatory.leastLoadMode === 'GET' ? 'GET' : 'HEAD';
+    document.getElementById('leastLoadSampling').value = typeof d.observatory.leastLoadSampling === 'string' && d.observatory.leastLoadSampling.trim() ? d.observatory.leastLoadSampling : '2';
+    document.getElementById('leastLoadTimeout').value = typeof d.observatory.leastLoadTimeout === 'string' && d.observatory.leastLoadTimeout.trim() ? d.observatory.leastLoadTimeout : '30s';
+  } else if (typeof d.pingInterval === 'string' && d.pingInterval.trim() && parseInt(d.pingInterval) > 0) {
+    document.getElementById('leastPingInterval').value = parseInt(d.pingInterval) + 's';
+    document.getElementById('leastLoadInterval').value = '5m';
+    document.getElementById('leastLoadMode').value = 'HEAD';
+    document.getElementById('leastLoadSampling').value = '2';
+    document.getElementById('leastLoadTimeout').value = '30s';
   } else {
-    document.getElementById('pingInterval').value = '180';
+    document.getElementById('leastPingInterval').value = '3m';
+    document.getElementById('leastLoadInterval').value = '5m';
+    document.getElementById('leastLoadMode').value = 'HEAD';
+    document.getElementById('leastLoadSampling').value = '2';
+    document.getElementById('leastLoadTimeout').value = '30s';
   }
 
   if (typeof d.chainConfig === 'string') {
