@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds } from './proxy-utils.js';
 
 const CLASH_COUNTRY_RULES = {
   ir: {
@@ -100,14 +100,14 @@ function buildChainProxyClash(pc, dialerProxyName, name) {
 export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, pingInterval, parsedChain
+    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, leastPingInterval, parsedChain
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
   const selectedBlockRules = resolveSelectedBlockRules(blockRules);
   const blockQuic = !!(blockRules && blockRules.quic);
   const blockProviders = selectedBlockRules.flatMap(c => CLASH_BLOCK_RULES[c] || []);
-  const intervalSeconds = parseInt(pingInterval) > 0 ? parseInt(pingInterval) : 180;
+  const intervalSeconds = durationToSeconds(leastPingInterval, 180);
 
   const useVless = !protocols || protocols.vless !== false;
   const useTrojan = !!(protocols && protocols.trojan);
