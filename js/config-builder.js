@@ -5,7 +5,7 @@ export function buildConfig(token, dom, ip, port, security, fp, path, label, ech
   const edPath = path + '?ed=2560';
   const params = new URLSearchParams({
     encryption: 'none', security: security, type: 'ws',
-    host: dom, path: edPath, allowInsecure: '0'
+    host: dom, path: edPath
   });
   if (security === 'tls') {
     params.set('sni', randomizeCase(dom));
@@ -24,7 +24,7 @@ export function buildTrojanConfig(password, dom, ip, port, security, fp, path, l
   const edPath = path + '?ed=2560';
   const params = new URLSearchParams({
     security: security, type: 'ws',
-    host: dom, path: edPath, allowInsecure: '0'
+    host: dom, path: edPath
   });
   if (security === 'tls') {
     params.set('sni', randomizeCase(dom));
@@ -67,7 +67,7 @@ function buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEna
   const streamSettings = { network: 'ws', wsSettings: { headers: { Host: dom }, path: path }, sockopt: outboundSockopt };
   if (security === 'tls') {
     streamSettings.security = 'tls';
-    const tlsSettings = { allowInsecure: false, fingerprint: fp, serverName: randomizeCase(dom), show: false, alpn: ['http/1.1'] };
+    const tlsSettings = { fingerprint: fp, serverName: randomizeCase(dom), show: false, alpn: ['http/1.1'] };
     if (echEnable) {
       tlsSettings.echConfigList = echDns;
     }
@@ -97,7 +97,6 @@ function buildChainStreamSettingsXray(pc) {
   if (pc.security === 'tls') {
     streamSettings.security = 'tls';
     streamSettings.tlsSettings = {
-      allowInsecure: false,
       serverName: pc.sni || pc.address,
       fingerprint: pc.fp || 'chrome',
       alpn: pc.alpn
@@ -153,7 +152,8 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
   const {
     basePath, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit,
     fakeDnsEnable, ipv6Enable, lanAccess, remoteDnsVal, localDnsVal,
-    tcpFastOpen, echEnable, echDns, jsonName, routingCountries, blockRules, pingInterval, parsedChain
+    tcpFastOpen, echEnable, echDns, jsonName, routingCountries, blockRules,
+    leastPingInterval, leastLoadInterval, leastLoadMode, leastLoadSampling, leastLoadTimeout, parsedChain
   } = settings;
 
   const path = basePath + '?ed=2560';
@@ -168,8 +168,6 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
   const blockQuic = !!(blockRules && blockRules.quic);
   const blockDomains = [...new Set(selectedBlockRules.flatMap(c => BLOCK_DOMAIN_TAGS[c] || []))];
   const blockIps = [...new Set(selectedBlockRules.flatMap(c => BLOCK_IP_TAGS[c] || []))];
-
-  const intervalSeconds = parseInt(pingInterval) > 0 ? parseInt(pingInterval) : 180;
 
   const outboundSockopt = {
     domainStrategy: 'UseIP',
@@ -255,7 +253,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
   const sniffingDestOverride = fakeDnsEnable ? ['http', 'tls', 'fakedns'] : ['http', 'tls'];
 
   const configObj = {
-    version: { min: '26.3.27' },
+    version: { min: '26.7.28' },
     dns: {
       hosts: {
         'domain:googleapis.cn': 'googleapis.com',
@@ -290,7 +288,17 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
       }
     ],
     log: { loglevel: 'none' },
-    observatory: { enableConcurrency: true, probeInterval: intervalSeconds + 's', probeUrl: 'https://www.gstatic.com/generate_204', subjectSelector: balancerSelector },
+    observatory: { enableConcurrency: true, probeInterval: leastPingInterval, probeUrl: 'https://www.gstatic.com/generate_204', subjectSelector: balancerSelector },
+    burstObservatory: {
+      subjectSelector: balancerSelector,
+      pingConfig: {
+        destination: 'https://www.gstatic.com/generate_204',
+        httpMethod: leastLoadMode,
+        interval: leastLoadInterval,
+        sampling: parseInt(leastLoadSampling),
+        timeout: leastLoadTimeout
+      }
+    },
     outbounds: outbounds,
     policy: {
       levels: { '8': { connIdle: 300, downlinkOnly: 1, handshake: 4, uplinkOnly: 1 } },
