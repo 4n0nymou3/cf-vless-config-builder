@@ -6,7 +6,7 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v5.1
+# Tunnel Config Builder (TCB) v5.2
 
 A tool for building VLESS and Trojan configs for Cloudflare Workers — no VPS or personal server required
 
@@ -28,9 +28,9 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - Advanced JSON settings: Fake DNS, IPv6, Allow LAN, TCP Fast Open, Local DNS, Remote DNS / DoH
 - ECH support to encrypt the Client Hello and hide the SNI from DPI systems
 - Configurable routing rules: select Iran, China, and Russia for direct routing (Bypass), and select the Ads, Porn, QUIC, Malware, Phishing, and Cryptominers categories for blocking; both groups apply simultaneously across all three output formats (Xray, Sing-box, Clash)
-- User-editable Best Ping test interval across all three output formats
+- User-editable Observatory Settings (leastPing/leastLoad interval, mode, sampling, timeout) for the Xray core
 - Chain Proxy — the ability to chain TCB configs to an external server (VLESS, Trojan, Shadowsocks, SOCKS5, or HTTP) to keep the outbound IP fixed, across all three JSON output formats (Xray, Sing-box, Clash)
-- JSON config dedicated to the Xray core, based on the latest stable release of that core (26.3.27)
+- JSON config dedicated to the Xray core, based on the latest stable release of that core (26.7.28)
 - Simultaneous generation of configs in four formats: VLESS/Trojan link, JSON for the Xray core (with least-ping support), JSON for Sing-box, and JSON for Clash / Mihomo
 - Export and import of all page settings as a single file, for backup or quick settings transfer
 - One-click dedicated QR Code display for each config — generated fully offline with no external service or API required
@@ -54,7 +54,7 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 
 4. Copy the address Cloudflare shows after deploying (something like `myworker.username.workers.dev`).
 
-At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Best Ping test interval, Chain Proxy, and the JSON config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
+At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the JSON config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
 
 ### Step 3 — Build the Config
 
@@ -72,7 +72,7 @@ At any step, you can use the "📤 Export Settings" button to download a backup 
 
 7. If you'd like, change the advanced JSON settings based on your needs.
 
-8. Select the desired countries for direct routing and the desired categories for blocking; if you'd like, also change the Best Ping test interval.
+8. Select the desired countries for direct routing and the desired categories for blocking; if you'd like, also adjust the Observatory Settings.
 
 9. If you want a fixed outbound IP, enter your external server's config in the Chain Proxy box.
 
@@ -135,9 +135,19 @@ This section contains two groups of checkboxes that are applied consistently acr
 
 For each country and each category, the GeoIP/GeoSite databases specific to that output format are used.
 
-### Best Ping Test Interval
+### Observatory Settings
 
-The time interval (in seconds) between Best Ping tests for selecting the fastest server, across all three output formats. The default value is 180 seconds (3 minutes) and is fully editable by the user — for example, 30 seconds gives faster switching between servers but increases network usage for testing.
+This section controls how the Xray core tests and selects the best server, and mirrors the Observatory Settings screen of the v2rayNG client exactly:
+
+- **leastPing Interval**: the interval between simple ping tests used to pick the fastest server. Default is `3m` (3 minutes).
+- **leastLoad Interval**: the interval between rounds of the more advanced leastLoad test. Default is `5m` (5 minutes).
+- **leastLoad Mode**: the HTTP method used for the test request — `HEAD` or `GET`. Default is `HEAD`.
+- **leastLoad Sampling**: the number of samples taken per leastLoad test round. Default is `2`.
+- **leastLoad Timeout**: the maximum time to wait for each test request. Default is `30s` (30 seconds).
+
+Time values (leastPing Interval, leastLoad Interval, leastLoad Timeout) must be entered with an `m` (minutes) or `s` (seconds) suffix — e.g. `3m` or `30s` — and leastLoad Sampling must be a positive integer; the panel automatically prevents invalid values from being entered in these fields. These settings apply only to the Xray-core JSON config (as `observatory` and `burstObservatory` blocks) and have no effect on the Sing-box or Clash configs.
+
+> Technical note: since the Xray core has fully removed the `allowInsecure` TLS option, it has been removed from every Xray-core JSON config generated by TCB (including Chain Proxy configs) to stay fully compatible with the latest Xray core releases and clients built on it (such as v2rayNG).
 
 ### Chain Proxy — Fixing the Outbound IP
 
