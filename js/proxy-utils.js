@@ -18,3 +18,10 @@ export function resolveSelectedCountries(routingCountries) {
 export function resolveSelectedBlockRules(blockRules) {
   return BLOCK_RULE_CODES.filter(c => blockRules && blockRules[c]);
 }
+
+export function durationToSeconds(value, fallbackSeconds) {
+  const match = typeof value === 'string' ? value.trim().match(/^([1-9][0-9]*)(m|s)$/) : null;
+  if (!match) return fallbackSeconds;
+  const amount = parseInt(match[1]);
+  return match[2] === 'm' ? amount * 60 : amount;
+}
