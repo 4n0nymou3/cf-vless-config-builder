@@ -101,6 +101,21 @@ function toggleFrag() {
   }
 }
 
+function sanitizeDurationInput(e) {
+  const raw = e.target.value;
+  const m = raw.match(/^([0-9]*)([mMsS]?)/);
+  let digits = m ? m[1] : '';
+  let unit = m ? m[2].toLowerCase() : '';
+  digits = digits.replace(/^0+(?=[0-9])/, '');
+  e.target.value = digits + unit;
+}
+
+function sanitizeIntegerInput(e) {
+  let digits = e.target.value.replace(/[^0-9]/g, '');
+  digits = digits.replace(/^0+(?=[0-9])/, '');
+  e.target.value = digits;
+}
+
 function toggleEch() {
   const en = document.getElementById('echEnable').checked;
   const ef = document.getElementById('echFields');
@@ -132,14 +147,18 @@ function collectSettings() {
       ru: document.getElementById('routeRu').checked
     },
     blockRules: {
-      ads: document.getElementById('blockAds').checked,
+      ads: document.getElementById('blockPromo').checked,
       porn: document.getElementById('blockPorn').checked,
       quic: document.getElementById('blockQuic').checked,
       malware: document.getElementById('blockMalware').checked,
       phishing: document.getElementById('blockPhishing').checked,
       cryptominers: document.getElementById('blockCryptominers').checked
     },
-    pingInterval: document.getElementById('pingInterval').value.trim() || '180',
+    leastPingInterval: document.getElementById('leastPingInterval').value.trim() || '3m',
+    leastLoadInterval: document.getElementById('leastLoadInterval').value.trim() || '5m',
+    leastLoadMode: document.getElementById('leastLoadMode').value,
+    leastLoadSampling: document.getElementById('leastLoadSampling').value.trim() || '2',
+    leastLoadTimeout: document.getElementById('leastLoadTimeout').value.trim() || '30s',
     chainConfig: document.getElementById('chainConfig').value.trim()
   };
 }
@@ -171,8 +190,14 @@ function gen() {
     toast(t('toast.selectOneCountry'));
     return;
   }
-  if (!(parseInt(settings.pingInterval) > 0)) {
-    toast(t('toast.pingIntervalPositive'));
+  const durationRe = /^[1-9][0-9]*[ms]$/;
+  const samplingRe = /^[1-9][0-9]*$/;
+  if (!durationRe.test(settings.leastPingInterval) || !durationRe.test(settings.leastLoadInterval) || !durationRe.test(settings.leastLoadTimeout)) {
+    toast(t('toast.observatoryDurationInvalid'));
+    return;
+  }
+  if (!samplingRe.test(settings.leastLoadSampling)) {
+    toast(t('toast.leastLoadSamplingInvalid'));
     return;
   }
   try {
@@ -431,6 +456,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-cp-pw').addEventListener('click', cpPassword);
   document.getElementById('fragEnable').addEventListener('change', toggleFrag);
   document.getElementById('echEnable').addEventListener('change', toggleEch);
+  document.getElementById('leastPingInterval').addEventListener('input', sanitizeDurationInput);
+  document.getElementById('leastLoadInterval').addEventListener('input', sanitizeDurationInput);
+  document.getElementById('leastLoadTimeout').addEventListener('input', sanitizeDurationInput);
+  document.getElementById('leastLoadSampling').addEventListener('input', sanitizeIntegerInput);
   document.getElementById('btn-export-settings').addEventListener('click', exportSettings);
   document.getElementById('btn-import-settings').addEventListener('click', () => {
     document.getElementById('importFileInput').click();
