@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds } from './proxy-utils.js';
 
 function isDomainAddr(addr) {
   return /^(?!-)(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,}$/.test(addr);
@@ -99,7 +99,7 @@ function parseDnsUrl(value) {
 export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, pingInterval, echEnable, parsedChain
+    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -110,7 +110,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
   const blockQuic = !!(blockRules && blockRules.quic);
   const blockRulesetTags = [...new Set(selectedBlockRules.flatMap(c => SINGBOX_BLOCK_RULESETS[c] || []))];
 
-  const intervalSeconds = parseInt(pingInterval) > 0 ? parseInt(pingInterval) : 180;
+  const intervalSeconds = durationToSeconds(leastPingInterval, 180);
 
   const useVless = !protocols || protocols.vless !== false;
   const useTrojan = !!(protocols && protocols.trojan);
