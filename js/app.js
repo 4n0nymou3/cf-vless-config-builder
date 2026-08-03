@@ -88,17 +88,26 @@ async function dlWorker() {
 function toggleFrag() {
   const en = document.getElementById('fragEnable').checked;
   const ff = document.getElementById('fragFields');
+  const fa = document.getElementById('fragAdvFields');
   const echWrap = document.getElementById('echWrap');
   const echEnable = document.getElementById('echEnable');
   if (en) {
     ff.classList.remove('disabled');
+    fa.classList.remove('disabled');
     echEnable.checked = false;
     echWrap.classList.add('ech-blocked');
     document.getElementById('echFields').classList.add('disabled');
   } else {
     ff.classList.add('disabled');
+    fa.classList.add('disabled');
     echWrap.classList.remove('ech-blocked');
   }
+}
+
+function toggleFrag2() {
+  const en = document.getElementById('frag2Enable').checked;
+  const f2 = document.getElementById('frag2Fields');
+  if (en) { f2.classList.remove('disabled'); } else { f2.classList.add('disabled'); }
 }
 
 function sanitizeDurationInput(e) {
@@ -132,6 +141,13 @@ function collectSettings() {
     fragLength:   document.getElementById('fragLength').value.trim()  || '10-20',
     fragInterval: document.getElementById('fragInterval').value.trim() || '10-20',
     fragMaxSplit: document.getElementById('fragMaxSplit').value.trim() || '10',
+    frag2Enable:  document.getElementById('frag2Enable').checked,
+    frag2Packets: document.getElementById('frag2Packets').value.trim() || '1-1',
+    frag2Length:  document.getElementById('frag2Length').value.trim()  || '100-200',
+    frag2Interval: document.getElementById('frag2Interval').value.trim() || '10-20',
+    frag2MaxSplit: document.getElementById('frag2MaxSplit').value.trim() || '10',
+    fpUnsafeXray: document.getElementById('fpUnsafeXray').checked,
+    cipherSuitesXray: document.getElementById('cipherSuitesXray').value.trim(),
     fakeDnsEnable: document.getElementById('fakeDns').value === '1',
     ipv6Enable:   document.getElementById('ipv6').value === '1',
     lanAccess:    document.getElementById('lanAccess').value === '1',
@@ -360,6 +376,7 @@ function importSettings(file) {
     }
     applyImportedSettings(parsed);
     toggleFrag();
+    toggleFrag2();
     toggleEch();
     renderWorker(document.getElementById('uid').value.trim(), currentPassword());
     toast(t('toast.settingsImported'));
@@ -455,6 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-mk-pw').addEventListener('click', mkPassword);
   document.getElementById('btn-cp-pw').addEventListener('click', cpPassword);
   document.getElementById('fragEnable').addEventListener('change', toggleFrag);
+  document.getElementById('frag2Enable').addEventListener('change', toggleFrag2);
   document.getElementById('echEnable').addEventListener('change', toggleEch);
   document.getElementById('leastPingInterval').addEventListener('input', sanitizeDurationInput);
   document.getElementById('leastLoadInterval').addEventListener('input', sanitizeDurationInput);
