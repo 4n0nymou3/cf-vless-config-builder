@@ -24,7 +24,18 @@ export function collectExportData() {
         packets: document.getElementById('fragPackets').value,
         interval: document.getElementById('fragInterval').value,
         length: document.getElementById('fragLength').value,
-        maxSplit: document.getElementById('fragMaxSplit').value
+        maxSplit: document.getElementById('fragMaxSplit').value,
+        stage2: {
+          enabled: document.getElementById('frag2Enable').checked,
+          packets: document.getElementById('frag2Packets').value,
+          interval: document.getElementById('frag2Interval').value,
+          length: document.getElementById('frag2Length').value,
+          maxSplit: document.getElementById('frag2MaxSplit').value
+        },
+        xrayTls: {
+          unsafeFingerprint: document.getElementById('fpUnsafeXray').checked,
+          cipherSuites: document.getElementById('cipherSuitesXray').value
+        }
       },
       advancedJson: {
         fakeDns: document.getElementById('fakeDns').value,
@@ -107,6 +118,25 @@ export function applyImportedSettings(payload) {
     if (typeof d.fragment.interval === 'string') document.getElementById('fragInterval').value = d.fragment.interval;
     if (typeof d.fragment.length === 'string') document.getElementById('fragLength').value = d.fragment.length;
     if (typeof d.fragment.maxSplit === 'string') document.getElementById('fragMaxSplit').value = d.fragment.maxSplit;
+
+    const s2 = d.fragment.stage2 && typeof d.fragment.stage2 === 'object' ? d.fragment.stage2 : null;
+    document.getElementById('frag2Enable').checked = !!(s2 && s2.enabled);
+    document.getElementById('frag2Packets').value = (s2 && typeof s2.packets === 'string') ? s2.packets : '1-1';
+    document.getElementById('frag2Interval').value = (s2 && typeof s2.interval === 'string') ? s2.interval : '10-20';
+    document.getElementById('frag2Length').value = (s2 && typeof s2.length === 'string') ? s2.length : '100-200';
+    document.getElementById('frag2MaxSplit').value = (s2 && typeof s2.maxSplit === 'string') ? s2.maxSplit : '10';
+
+    const xt = d.fragment.xrayTls && typeof d.fragment.xrayTls === 'object' ? d.fragment.xrayTls : null;
+    document.getElementById('fpUnsafeXray').checked = !!(xt && xt.unsafeFingerprint);
+    document.getElementById('cipherSuitesXray').value = (xt && typeof xt.cipherSuites === 'string') ? xt.cipherSuites : '';
+  } else {
+    document.getElementById('frag2Enable').checked = false;
+    document.getElementById('frag2Packets').value = '1-1';
+    document.getElementById('frag2Interval').value = '10-20';
+    document.getElementById('frag2Length').value = '100-200';
+    document.getElementById('frag2MaxSplit').value = '10';
+    document.getElementById('fpUnsafeXray').checked = false;
+    document.getElementById('cipherSuitesXray').value = '';
   }
 
   if (d.advancedJson && typeof d.advancedJson === 'object') {
