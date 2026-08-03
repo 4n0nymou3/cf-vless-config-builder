@@ -63,23 +63,41 @@ const BLOCK_IP_TAGS = {
   phishing: ['geoip:phishing']
 };
 
-function buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt) {
+function toFinalMaskArray(raw) {
+  const parts = String(raw).split(',').map(s => s.trim()).filter(Boolean);
+  return parts.length ? parts : [String(raw).trim()];
+}
+
+function buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt, advTls) {
   const streamSettings = { network: 'ws', wsSettings: { headers: { Host: dom }, path: path }, sockopt: outboundSockopt };
   if (security === 'tls') {
     streamSettings.security = 'tls';
-    const tlsSettings = { fingerprint: fp, serverName: randomizeCase(dom), show: false, alpn: ['http/1.1'] };
+    const tlsSettings = {
+      fingerprint: (advTls && advTls.fpUnsafeXray) ? 'unsafe' : fp,
+      serverName: randomizeCase(dom),
+      show: false,
+      alpn: ['http/1.1']
+    };
     if (echEnable) {
       tlsSettings.echConfigList = echDns;
+    }
+    if (advTls && advTls.cipherSuitesXray) {
+      tlsSettings.cipherSuites = advTls.cipherSuitesXray;
     }
     streamSettings.tlsSettings = tlsSettings;
   }
   if (fragEnable) {
-    streamSettings.finalmask = {
-      tcp: [{
+    const tcpMasks = [{
+      type: 'fragment',
+      settings: { packets: fragPackets, lengths: toFinalMaskArray(fragLength), delays: toFinalMaskArray(fragInterval), maxSplit: fragMaxSplit }
+    }];
+    if (advTls && advTls.frag2Enable) {
+      tcpMasks.push({
         type: 'fragment',
-        settings: { packets: fragPackets, length: fragLength, delay: fragInterval, maxSplit: fragMaxSplit }
-      }]
-    };
+        settings: { packets: advTls.frag2Packets, lengths: toFinalMaskArray(advTls.frag2Length), delays: toFinalMaskArray(advTls.frag2Interval), maxSplit: advTls.frag2MaxSplit }
+      });
+    }
+    streamSettings.finalmask = { tcp: tcpMasks };
   }
   return streamSettings;
 }
@@ -151,10 +169,14 @@ function buildChainOutboundXray(pc, dialerProxyTag, tag) {
 export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit,
+    frag2Enable, frag2Packets, frag2Length, frag2Interval, frag2MaxSplit,
+    fpUnsafeXray, cipherSuitesXray,
     fakeDnsEnable, ipv6Enable, lanAccess, remoteDnsVal, localDnsVal,
     tcpFastOpen, echEnable, echDns, jsonName, routingCountries, blockRules,
     leastPingInterval, leastLoadInterval, leastLoadMode, leastLoadSampling, leastLoadTimeout, parsedChain
   } = settings;
+
+  const advTls = { frag2Enable, frag2Packets, frag2Length, frag2Interval, frag2MaxSplit, fpUnsafeXray, cipherSuitesXray };
 
   const path = basePath + '?ed=2560';
   const useVless = !protocols || protocols.vless !== false;
@@ -189,7 +211,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
           mux: { concurrency: -1, enabled: false },
           protocol: 'vless',
           settings: { vnext: [{ address: ip, port: parseInt(port), users: [{ encryption: 'none', id: token, level: 8 }] }] },
-          streamSettings: buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt),
+          streamSettings: buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt, advTls),
           tag: tag
         });
         if (parsedChain) {
@@ -205,7 +227,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
           mux: { concurrency: -1, enabled: false },
           protocol: 'trojan',
           settings: { servers: [{ address: ip, port: parseInt(port), password: password, level: 8 }] },
-          streamSettings: buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt),
+          streamSettings: buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt, advTls),
           tag: tag
         });
         if (parsedChain) {
