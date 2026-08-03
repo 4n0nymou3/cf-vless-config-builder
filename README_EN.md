@@ -6,7 +6,7 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v5.2
+# Tunnel Config Builder (TCB) v5.3
 
 A tool for building VLESS and Trojan configs for Cloudflare Workers — no VPS or personal server required
 
@@ -110,6 +110,18 @@ Fragment settings:
 - **Fragment Interval**: the time interval between sending fragments (milliseconds).
 - **Fragment Length**: the size of each fragment (bytes).
 - **Fragment Max Split**: the maximum number of times a packet is split.
+
+In the Fragment Interval and Fragment Length fields, instead of a simple range (e.g. `10-20`), you can enter several comma-separated sequential values (e.g. `5,94,1`) so each cut has a different size or delay; the last value entered keeps repeating for any further cuts.
+
+#### Advanced Finalmask Settings (optional — Xray core JSON only)
+
+This section is a sub-part of the Fragment settings, designed for users facing severe upload restrictions on mobile or fixed networks. These settings only apply to the Xray core JSON config and have no effect on the Sing-box or Clash configs.
+
+- **Enable a second Fragment stage (two-layer)**: when enabled, the output of the first Fragment stage is split once more (equivalent to adding a second fragment object to the `finalmask.tcp` array). The Stage 2 Packets, Stage 2 Interval, Stage 2 Length, and Stage 2 Max Split fields work exactly like the first stage's fields and support the same comma-separated sequential-values syntax.
+- **Use the unsafe fingerprint instead of the one above**: when enabled, instead of mimicking a specific browser's fingerprint (e.g. Chrome or Firefox), the Xray core builds a raw ClientHello packet with a fixed, predictable length. This option only affects the Xray core JSON output; the link format, Sing-box, and Clash still use the fingerprint selected at the top of the page.
+- **Custom Cipher Suites**: optionally enter a custom list of cipher suites. This value is also only added to the Xray core JSON, and if the field is left empty, no extra field is added to the output at all.
+
+The point of combining these three options is to keep the real length of the ClientHello packet fixed and predictable, so the Fragment split points (in both the first and second stage) always land accurately — which is what improves upload speed on severely-restricted networks.
 
 ### ECH — Encrypted Client Hello
 
