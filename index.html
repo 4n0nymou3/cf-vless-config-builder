@@ -29,7 +29,7 @@
       </div>
       <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.2</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v5.3</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
@@ -247,11 +247,11 @@
         </div>
         <div>
           <label class="adv-lbl">Fragment Interval</label>
-          <input type="text" id="fragInterval" value="10-20" placeholder="10-20"/>
+          <input type="text" id="fragInterval" value="10-20" placeholder="10-20 یا 0 یا 5,10,20" data-i18n-placeholder="ph.fragIntervalMulti"/>
         </div>
         <div>
           <label class="adv-lbl">Fragment Length</label>
-          <input type="text" id="fragLength" value="10-20" placeholder="10-20"/>
+          <input type="text" id="fragLength" value="10-20" placeholder="10-20 یا 5,94,1" data-i18n-placeholder="ph.fragLengthMulti"/>
         </div>
         <div>
           <label class="adv-lbl">Fragment Max Split</label>
@@ -260,6 +260,39 @@
       </div>
 
       <p class="hint mt-10" data-i18n="hint.fragmentApply">در صورت فعال بودن، تنظیمات fragment فقط در کانفیگ‌های JSON اعمال می‌شود و روی کانفیگ‌های URL تأثیری ندارد.</p>
+
+      <div class="sub-divider disabled" id="fragAdvFields">
+        <label class="box-lbl sub-box-lbl" data-i18n="lbl.finalmaskAdvanced">تنظیمات پیشرفته Finalmask (اختیاری — فقط JSON هسته Xray)</label>
+
+        <label class="ck-lbl-wide mb-10"><input type="checkbox" id="frag2Enable"> <span data-i18n="lbl.frag2Enable">فعال‌سازی مرحله دوم قطعه‌بندی (دو لایه)</span></label>
+        <div class="frag-grid disabled" id="frag2Fields">
+          <div>
+            <label class="adv-lbl">Stage 2 Packets</label>
+            <input type="text" id="frag2Packets" value="1-1" placeholder="tlshello یا 1-2" data-i18n-placeholder="ph.fragPackets"/>
+          </div>
+          <div>
+            <label class="adv-lbl">Stage 2 Interval</label>
+            <input type="text" id="frag2Interval" value="10-20" placeholder="10-20 یا 0 یا 5,10,20" data-i18n-placeholder="ph.fragIntervalMulti"/>
+          </div>
+          <div>
+            <label class="adv-lbl">Stage 2 Length</label>
+            <input type="text" id="frag2Length" value="100-200" placeholder="100-200 یا 109,1" data-i18n-placeholder="ph.fragLengthMulti"/>
+          </div>
+          <div>
+            <label class="adv-lbl">Stage 2 Max Split</label>
+            <input type="text" id="frag2MaxSplit" value="10" placeholder="10"/>
+          </div>
+        </div>
+        <p class="hint mt-10" data-i18n="hint.frag2Info">مرحله دوم، خروجی مرحله اول Fragment را دوباره خرد می‌کند (finalmask.tcp دو عضوی). برای غیرفعال کردن، تیک بالا را بردارید.</p>
+
+        <label class="ck-lbl-wide mt-14 mb-10"><input type="checkbox" id="fpUnsafeXray"> <span data-i18n="lbl.fpUnsafeXray">استفاده از فینگرپرینت خام به‌جای فینگرپرینت بالا</span></label>
+
+        <div class="fg mt-10 mb-0">
+          <label class="adv-lbl" data-i18n="lbl.cipherSuitesXray">Cipher Suites سفارشی (اختیاری، فقط JSON هسته Xray)</label>
+          <textarea id="cipherSuitesXray" class="cs-textarea" placeholder="مثال: TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256" data-i18n-placeholder="ph.cipherSuites"></textarea>
+        </div>
+        <p class="hint mt-8" data-i18n="hint.fpUnsafeInfo">این دو گزینه طول واقعی بسته ClientHello را ثابت و قابل پیش‌بینی می‌کنند تا نقاط شکستن Fragment همیشه درست بیفتند. برای غیرفعال کردن هرکدام، تیک را بردارید یا کادر را خالی بگذارید.</p>
+      </div>
     </div>
 
     <div class="fg mt-14 settings-box">
