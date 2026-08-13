@@ -226,7 +226,6 @@ select option{background:var(--card);color:var(--text)}
   transition:.15s;white-space:nowrap;font-family:var(--font-fa);flex-shrink:0;
 }
 .bcp:hover{border-color:var(--blue);color:var(--blue)}
-.bcp.ok{color:var(--green);border-color:var(--green)}
 .bqr{
   background:transparent;border:1px solid var(--border);color:var(--dim);
   padding:3px 9px;border-radius:4px;font-size:12px;cursor:pointer;line-height:1;
