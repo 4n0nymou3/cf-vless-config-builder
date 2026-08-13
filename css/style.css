@@ -104,9 +104,18 @@ code{font-family:var(--font-mono);background:var(--dark);border:1px solid var(--
 a.lk{color:var(--blue);font-weight:600;font-size:12px;text-decoration:none}
 a.lk:hover{text-decoration:underline}
 
+.deploy-tabs{display:flex;gap:6px;margin:9px 0}
+.deploy-tab{
+  padding:6px 14px;font-size:12px;font-weight:700;font-family:var(--font-fa);
+  background:var(--bg);color:var(--muted);cursor:pointer;transition:.15s;
+  border:1px solid var(--border);border-radius:7px;
+}
+.deploy-tab:not(.active):hover{border-color:var(--blue);color:var(--blue)}
+.deploy-tab.active{background:var(--blue-em);border-color:var(--blue-em);color:#fff}
+
 .code-viewer{background:var(--dark);border:1px solid var(--border);border-radius:8px;margin-top:10px;overflow:hidden}
 .code-viewer-header{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
   background:var(--card);border-bottom:1px solid var(--border);padding:8px 10px;
 }
 .code-viewer-filename{
