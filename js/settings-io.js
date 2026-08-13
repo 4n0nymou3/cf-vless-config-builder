@@ -72,7 +72,8 @@ export function collectExportData() {
         leastLoadTimeout: document.getElementById('leastLoadTimeout').value
       },
       chainConfig: document.getElementById('chainConfig').value,
-      jsonName: document.getElementById('jsonName').value
+      jsonName: document.getElementById('jsonName').value,
+      deployTarget: document.getElementById('tab-pages') && document.getElementById('tab-pages').classList.contains('active') ? 'pages' : 'worker'
     }
   };
 }
@@ -209,4 +210,6 @@ export function applyImportedSettings(payload) {
   }
 
   if (typeof d.jsonName === 'string') document.getElementById('jsonName').value = d.jsonName;
+
+  return d.deployTarget === 'pages' ? 'pages' : 'worker';
 }
