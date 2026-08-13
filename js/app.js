@@ -397,7 +397,8 @@ function importSettings(file) {
       toast(t('toast.notTcbFile'));
       return;
     }
-    applyImportedSettings(parsed);
+    const restoredTarget = applyImportedSettings(parsed);
+    switchDeployTab(restoredTarget);
     toggleFrag();
     toggleFrag2();
     toggleEch();
