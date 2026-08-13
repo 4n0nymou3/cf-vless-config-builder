@@ -1,4 +1,4 @@
-import { buildWorker } from './worker-builder.js';
+import { buildWorker, buildWorkerZip } from './worker-builder.js';
 import { buildConfig, buildTrojanConfig, buildJsonConfig } from './config-builder.js';
 import { buildSingboxConfig } from './singbox-builder.js';
 import { buildClashConfig } from './clash-builder.js';
@@ -12,6 +12,7 @@ let allC = [];
 let lastJsonStr = '';
 let lastSingboxStr = '';
 let lastClashStr = '';
+let deployTarget = 'worker';
 
 function uuid4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -83,6 +84,28 @@ async function dlWorker() {
   const code = await buildWorker(token, password);
   downloadFile(code, 'worker.js', 'text/javascript');
   toast(t('toast.workerDownloaded'));
+}
+
+async function dlWorkerZip() {
+  const token = document.getElementById('uid').value.trim();
+  const password = currentPassword();
+  if (!token || !password) { toast(t('toast.needTokenPasswordEnter')); return; }
+  const zipBytes = await buildWorkerZip(token, password);
+  downloadFile(zipBytes, 'tcb-pages-worker.zip', 'application/zip');
+  toast(t('toast.workerZipDownloaded'));
+}
+
+function switchDeployTab(target) {
+  deployTarget = target === 'pages' ? 'pages' : 'worker';
+  const isPages = deployTarget === 'pages';
+  document.getElementById('tab-worker').classList.toggle('active', !isPages);
+  document.getElementById('tab-pages').classList.toggle('active', isPages);
+  document.getElementById('tab-worker').setAttribute('aria-selected', String(!isPages));
+  document.getElementById('tab-pages').setAttribute('aria-selected', String(isPages));
+  document.getElementById('g3-desc-worker').style.display = isPages ? 'none' : 'block';
+  document.getElementById('g3-desc-pages').style.display = isPages ? 'block' : 'none';
+  document.getElementById('workerFname').textContent = isPages ? '_worker.js' : 'worker.js';
+  document.getElementById('btn-dl-worker-zip').style.display = isPages ? '' : 'none';
 }
 
 function toggleFrag() {
@@ -467,6 +490,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('tpw').addEventListener('input', e => renderWorker(document.getElementById('uid').value.trim(), e.target.value.trim()));
   document.getElementById('btn-cp-worker').addEventListener('click', cpWorker);
   document.getElementById('btn-dl-worker').addEventListener('click', dlWorker);
+  document.getElementById('btn-dl-worker-zip').addEventListener('click', dlWorkerZip);
+  document.getElementById('tab-worker').addEventListener('click', () => switchDeployTab('worker'));
+  document.getElementById('tab-pages').addEventListener('click', () => switchDeployTab('pages'));
   document.getElementById('btn-mk-token').addEventListener('click', mkToken);
   document.getElementById('btn-cp-token').addEventListener('click', cpToken);
   document.getElementById('btn-mk-pw').addEventListener('click', mkPassword);
