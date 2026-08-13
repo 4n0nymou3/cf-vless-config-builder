@@ -6,18 +6,19 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v5.3
+# Tunnel Config Builder (TCB) v6.0
 
-A tool for building VLESS and Trojan configs for Cloudflare Workers — no VPS or personal server required
+A tool for building VLESS and Trojan configs for Cloudflare Workers and Cloudflare Pages — no VPS or personal server required
 
 ## Overview
 
-Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan configs at no cost, using only the free Cloudflare Workers service. Every step, from creating the Worker to generating the configs, happens right on this page.
+Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan configs at no cost, using only the free Cloudflare Workers or Cloudflare Pages service. Every step, from creating the Worker/Pages project to generating the configs, happens right on this page.
 
 ## Features
 
-- Simultaneous support for both VLESS and Trojan protocols on a single Worker — with the option to enable only VLESS, only Trojan, or both at once
-- Direct build and download of the Worker file with the Token (VLESS) and Password (Trojan) embedded
+- Simultaneous support for both VLESS and Trojan protocols on a single Worker or Pages project — with the option to enable only VLESS, only Trojan, or both at once
+- **Support for deploying on Cloudflare Pages alongside Cloudflare Workers** — the exact same code runs on both services; for Pages, simply upload the ZIP file containing `_worker.js` through Cloudflare Pages' direct upload option
+- Direct build and download of the Worker file, or the dedicated Pages ZIP file, both with the Token (VLESS) and Password (Trojan) embedded
 - Automatic UUID and Password generation, or use your own custom values
 - Support for TLS ports: 443, 8443, 2053, 2083, 2087, 2096
 - Support for WebSocket ports without TLS: 80, 8080, 8880, 2052, 2082, 2086, 2095
@@ -38,27 +39,31 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 
 ## How to Use
 
-### Step 1 — Create a Worker on Cloudflare
+### Step 1 — Create a Worker or Pages Project on Cloudflare
 
 1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign in to your account.
 
-2. From the menu, select Workers and Pages, click Create Application, choose Create Worker, enter a name of your choice, and deploy it.
+2. **For a Worker:** from the menu, select Workers and Pages, click Create Application, choose Create Worker, enter a name of your choice, and deploy it.
+
+**For Pages:** on the same "Ship something new" screen, scroll down and click "Looking to deploy Pages? Get started", then choose "Drag and drop your files". Instead of Edit Code, you'll drop the dedicated Pages ZIP file (downloaded from the tool in the next step) directly onto that page and click Deploy site.
 
 ### Step 2 — Configure the Token and Upload the Code
 
 1. In the tool, generate a new Token, or enter your own custom UUID directly into the field. To use the Trojan protocol, generate a Password the same way, or enter your own custom value.
 
-2. Copy the Worker code — which has already been automatically updated with your Token and Password — using the copy code button, or download the `worker.js` file with the download `.js` button.
+2. In the code section, select the **Worker** or **Pages** tab depending on which one you set up in Step 1.
 
-3. In the Cloudflare dashboard, click Edit Code, delete the default code, paste the copied code, and deploy.
+3. **For a Worker:** copy the Worker code — which has already been automatically updated with your Token and Password — using the copy code button, or download the `worker.js` file with the download `.js` button; in the Cloudflare dashboard, click Edit Code, delete the default code, paste the copied code, and deploy.
 
-4. Copy the address Cloudflare shows after deploying (something like `myworker.username.workers.dev`).
+**For Pages:** click the "↓ Download ZIP" button to get a file containing `_worker.js` (with your Token and Password already embedded), then drop that same ZIP file onto the "Drag and drop your files" screen and click Deploy site. Note that the file inside the ZIP must be named exactly `_worker.js` at the root of the archive for Cloudflare Pages to run it as a full Worker, rather than serving it as a plain static JavaScript file.
 
-At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the JSON config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
+4. Copy the address Cloudflare shows after deploying (something like `myworker.username.workers.dev` for a Worker, or `myproject.pages.dev` for Pages).
+
+At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker/Pages address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the JSON config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
 
 ### Step 3 — Build the Config
 
-1. Enter the Worker address in the corresponding field.
+1. Enter the Worker or Pages address in the corresponding field.
 
 2. Select the desired protocol(s) — VLESS, Trojan, or both.
 
@@ -89,7 +94,7 @@ At any step, you can use the "📤 Export Settings" button to download a backup 
 
 ### Protocols — VLESS and Trojan
 
-This tool supports both the VLESS and Trojan protocols on a single Worker. The Token (UUID) is used for VLESS authentication and the Password for Trojan authentication; the two operate completely independently, and changing either one in the Worker code only disables that specific protocol (exactly like how the Token behaved in earlier versions). The "Output Protocols" checkboxes in Step 3 determine which protocol(s) get configs (link, JSON, Sing-box, and Clash) built for you; the Worker code always supports both protocols, and toggling these checkboxes doesn't require redeploying the Worker.
+This tool supports both the VLESS and Trojan protocols on a single Worker or Pages project. The Token (UUID) is used for VLESS authentication and the Password for Trojan authentication; the two operate completely independently, and changing either one in the Worker/Pages code only disables that specific protocol (exactly like how the Token behaved in earlier versions). The "Output Protocols" checkboxes in Step 3 determine which protocol(s) get configs (link, JSON, Sing-box, and Clash) built for you; the Worker/Pages code always supports both protocols, and toggling these checkboxes doesn't require redeploying the Worker/Pages project.
 
 ### TLS Fingerprint
 
@@ -125,7 +130,7 @@ The point of combining these three options is to keep the real length of the Cli
 
 ### ECH — Encrypted Client Hello
 
-ECH is an additional encryption layer over the TLS handshake that hides the destination domain name (SNI) from DPI systems. When you enable ECH, your Worker domain's encryption key is fetched automatically from the DNS server, and the Client Hello is encrypted before being sent.
+ECH is an additional encryption layer over the TLS handshake that hides the destination domain name (SNI) from DPI systems. When you enable ECH, your Worker or Pages domain's encryption key is fetched automatically from the DNS server, and the Client Hello is encrypted before being sent.
 
 Simply enabling the checkbox is enough. The default address in the DNS box (Cloudflare DoH) is suitable for most users. If you have your own DoH Proxy, replace it with that address for greater reliability. ECH applies to all four output formats (VLESS/Trojan link, Xray JSON, Sing-box JSON, and Clash JSON), only in Normal mode (without Fragment), since Fragment and ECH cannot be enabled at the same time.
 
@@ -163,14 +168,14 @@ Time values (leastPing Interval, leastLoad Interval, leastLoad Timeout) must be 
 
 ### Chain Proxy — Fixing the Outbound IP
 
-By entering a URL-format config from an external server (e.g. a VPS with a fixed IP) into the Chain Proxy box, TCB configs get chained to that server: you connect first through your Worker (to bypass filtering) and then through that server to the internet — meaning the outbound IP is always fixed and equal to that server's IP.
+By entering a URL-format config from an external server (e.g. a VPS with a fixed IP) into the Chain Proxy box, TCB configs get chained to that server: you connect first through your Worker or Pages project (to bypass filtering) and then through that server to the internet — meaning the outbound IP is always fixed and equal to that server's IP.
 
 Formats supported in this box: VLESS (tcp/ws/grpc networks with none/tls/reality security), Trojan (tcp/ws/grpc with tls), Shadowsocks, SOCKS5, and HTTP.
 
 Important notes:
 - This feature only applies to JSON configs for Xray, Sing-box, and Clash, not single link-format configs, since chaining requires two coordinated nodes that can only be defined in a complete config file.
 - When this feature is enabled, a ⛓️ emoji is added next to the JSON config names so it's clear which configs are chained.
-- The config you enter in this box must not belong to another Cloudflare Worker, since Workers don't have dedicated fixed IPs; be sure to use a config from a real server (like a VPS) with its own dedicated IP.
+- The config you enter in this box must not belong to another Cloudflare Worker or Pages project, since neither has a dedicated fixed IP; be sure to use a config from a real server (like a VPS) with its own dedicated IP.
 - To disable this feature, leave the Chain Proxy box empty.
 
 ### Config Output Formats
