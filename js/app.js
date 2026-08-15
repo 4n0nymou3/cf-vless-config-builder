@@ -154,6 +154,16 @@ function toggleEch() {
   if (en) { ef.classList.remove('disabled'); } else { ef.classList.add('disabled'); }
 }
 
+function warnBlockRuleToggle(e) {
+  if (!e.target.checked) return;
+  const msg = getLang() === 'fa'
+    ? 'فعال کردن این گزینه ممکن است باعث شود کانفیگ تولیدشده در برخی از برنامه‌های کاربر متصل نشود. آیا مایل به ادامه هستید؟'
+    : 'Enabling this option may prevent the generated config from connecting in some client apps. Do you want to continue anyway?';
+  if (!confirm(msg)) {
+    e.target.checked = false;
+  }
+}
+
 function collectSettings() {
   const fragEnable = document.getElementById('fragEnable').checked;
   const echEnable  = document.getElementById('echEnable').checked;
@@ -501,6 +511,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fragEnable').addEventListener('change', toggleFrag);
   document.getElementById('frag2Enable').addEventListener('change', toggleFrag2);
   document.getElementById('echEnable').addEventListener('change', toggleEch);
+  document.getElementById('blockMalware').addEventListener('change', warnBlockRuleToggle);
+  document.getElementById('blockPhishing').addEventListener('change', warnBlockRuleToggle);
+  document.getElementById('blockCryptominers').addEventListener('change', warnBlockRuleToggle);
   document.getElementById('leastPingInterval').addEventListener('input', sanitizeDurationInput);
   document.getElementById('leastLoadInterval').addEventListener('input', sanitizeDurationInput);
   document.getElementById('leastLoadTimeout').addEventListener('input', sanitizeDurationInput);
