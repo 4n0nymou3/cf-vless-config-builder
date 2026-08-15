@@ -326,7 +326,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
       levels: { '8': { connIdle: 300, downlinkOnly: 1, handshake: 4, uplinkOnly: 1 } },
       system: { statsOutboundUplink: true, statsOutboundDownlink: true }
     },
-    remarks: (jsonName || (fragEnable ? '👽 Anonymous TCB (Fragment) 🚀' : '👽 Anonymous TCB (Normal) 🚀')) + (parsedChain ? ' ⛓️' : ''),
+    remarks: (jsonName || (echEnable ? '👽 Anonymous TCB (ECH) 🚀' : (fragEnable ? '👽 Anonymous TCB (Fragment) 🚀' : '👽 Anonymous TCB (Normal) 🚀'))) + (parsedChain ? ' ⛓️' : ''),
     routing: {
       balancers: [{ selector: balancerSelector, strategy: { type: 'leastPing' }, tag: 'proxy-round', fallbackTag: balancerFallbackTag }],
       domainStrategy: 'IPIfNonMatch',
