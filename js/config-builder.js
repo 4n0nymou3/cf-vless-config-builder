@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, resolveTcbLabel } from './proxy-utils.js';
 
 export function buildConfig(token, dom, ip, port, security, fp, path, label, echActive, echDns) {
   const h = ip.includes(':') ? `[${ip}]` : ip;
@@ -326,7 +326,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
       levels: { '8': { connIdle: 300, downlinkOnly: 1, handshake: 4, uplinkOnly: 1 } },
       system: { statsOutboundUplink: true, statsOutboundDownlink: true }
     },
-    remarks: (jsonName || (echEnable ? '👽 Anonymous TCB (ECH) 🚀' : (fragEnable ? '👽 Anonymous TCB (Fragment) 🚀' : '👽 Anonymous TCB (Normal) 🚀'))) + (parsedChain ? ' ⛓️' : ''),
+    remarks: resolveTcbLabel(jsonName, echEnable, fragEnable) + (parsedChain ? ' ⛓️' : ''),
     routing: {
       balancers: [{ selector: balancerSelector, strategy: { type: 'leastPing' }, tag: 'proxy-round', fallbackTag: balancerFallbackTag }],
       domainStrategy: 'IPIfNonMatch',
