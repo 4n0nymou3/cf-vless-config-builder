@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds, resolveTcbLabel } from './proxy-utils.js';
 
 const CLASH_COUNTRY_RULES = {
   ir: {
@@ -99,8 +99,8 @@ function buildChainProxyClash(pc, dialerProxyName, name) {
 
 export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
-    basePath, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, leastPingInterval, parsedChain
+    basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
+    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, leastPingInterval, parsedChain, jsonName
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -175,7 +175,7 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
     });
   });
 
-  const urltestTag = parsedChain ? '👽 Anonymous TCB ⛓️' : '👽 Anonymous TCB';
+  const urltestTag = resolveTcbLabel(jsonName, echEnable, fragEnable) + (parsedChain ? ' ⛓️' : '');
   const selectorTag = parsedChain ? 'Best Ping 🚀 ⛓️' : 'Best Ping 🚀';
   const activeProxyTags = parsedChain ? chainProxyTags : proxyTags;
   const selectorTags = [urltestTag, ...activeProxyTags];
