@@ -157,8 +157,8 @@ function toggleEch() {
 function warnBlockRuleToggle(e) {
   if (!e.target.checked) return;
   const msg = getLang() === 'fa'
-    ? 'فعال کردن این گزینه ممکن است باعث شود کانفیگ تولیدشده در برخی از برنامه‌های کاربر متصل نشود. آیا مایل به ادامه هستید؟'
-    : 'Enabling this option may prevent the generated config from connecting in some client apps. Do you want to continue anyway?';
+    ? 'فعال کردن این گزینه نیاز دارد Geo Assets کلاینت مورد استفاده‌ی شما (مثلاً Chocolate4U یا Loyalsoldier) به‌درستی تنظیم و دانلود شده باشد، وگرنه ممکن است کانفیگ تولیدشده متصل نشود. آیا مایل به ادامه هستید؟'
+    : 'Enabling this option requires your client\'s Geo Assets (e.g. Chocolate4U or Loyalsoldier) to be correctly set and downloaded, otherwise the generated config may fail to connect. Do you want to continue anyway?';
   if (!confirm(msg)) {
     e.target.checked = false;
   }
