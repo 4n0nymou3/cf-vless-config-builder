@@ -120,7 +120,7 @@
     <div class="fg">
       <label class="lbl-ltr">Token</label>
       <div class="urow">
-        <input type="text" id="uid" placeholder="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"/>
+        <input type="text" id="uid" placeholder="xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx" autocomplete="off"/>
         <div class="ubtns">
           <button class="bsm" id="btn-mk-token" data-i18n="btn.new">↺ جدید</button>
           <button class="bsm" id="btn-cp-token" data-i18n="btn.copy">⎘ کپی</button>
@@ -131,7 +131,7 @@
     <div class="fg mt-14">
       <label class="lbl-ltr">Password (Trojan)</label>
       <div class="urow">
-        <input type="text" id="tpw" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"/>
+        <input type="text" id="tpw" placeholder="xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off"/>
         <div class="ubtns">
           <button class="bsm" id="btn-mk-pw" data-i18n="btn.new">↺ جدید</button>
           <button class="bsm" id="btn-cp-pw" data-i18n="btn.copy">⎘ کپی</button>
@@ -145,7 +145,7 @@
         <span class="aico">⚠</span>
         <div data-i18n="alert.domainOnly">فقط نام دامنه را وارد کنید — مثال: <code>myworker.username.workers.dev</code> یا <code>myproject.pages.dev</code> — در صورت وارد کردن <code>https://</code> یا <code>/</code> اضافه، به‌صورت خودکار اصلاح می‌شود.</div>
       </div>
-      <input type="text" id="wdom" placeholder="myworker.username.workers.dev"/>
+      <input type="text" id="wdom" placeholder="myworker.username.workers.dev" autocomplete="off"/>
       <p class="hint" data-i18n="hint.domainGiven">آدرسی که Cloudflare بعد از Deploy به Worker یا Pages داد</p>
     </div>
    </div>
@@ -171,7 +171,7 @@
           <span class="ico">🔍</span> <span data-i18n="btn.scannerTool">ابزار Clean IP Scanner — یافتن IP سالم با Termux</span>
         </button>
       </a>
-      <textarea id="ips" placeholder="www.speedtest.net&#10;chatgpt.com&#10;104.16.0.1&#10;104.17.0.1&#10;104.18.0.1&#10;104.19.0.1&#10;104.20.0.1"></textarea>
+      <textarea id="ips" placeholder="www.speedtest.net&#10;chatgpt.com&#10;104.16.0.1&#10;104.17.0.1&#10;104.18.0.1&#10;104.19.0.1&#10;104.20.0.1" autocomplete="off"></textarea>
       <p class="hint" data-i18n="hint.ipCount">هر تعداد IP قابل قبول است — از هر IP چند کانفیگ با پورت‌های مختلف ساخته می‌شود. علاوه بر IP، می‌توانید از برخی دامنه‌ها نیز استفاده کنید (مثلاً chatgpt.com)</p>
     </div>
 
@@ -414,13 +414,13 @@
 
     <div class="fg mt-14 settings-box">
       <label class="box-lbl" data-i18n="lbl.chainProxy">Chain Proxy — ثابت کردن IP خروجی (اختیاری)</label>
-      <textarea id="chainConfig" placeholder="vless://... یا trojan://... یا ss://... یا socks://... یا http://..." data-i18n-placeholder="ph.chainConfig"></textarea>
+      <textarea id="chainConfig" placeholder="vless://... یا trojan://... یا ss://... یا socks://... یا http://..." data-i18n-placeholder="ph.chainConfig" autocomplete="off"></textarea>
       <p class="hint mt-8" data-i18n="hint.chainInfo">یک کانفیگ با فرمت URL از یک سرور دیگر (مثلاً یک VPS با IP ثابت) اینجا وارد کنید تا کانفیگ‌های TCB به آن Chain شوند: ابتدا از طریق Worker یا Pages شما (برای عبور از فیلترینگ) و سپس از طریق این سرور به اینترنت متصل می‌شوید — یعنی IP خروجی شما همیشه ثابت و برابر با IP همان سرور خواهد بود. فرمت‌های پشتیبانی‌شده: VLESS (tcp/ws/grpc با none/tls/reality)، Trojan (tcp/ws/grpc با tls)، Shadowsocks، SOCKS5 و HTTP. این قابلیت فقط روی کانفیگ‌های JSON برای Xray، Sing-box و Clash اعمال می‌شود (نه روی کانفیگ‌های تکی فرمت لینک)، چون Chain به دو گره هماهنگ نیاز دارد که فقط در یک فایل کانفیگ کامل قابل تعریف است. وقتی این قابلیت فعال باشد، ایموجی ⛓️ کنار نام کانفیگ‌های JSON اضافه می‌شود. برای غیرفعال کردن، این کادر را خالی بگذارید. نکته مهم: کانفیگی که اینجا وارد می‌کنید نباید مربوط به یک Cloudflare Worker یا Pages دیگر باشد، چون هیچ‌کدام آی‌پی اختصاصی و ثابت ندارند؛ حتماً از کانفیگ یک سرور واقعی (مثل VPS) با آی‌پی اختصاصی خودش استفاده کنید تا هدف ثابت ماندن IP خروجی برآورده شود.</p>
     </div>
 
     <div class="fg mt-14">
       <label for="jsonName" data-i18n="lbl.jsonName">نام کانفیگ (اختیاری)</label>
-      <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود" data-i18n-placeholder="ph.jsonName"/>
+      <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود" data-i18n-placeholder="ph.jsonName" autocomplete="off"/>
       <p class="hint" data-i18n="hint.jsonNameInfo">این نام روی هر سه کانفیگ Xray، Sing-box و Clash و همچنین نام فایل‌های دانلودی اعمال می‌شود. اگر خالی بماند، پنل نام پیش‌فرض را بر اساس Normal، Fragment یا ECH انتخاب خواهد کرد.</p>
     </div>
    </div>
