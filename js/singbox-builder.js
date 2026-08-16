@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds, resolveTcbLabel } from './proxy-utils.js';
 
 function isDomainAddr(addr) {
   return /^(?!-)(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,}$/.test(addr);
@@ -99,7 +99,7 @@ function parseDnsUrl(value) {
 export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain
+    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain, jsonName
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -175,7 +175,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     });
   });
 
-  const urltestTag = parsedChain ? '👽 Anonymous TCB ⛓️' : '👽 Anonymous TCB';
+  const urltestTag = resolveTcbLabel(jsonName, echEnable, fragEnable) + (parsedChain ? ' ⛓️' : '');
   const selectorTag = parsedChain ? 'Best Ping 🚀 ⛓️' : 'Best Ping 🚀';
   const activeProxyTags = parsedChain ? chainProxyTags : proxyTags;
 
