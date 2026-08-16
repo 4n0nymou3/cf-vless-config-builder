@@ -396,6 +396,30 @@ function dlAll() {
   toast(t('toast.allDownloaded', { count: allC.length }));
 }
 
+function wipeClipboardBestEffort() {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText('').catch(() => {});
+    }
+  } catch (e) {}
+}
+
+function silentWipeSensitiveState() {
+  ['uid', 'tpw', 'wdom', 'ips', 'chainConfig', 'jsonName'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['jsonDisplay', 'singboxDisplay', 'clashDisplay', 'workerDisplay', 'lAll'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+  lastJsonStr = '';
+  lastSingboxStr = '';
+  lastClashStr = '';
+  allC = [];
+  wipeClipboardBestEffort();
+}
+
 function resetFormElement(el) {
   if (el.tagName === 'SELECT') {
     const def = Array.from(el.options).find(o => o.defaultSelected) || el.options[0];
@@ -436,6 +460,13 @@ function resetAll() {
   lastSingboxStr = '';
   lastClashStr = '';
   allC = [];
+
+  ['jsonDisplay', 'singboxDisplay', 'clashDisplay', 'lAll'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+
+  wipeClipboardBestEffort();
 
   document.getElementById('sn1').className = 'step active';
   document.getElementById('sn2').className = 'step';
@@ -645,3 +676,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') hideQrModal();
   });
 });
+
+window.addEventListener('pagehide', silentWipeSensitiveState);
