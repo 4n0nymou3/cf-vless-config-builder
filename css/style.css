@@ -3,7 +3,7 @@
   --border:#30363d;--border2:#21262d;
   --text:#e6edf3;--muted:#8b949e;--dim:#6e7681;
   --blue:#4493f8;--blue-em:#1f6feb;--green:#3fb950;--green-em:#238636;
-  --orange:#d29922;--yellow:#e3b341;--danger:#f85149;--purple:#a371f7;
+  --orange:#d29922;--yellow:#e3b341;--danger:#f85149;--danger-em:#da3633;--purple:#a371f7;
   --gb:rgba(68,147,248,.12);--gg:rgba(63,185,80,.12);
   --font-mono:'JetBrains Mono',ui-monospace,monospace;
   --font-fa:'Vazirmatn',sans-serif;
@@ -24,7 +24,7 @@ html.light{
   --border:#d0d7de;--border2:#d8dee4;
   --text:#1f2328;--muted:#59636e;--dim:#6e7781;
   --blue:#0969da;--blue-em:#0550ae;--green:#1a7f37;--green-em:#116329;
-  --orange:#9a6700;--yellow:#9a6700;--danger:#d1242f;--purple:#8250df;
+  --orange:#9a6700;--yellow:#9a6700;--danger:#d1242f;--danger-em:#a40e26;--purple:#8250df;
   --gb:rgba(9,105,218,.10);--gg:rgba(26,127,55,.10);
   --topbar-overlay:rgba(255,255,255,.72);
   --step-active-bg:#ddf4ff;--step-done-bg:#dafbe1;
@@ -192,7 +192,17 @@ select option{background:var(--card);color:var(--text)}
 .bgen.loading::after{content:'';position:absolute;top:0;bottom:0;left:-45%;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);animation:shimmer-sweep 1.1s ease-in-out infinite}
 @keyframes shimmer-sweep{0%{left:-45%}100%{left:100%}}
 
+.bgen-danger{
+  width:100%;padding:13px;background:var(--danger);border:1px solid var(--danger);
+  border-radius:8px;color:#fff;font-size:14px;font-weight:600;
+  font-family:var(--font-fa);cursor:pointer;display:flex;
+  align-items:center;justify-content:center;gap:8px;transition:all .2s;margin-top:10px;
+}
+.bgen-danger:hover{background:var(--danger-em);border-color:var(--danger-em);box-shadow:0 0 18px rgba(248,81,73,.2)}
+.bgen-danger:disabled{opacity:.55;cursor:not-allowed}
+
 #results{display:none}
+#results.fading-out{opacity:0;transition:opacity .25s ease}
 .dv{border:none;height:1px;background:var(--border);margin:24px 0}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0 13px}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:13px 8px;text-align:center}
