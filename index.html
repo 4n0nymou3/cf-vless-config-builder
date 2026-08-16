@@ -17,7 +17,7 @@
         <button class="lang-btn active" id="btn-lang-fa" type="button">FA</button>
         <button class="lang-btn" id="btn-lang-en" type="button">EN</button>
       </div>
-      <button class="ctrl-btn theme-btn" id="btn-theme-toggle" type="button" data-i18n-title="ctrl.themeToggle" title="تغییر تم">
+      <button class="ctrl-btn theme-btn" id="btn-theme-toggle" type="button" data-i18n-title="ctrl.themeToggle" title="تغییر تم" aria-label="تغییر تم">
         <svg class="icon-sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.2v1.6M8 13.2v1.6M1.2 8h1.6M13.2 8h1.6M3.3 3.3l1.1 1.1M11.6 11.6l1.1 1.1M3.3 12.7l1.1-1.1M11.6 4.4l1.1-1.1"/></svg>
         <svg class="icon-moon" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 9.3A5.8 5.8 0 1 1 6.7 2.5a4.6 4.6 0 0 0 6.8 6.8z"/></svg>
       </button>
@@ -29,7 +29,7 @@
       </div>
       <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker و Pages</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.1</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.2</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
@@ -140,7 +140,7 @@
       <p class="hint" data-i18n="hint.passwordInfo">این مقدار برای ساخت کانفیگ‌های پروتکل Trojan استفاده می‌شود — همانند Token، با تغییر آن در کد Worker/Pages، کانفیگ‌های Trojan قدیمی از کار می‌افتند. با هر بار تولید Password جدید، کد Worker/Pages بالا نیز به‌صورت خودکار آپدیت می‌شود.</p>
     </div>
     <div class="fg">
-      <label data-i18n="lbl.workerDomain">آدرس دامنه Worker یا Pages</label>
+      <label for="wdom" data-i18n="lbl.workerDomain">آدرس دامنه Worker یا Pages</label>
       <div class="alert ao mb-8">
         <span class="aico">⚠</span>
         <div data-i18n="alert.domainOnly">فقط نام دامنه را وارد کنید — مثال: <code>myworker.username.workers.dev</code> یا <code>myproject.pages.dev</code> — در صورت وارد کردن <code>https://</code> یا <code>/</code> اضافه، به‌صورت خودکار اصلاح می‌شود.</div>
@@ -161,7 +161,7 @@
    <div class="sec-body">
 
     <div class="fg">
-      <label data-i18n="lbl.ipAddresses">آدرس‌های IP (هر خط یک IP)</label>
+      <label for="ips" data-i18n="lbl.ipAddresses">آدرس‌های IP (هر خط یک IP)</label>
       <div class="alert ab mb-10">
         <span class="aico">ℹ</span>
         <div data-i18n="alert.scannerInfo">برای یافتن IP های سالم Cloudflare می‌توانید از ابزار Clean IP Scanner استفاده کنید. این ابزار مبتنی بر Termux بوده و روی اندروید اجرا می‌شود — نتیجه اسکن را مستقیم در کادر زیر وارد کنید.</div>
@@ -215,7 +215,7 @@
     </div>
 
     <div class="fg mt-10">
-      <label class="mb-9" data-i18n="lbl.fingerprint">TLS Fingerprint — جهت دور زدن DPI</label>
+      <label class="mb-9" for="fpSelect" data-i18n="lbl.fingerprint">TLS Fingerprint — جهت دور زدن DPI</label>
       <select id="fpSelect">
         <option value="chrome" selected>chrome</option>
         <option value="firefox">firefox</option>
@@ -231,7 +231,7 @@
     </div>
 
     <div class="fg mt-10">
-      <label class="mb-9" data-i18n="lbl.wsPath">مسیر WebSocket Path</label>
+      <label class="mb-9" for="pathSelect" data-i18n="lbl.wsPath">مسیر WebSocket Path</label>
       <select id="pathSelect">
         <option value="/proxy">/proxy</option>
         <option value="/v2ray">/v2ray</option>
@@ -248,19 +248,19 @@
       </div>
       <div class="frag-grid disabled" id="fragFields">
         <div>
-          <label class="adv-lbl">Fragment Packets</label>
+          <label class="adv-lbl" for="fragPackets">Fragment Packets</label>
           <input type="text" id="fragPackets" value="tlshello" placeholder="tlshello یا 1-2" data-i18n-placeholder="ph.fragPackets"/>
         </div>
         <div>
-          <label class="adv-lbl">Fragment Interval</label>
+          <label class="adv-lbl" for="fragInterval">Fragment Interval</label>
           <input type="text" id="fragInterval" value="10-20" placeholder="10-20 یا 0,1,2" data-i18n-placeholder="ph.fragIntervalMulti"/>
         </div>
         <div>
-          <label class="adv-lbl">Fragment Length</label>
+          <label class="adv-lbl" for="fragLength">Fragment Length</label>
           <input type="text" id="fragLength" value="10-20" placeholder="10-20 یا 5,94,1" data-i18n-placeholder="ph.fragLengthMulti"/>
         </div>
         <div>
-          <label class="adv-lbl">Fragment Max Split</label>
+          <label class="adv-lbl" for="fragMaxSplit">Fragment Max Split</label>
           <input type="text" id="fragMaxSplit" value="10" placeholder="10"/>
         </div>
       </div>
@@ -273,19 +273,19 @@
         <label class="ck-lbl-wide mb-10"><input type="checkbox" id="frag2Enable"> <span data-i18n="lbl.frag2Enable">فعال‌سازی مرحله دوم قطعه‌بندی (دو لایه)</span></label>
         <div class="frag-grid disabled" id="frag2Fields">
           <div>
-            <label class="adv-lbl">Stage 2 Packets</label>
+            <label class="adv-lbl" for="frag2Packets">Stage 2 Packets</label>
             <input type="text" id="frag2Packets" value="1-1" placeholder="tlshello یا 1-2" data-i18n-placeholder="ph.fragPackets"/>
           </div>
           <div>
-            <label class="adv-lbl">Stage 2 Interval</label>
+            <label class="adv-lbl" for="frag2Interval">Stage 2 Interval</label>
             <input type="text" id="frag2Interval" value="10-20" placeholder="10-20 یا 0,1,2" data-i18n-placeholder="ph.fragIntervalMulti"/>
           </div>
           <div>
-            <label class="adv-lbl">Stage 2 Length</label>
+            <label class="adv-lbl" for="frag2Length">Stage 2 Length</label>
             <input type="text" id="frag2Length" value="100-200" placeholder="100-200 یا 109,1" data-i18n-placeholder="ph.fragLengthMulti"/>
           </div>
           <div>
-            <label class="adv-lbl">Stage 2 Max Split</label>
+            <label class="adv-lbl" for="frag2MaxSplit">Stage 2 Max Split</label>
             <input type="text" id="frag2MaxSplit" value="10" placeholder="10"/>
           </div>
         </div>
@@ -305,28 +305,28 @@
       <label class="box-lbl" data-i18n="lbl.advancedJson">تنظیمات پیشرفته JSON</label>
       <div class="adv-grid">
         <div>
-          <label class="adv-lbl">Fake DNS</label>
+          <label class="adv-lbl" for="fakeDns">Fake DNS</label>
           <select id="fakeDns">
             <option value="1">Enabled</option>
             <option value="0">Disabled</option>
           </select>
         </div>
         <div>
-          <label class="adv-lbl">IPv6</label>
+          <label class="adv-lbl" for="ipv6">IPv6</label>
           <select id="ipv6">
             <option value="0">Disabled</option>
             <option value="1">Enabled</option>
           </select>
         </div>
         <div>
-          <label class="adv-lbl">Allow LAN</label>
+          <label class="adv-lbl" for="lanAccess">Allow LAN</label>
           <select id="lanAccess">
             <option value="0">Disabled</option>
             <option value="1">Enabled</option>
           </select>
         </div>
         <div>
-          <label class="adv-lbl">TCP Fast Open</label>
+          <label class="adv-lbl" for="tcpFastOpen">TCP Fast Open</label>
           <select id="tcpFastOpen">
             <option value="0">Disabled</option>
             <option value="1">Enabled</option>
@@ -338,18 +338,18 @@
           <label class="ck-lbl"><input type="checkbox" id="echEnable"> ECH</label>
         </div>
         <div id="echFields" class="ech-field disabled">
-          <label class="adv-lbl mt-8" data-i18n="lbl.echDnsServer">DNS سرور برای دریافت کلید ECH</label>
+          <label class="adv-lbl mt-8" for="echDns" data-i18n="lbl.echDnsServer">DNS سرور برای دریافت کلید ECH</label>
           <input type="text" id="echDns" value="https://cloudflare-dns.com/dns-query" placeholder="https://cloudflare-dns.com/dns-query"/>
           <p class="hint mt-6" data-i18n="hint.echInfo">فعال کردن چک‌باکس کافی است — کلید رمزنگاری دامنه Worker یا Pages شما به صورت خودکار از این سرور DNS دریافت می‌شود. ECH روی هر چهار فرمت خروجی (لینک VLESS/Trojan، JSON برای Xray، JSON برای Sing-box و JSON برای Clash) اعمال می‌شود. آدرس پیش‌فرض (DoH Cloudflare) بهترین گزینه برای ایران است زیرا یک آدرس <code>https://</code> رمزگذاری‌شده است و برخلاف <code>udp://8.8.8.8</code> در برابر دستکاری DNS توسط ISPها مقاوم است. اگر DoH Proxy شخصی دارید، آدرس آن را اینجا وارد کنید.</p>
         </div>
       </div>
       <div class="adv-dns-grid mt-12">
         <div>
-          <label class="adv-lbl">Local DNS</label>
+          <label class="adv-lbl" for="localDns">Local DNS</label>
           <input type="text" id="localDns" value="8.8.8.8" placeholder="8.8.8.8"/>
         </div>
         <div>
-          <label class="adv-lbl">Remote DNS / DoH</label>
+          <label class="adv-lbl" for="remoteDns">Remote DNS / DoH</label>
           <a href="https://github.com/4n0nymou3/cloudflare-doh-proxy" target="_blank" class="btn-link mb-8">
             <button class="bgen btn-doh">
               <span class="ico">🌐</span> <span data-i18n="btn.dohTool">ابزار DoH Proxy — ساخت DNS اختصاصی با Cloudflare</span>
@@ -386,26 +386,26 @@
       <label class="box-lbl" data-i18n="lbl.observatorySettings">تنظیمات Observatory</label>
       <div class="observatory-grid">
         <div>
-          <label class="adv-lbl" data-i18n="lbl.leastPingInterval">leastPing Interval</label>
+          <label class="adv-lbl" for="leastPingInterval" data-i18n="lbl.leastPingInterval">leastPing Interval</label>
           <input type="text" id="leastPingInterval" value="3m" placeholder="3m"/>
         </div>
         <div>
-          <label class="adv-lbl" data-i18n="lbl.leastLoadInterval">leastLoad Interval</label>
+          <label class="adv-lbl" for="leastLoadInterval" data-i18n="lbl.leastLoadInterval">leastLoad Interval</label>
           <input type="text" id="leastLoadInterval" value="5m" placeholder="5m"/>
         </div>
         <div>
-          <label class="adv-lbl" data-i18n="lbl.leastLoadMode">leastLoad Mode</label>
+          <label class="adv-lbl" for="leastLoadMode" data-i18n="lbl.leastLoadMode">leastLoad Mode</label>
           <select id="leastLoadMode">
             <option value="HEAD" selected>HEAD</option>
             <option value="GET">GET</option>
           </select>
         </div>
         <div>
-          <label class="adv-lbl" data-i18n="lbl.leastLoadSampling">leastLoad Sampling</label>
+          <label class="adv-lbl" for="leastLoadSampling" data-i18n="lbl.leastLoadSampling">leastLoad Sampling</label>
           <input type="text" id="leastLoadSampling" value="2" placeholder="2"/>
         </div>
         <div>
-          <label class="adv-lbl" data-i18n="lbl.leastLoadTimeout">leastLoad Timeout</label>
+          <label class="adv-lbl" for="leastLoadTimeout" data-i18n="lbl.leastLoadTimeout">leastLoad Timeout</label>
           <input type="text" id="leastLoadTimeout" value="30s" placeholder="30s"/>
         </div>
       </div>
@@ -419,15 +419,16 @@
     </div>
 
     <div class="fg mt-14">
-      <label data-i18n="lbl.jsonName">نام کانفیگ JSON Xray (اختیاری)</label>
+      <label for="jsonName" data-i18n="lbl.jsonName">نام کانفیگ (اختیاری)</label>
       <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود" data-i18n-placeholder="ph.jsonName"/>
-      <p class="hint" data-i18n="hint.jsonNameInfo">اگر خالی بماند، پنل نام پیش‌فرض را برای کانفیگ Normal یا Fragment انتخاب خواهد کرد.</p>
+      <p class="hint" data-i18n="hint.jsonNameInfo">این نام روی هر سه کانفیگ Xray، Sing-box و Clash و همچنین نام فایل‌های دانلودی اعمال می‌شود. اگر خالی بماند، پنل نام پیش‌فرض را بر اساس Normal، Fragment یا ECH انتخاب خواهد کرد.</p>
     </div>
    </div>
   </div>
 </div>
 
 <button class="bgen mt-14" id="gb" data-i18n="btn.generate">⚙ ساخت کانفیگ</button>
+<button class="bgen-danger" id="btn-reset-all" type="button" data-i18n="btn.resetAll">🔄 پاکسازی کامل و شروع مجدد</button>
 
 <div id="results">
   <hr class="dv"/>
