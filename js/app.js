@@ -324,13 +324,25 @@ function gen() {
     document.getElementById('results').style.display = 'block';
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 
-    ['sn1', 'sn2', 'sn3'].forEach(id => { document.getElementById(id).className = 'step done'; });
-    document.getElementById('sn4').className = 'step active';
+    ['sn1', 'sn2', 'sn3', 'sn4'].forEach(id => { document.getElementById(id).className = 'step done'; });
     btn.innerHTML = t('gen.built');
     btn.disabled = false;
     btn.classList.remove('loading');
     toast(t('toast.configsBuilt', { count: allC.length, tls: tlsCount, ws: wsCount }));
   }, 400);
+}
+
+function sanitizeFileNamePart(name) {
+  return name.replace(/[^\w-]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+function resolveFileNameSuffix() {
+  const jsonNameVal = document.getElementById('jsonName').value.trim();
+  const sanitized = jsonNameVal ? sanitizeFileNamePart(jsonNameVal) : '';
+  if (sanitized) return sanitized;
+  const echEnabled = document.getElementById('echEnable').checked;
+  const fragEnabled = document.getElementById('fragEnable').checked;
+  return echEnabled ? 'ECH' : (fragEnabled ? 'Fragment' : 'Normal');
 }
 
 function cpJson(e) {
@@ -341,8 +353,7 @@ function cpJson(e) {
 
 function dlJson() {
   if (!lastJsonStr) return;
-  const fragEnabled = document.getElementById('fragEnable').checked;
-  const fileName = fragEnabled ? 'TCB_Fragment.json' : 'TCB_Normal.json';
+  const fileName = `TCB_${resolveFileNameSuffix()}.json`;
   downloadFile(lastJsonStr, fileName, 'application/json');
   toast(t('toast.fileDownloaded', { name: fileName }));
 }
@@ -355,8 +366,7 @@ function cpSingbox(e) {
 
 function dlSingbox() {
   if (!lastSingboxStr) return;
-  const fragEnabled = document.getElementById('fragEnable').checked;
-  const fileName = fragEnabled ? 'TCB_Singbox_Fragment.json' : 'TCB_Singbox_Normal.json';
+  const fileName = `TCB_Singbox_${resolveFileNameSuffix()}.json`;
   downloadFile(lastSingboxStr, fileName, 'application/json');
   toast(t('toast.fileDownloaded', { name: fileName }));
 }
@@ -369,7 +379,7 @@ function cpClash(e) {
 
 function dlClash() {
   if (!lastClashStr) return;
-  const fileName = 'TCB_Clash.yaml';
+  const fileName = `TCB_Clash_${resolveFileNameSuffix()}.yaml`;
   downloadFile(lastClashStr, fileName, 'text/yaml');
   toast(t('toast.fileDownloaded', { name: fileName }));
 }
@@ -384,6 +394,67 @@ function dlAll() {
   if (!allC.length) return;
   downloadFile(allC.map(c => c.cfg).join('\n'), 'TCB.txt', 'text/plain');
   toast(t('toast.allDownloaded', { count: allC.length }));
+}
+
+function resetFormElement(el) {
+  if (el.tagName === 'SELECT') {
+    const def = Array.from(el.options).find(o => o.defaultSelected) || el.options[0];
+    if (def) el.value = def.value;
+  } else if (el.type === 'checkbox' || el.type === 'radio') {
+    el.checked = el.defaultChecked;
+  } else if (el.type !== 'file') {
+    el.value = el.defaultValue;
+  }
+}
+
+function resetAll() {
+  const msg = getLang() === 'fa'
+    ? 'تمام اطلاعات وارد شده پاک می‌شود و صفحه به حالت پیش‌فرض اولیه بازمی‌گردد. آیا مطمئن هستید؟'
+    : 'All entered information will be cleared and the page will return to its initial default state. Are you sure?';
+  if (!confirm(msg)) return;
+
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    if (el.id === 'importFileInput' || el.id === 'uid' || el.id === 'tpw') return;
+    resetFormElement(el);
+  });
+
+  toggleFrag();
+  toggleFrag2();
+  toggleEch();
+  switchDeployTab('worker');
+
+  const tok = uuid4();
+  const p = genPassword();
+  document.getElementById('uid').value = tok;
+  document.getElementById('tpw').value = p;
+  renderWorker(tok, p);
+
+  document.querySelectorAll('.sec-body-wrap.open').forEach(body => body.classList.remove('open'));
+  document.querySelectorAll('.sec-hdr-toggle.open').forEach(hdr => hdr.classList.remove('open'));
+
+  lastJsonStr = '';
+  lastSingboxStr = '';
+  lastClashStr = '';
+  allC = [];
+
+  document.getElementById('sn1').className = 'step active';
+  document.getElementById('sn2').className = 'step';
+  document.getElementById('sn3').className = 'step';
+  document.getElementById('sn4').className = 'step';
+
+  const results = document.getElementById('results');
+  if (results.style.display === 'block') {
+    results.classList.add('fading-out');
+    setTimeout(() => {
+      results.style.display = '';
+      results.classList.remove('fading-out');
+    }, 260);
+  } else {
+    results.style.display = '';
+  }
+
+  document.getElementById('gb').innerHTML = t('btn.generate');
+  toast(t('toast.resetDone'));
 }
 
 function exportSettings() {
@@ -537,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('gb').addEventListener('click', gen);
+  document.getElementById('btn-reset-all').addEventListener('click', resetAll);
   document.getElementById('btn-cp-all').addEventListener('click', cpAll);
   document.getElementById('btn-dl-all').addEventListener('click', dlAll);
   document.getElementById('btn-cp-json').addEventListener('click', cpJson);
