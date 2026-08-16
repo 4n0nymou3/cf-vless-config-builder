@@ -6,7 +6,7 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v6.2
+# Tunnel Config Builder (TCB) v6.3
 
 A tool for building VLESS and Trojan configs for Cloudflare Workers and Cloudflare Pages — no VPS or personal server required
 
@@ -33,9 +33,11 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - Chain Proxy — the ability to chain TCB configs to an external server (VLESS, Trojan, Shadowsocks, SOCKS5, or HTTP) to keep the outbound IP fixed, across all three JSON output formats (Xray, Sing-box, Clash)
 - JSON config dedicated to the Xray core, based on the latest stable release of that core (26.7.28)
 - Simultaneous generation of configs in four formats: VLESS/Trojan link, JSON for the Xray core (with least-ping support), JSON for Sing-box, and JSON for Clash / Mihomo
+- Smart config naming: each config's name is automatically determined by its state (Normal, Fragment, or ECH) and applied consistently across all three JSON/YAML output formats (Xray, Sing-box, Clash) as well as the downloaded file names; you can also set a custom name for your config if you'd like
 - Export and import of all page settings as a single file, for backup or quick settings transfer
 - One-click dedicated QR Code display for each config — generated fully offline with no external service or API required
-- Unique naming for every config (including protocol, IP number, and port) so no two configs share the same name
+- Unique naming for every single link-format config (including protocol, IP number, and port) so no two configs share the same name
+- A "🔄 Clear All & Start Over" button for instantly restoring the panel to its initial state and securely wiping all entered information — suited for use on public or shared computers
 
 ## How to Use
 
@@ -59,7 +61,7 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 
 4. Copy the address Cloudflare shows after deploying (something like `myworker.username.workers.dev` for a Worker, or `myproject.pages.dev` for Pages).
 
-At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker/Pages address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the JSON config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
+At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker/Pages address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
 
 ### Step 3 — Build the Config
 
@@ -89,6 +91,8 @@ At any step, you can use the "📤 Export Settings" button to download a backup 
 - Import the Xray JSON output config into Xray-compatible clients like v2rayNG to take advantage of least-ping mode.
 - Import the Sing-box JSON output config directly into clients like Sing-box, Hiddify, or NekoBox.
 - Import the Clash output config (downloaded with a `.yaml` extension) into Clash Meta / Mihomo clients like Clash Verge.
+
+When you're done, especially if you're using a public or shared computer, be sure to click the "🔄 Clear All & Start Over" button so all your information is fully and securely wiped (full details in the [Clear All & Security](#clear-all--security) section).
 
 ## Settings Guide
 
@@ -148,7 +152,9 @@ Simply enabling the checkbox is enough. The default address in the DNS box (Clou
 This section contains two groups of checkboxes that are applied consistently across all three output formats (Xray, Sing-box, Clash):
 
 - **Bypass rules — Iran, China, Russia**: determines which country/countries' traffic and DNS are routed directly, without going through the proxy. At least one country must be enabled; by default only Iran is selected. For greater accuracy and to prevent DNS poisoning, detecting each country's domestic domains in the Xray config is accompanied by an extra DNS verification layer (expectIPs).
-- **Block rules — Ads, Porn, QUIC, Malware, Phishing, Cryptominers**: determines which categories are blocked. QUIC means blocking UDP traffic (including HTTP/3) so the browser automatically switches to regular HTTPS that passes through the tunnel. By default, all these categories are enabled.
+- **Block rules — Ads, Porn, QUIC, Malware, Phishing, Cryptominers**: determines which categories are blocked. QUIC means blocking UDP traffic (including HTTP/3) so the browser automatically switches to regular HTTPS that passes through the tunnel. By default, only QUIC is enabled; the other categories (Ads, Porn, Malware, Phishing, Cryptominers) need to be enabled manually if you need them.
+
+Enabling any of the Malware, Phishing, or Cryptominers checkboxes shows a warning message. Unlike Ads and Porn, these three categories don't exist at all in the default ("Official") geo dataset that many clients (like v2rayNG) ship with — they're only defined in supplementary datasets such as Chocolate4U or Loyalsoldier. If your client's Geo Assets aren't set to and downloaded from one of these supplementary datasets, enabling these three checkboxes can prevent the config from connecting at all (especially in the Xray core JSON config, since unlike Sing-box and Clash, that core has no way to auto-fetch these files from a URL specified within the config itself). To fix this, in your client's settings (e.g. in v2rayNG, under Settings → Geo Assets Provider) select Chocolate4U/Iran-v2ray-rules or Loyalsoldier and download/update the files.
 
 For each country and each category, the GeoIP/GeoSite databases specific to that output format are used.
 
@@ -188,6 +194,18 @@ After building the config, the result is available simultaneously in four format
 - **JSON for Clash / Mihomo** — a complete config for Clash Meta and similar clients like Clash Verge, including ECH support when enabled. This file is written with a JSON structure but downloaded with a `.yaml` extension, since JSON is a valid subset of YAML. Note that the Clash/Mihomo format doesn't support Fragment.
 
 All four formats are built from the same settings (IPs, ports, Fingerprint, Fragment, advanced JSON settings).
+
+### Config Naming
+
+The name of all three JSON/YAML formats (Xray, Sing-box, Clash) is determined automatically and consistently based on the config's state: `Normal` for the regular mode, `Fragment` if Fragment is enabled, or `ECH` if ECH is enabled. In the optional "Config Name" field below the advanced JSON settings, you can also enter a custom name; this name is applied to the config itself (across all three formats) as well as to the downloaded file names. If Chain Proxy is enabled, the ⛓️ emoji is also appended to this name.
+
+### Clear All & Security
+
+The "🔄 Clear All & Start Over" button sits below the Generate Config button and, after a confirmation prompt, restores the panel to exactly the same state it's in on the very first page load: every field returns to its default value, a fresh Token and Password are generated, and the generated configs section disappears.
+
+This button isn't just a visual reset. It also fully wipes the actual content of the generated configs (which otherwise stays behind in the page) from the page's memory, clears the system clipboard (where supported by the browser), and the sensitive fields (Token, Password, Worker/Pages address, IPs, Chain Proxy, config name) have browser Autofill disabled. On top of that, even if you forget to click this button, the same full wipe happens automatically and silently the moment you close or leave the page.
+
+These protections are specifically designed for using this tool on public or shared computers (internet cafes, workplaces, and the like) so the next person can't extract your information from the page's background state, the clipboard, or the browser's Autofill memory. That said, for complete security, it's still recommended to clear your browser history and site data after using such systems.
 
 ## Running Offline on Your Own Device
 
