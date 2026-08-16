@@ -18,6 +18,7 @@ const translations = {
   "btn.download": "↓ دانلود",
   "btn.exportSettings": "📤 اکسپورت تنظیمات",
   "btn.generate": "⚙ ساخت کانفیگ",
+  "btn.resetAll": "🔄 پاکسازی کامل و شروع مجدد",
   "btn.importSettings": "📥 ایمپورت تنظیمات",
   "btn.new": "↺ جدید",
   "btn.scannerTool": "ابزار Clean IP Scanner — یافتن IP سالم با Termux",
@@ -62,7 +63,7 @@ const translations = {
   "hint.frag2Info": "مرحله دوم، خروجی مرحله اول Fragment را دوباره خرد می‌کند (finalmask.tcp دو عضوی). می‌توانید در فیلدهای Length/Interval هر مرحله چند مقدار متوالی با کاما جدا از هم وارد کنید (مثلاً 5,94,1) تا هر برش طول متفاوتی داشته باشد؛ آخرین مقدار برای برش‌های بعدی هم تکرار می‌شود. برای غیرفعال کردن مرحله دوم، تیک بالا را بردارید.",
   "hint.fragmentApply": "در صورت فعال بودن، تنظیمات fragment فقط در کانفیگ‌های JSON اعمال می‌شود و روی کانفیگ‌های URL تأثیری ندارد.",
   "hint.ipCount": "هر تعداد IP قابل قبول است — از هر IP چند کانفیگ با پورت‌های مختلف ساخته می‌شود. علاوه بر IP، می‌توانید از برخی دامنه‌ها نیز استفاده کنید (مثلاً chatgpt.com)",
-  "hint.jsonNameInfo": "اگر خالی بماند، پنل نام پیش‌فرض را برای کانفیگ Normal یا Fragment انتخاب خواهد کرد.",
+  "hint.jsonNameInfo": "این نام روی هر سه کانفیگ Xray، Sing-box و Clash و همچنین نام فایل‌های دانلودی اعمال می‌شود. اگر خالی بماند، پنل نام پیش‌فرض را بر اساس Normal، Fragment یا ECH انتخاب خواهد کرد.",
   "hint.passwordInfo": "این مقدار برای ساخت کانفیگ‌های پروتکل Trojan استفاده می‌شود — همانند Token، با تغییر آن در کد Worker/Pages، کانفیگ‌های Trojan قدیمی از کار می‌افتند. با هر بار تولید Password جدید، کد Worker/Pages بالا نیز به‌صورت خودکار آپدیت می‌شود.",
   "hint.observatoryInfo": "این تنظیمات نحوه‌ی تست و انتخاب بهترین سرور توسط هسته‌ی Xray را کنترل می‌کنند. مقادیر زمانی را با پسوند m (دقیقه) یا s (ثانیه) وارد کنید؛ مثلاً 3m یا 30s. leastLoad Sampling باید یک عدد صحیح مثبت باشد.",
   "hint.protocolChoice": "می‌توانید فقط VLESS، فقط Trojan یا هر دو را همزمان فعال کنید — تمام کانفیگ‌های Link و فایل‌های JSON/YAML بر اساس همین انتخاب ساخته می‌شوند.",
@@ -81,7 +82,7 @@ const translations = {
   "lbl.frag2Enable": "فعال‌سازی مرحله دوم قطعه‌بندی (دو لایه)",
   "lbl.fragmentSettings": "تنظیمات Fragment",
   "lbl.ipAddresses": "آدرس‌های IP (هر خط یک IP)",
-  "lbl.jsonName": "نام کانفیگ JSON Xray (اختیاری)",
+  "lbl.jsonName": "نام کانفیگ (اختیاری)",
   "lbl.outputProtocols": "پروتکل‌های خروجی",
   "lbl.observatorySettings": "تنظیمات Observatory",
   "lbl.leastPingInterval": "leastPing Interval",
@@ -144,6 +145,7 @@ const translations = {
   "toast.selectOnePort": "حداقل یک پورت انتخاب کن",
   "toast.selectOneProtocol": "حداقل یک پروتکل (VLESS یا Trojan) انتخاب کن",
   "toast.settingsDownloaded": "فایل تنظیمات دانلود شد",
+  "toast.resetDone": "صفحه به حالت پیش‌فرض بازگشت",
   "toast.settingsImported": "تنظیمات با موفقیت ایمپورت شد",
   "toast.singboxCopied": "کانفیگ Sing-box کپی شد",
   "toast.tokenCopied": "Token کپی شد",
@@ -171,6 +173,7 @@ const translations = {
   "btn.download": "↓ Download",
   "btn.exportSettings": "📤 Export Settings",
   "btn.generate": "⚙ Generate Config",
+  "btn.resetAll": "🔄 Clear All & Start Over",
   "btn.importSettings": "📥 Import Settings",
   "btn.new": "↺ New",
   "btn.scannerTool": "Clean IP Scanner Tool — Find Clean IPs with Termux",
@@ -215,7 +218,7 @@ const translations = {
   "hint.frag2Info": "The second stage re-splits the output of the first Fragment stage (a two-member finalmask.tcp array). In each stage's Length/Interval fields you can enter several comma-separated sequential values (e.g. 5,94,1) so each cut has a different size; the last value repeats for any further cuts. Uncheck the box above to disable the second stage.",
   "hint.fragmentApply": "When enabled, fragment settings only apply to JSON configs and have no effect on URL configs.",
   "hint.ipCount": "Any number of IPs is accepted — several configs with different ports are generated from each IP. Besides IPs, you can also use certain domains (e.g. chatgpt.com)",
-  "hint.jsonNameInfo": "If left empty, the panel will choose the default name for the Normal or Fragment config.",
+  "hint.jsonNameInfo": "This name applies to all three configs (Xray, Sing-box, Clash) as well as the downloaded file names. If left empty, the panel will choose the default name based on Normal, Fragment, or ECH.",
   "hint.passwordInfo": "This value is used to build Trojan protocol configs — like the Token, changing it in the Worker/Pages code will break old Trojan configs. Every time a new Password is generated, the Worker/Pages code above updates automatically.",
   "hint.observatoryInfo": "These settings control how the Xray core tests and selects the best server. Enter time values with an m (minutes) or s (seconds) suffix, e.g. 3m or 30s. leastLoad Sampling must be a positive integer.",
   "hint.protocolChoice": "You can enable only VLESS, only Trojan, or both at once — all Link configs and JSON/YAML files are generated based on this selection.",
@@ -234,7 +237,7 @@ const translations = {
   "lbl.frag2Enable": "Enable a second Fragment stage (two-layer)",
   "lbl.fragmentSettings": "Fragment Settings",
   "lbl.ipAddresses": "IP Addresses (one per line)",
-  "lbl.jsonName": "Xray JSON Config Name (optional)",
+  "lbl.jsonName": "Config Name (optional)",
   "lbl.outputProtocols": "Output Protocols",
   "lbl.observatorySettings": "Observatory Settings",
   "lbl.leastPingInterval": "leastPing Interval",
@@ -297,6 +300,7 @@ const translations = {
   "toast.selectOnePort": "Select at least one port",
   "toast.selectOneProtocol": "Select at least one protocol (VLESS or Trojan)",
   "toast.settingsDownloaded": "Settings file downloaded",
+  "toast.resetDone": "Page reset to default state",
   "toast.settingsImported": "Settings imported successfully",
   "toast.singboxCopied": "Sing-box config copied",
   "toast.tokenCopied": "Token copied",
@@ -339,6 +343,8 @@ export function applyI18n() {
     el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
   });
   document.querySelectorAll('[data-i18n-title]').forEach(el => {
-    el.setAttribute('title', t(el.getAttribute('data-i18n-title')));
+    const val = t(el.getAttribute('data-i18n-title'));
+    el.setAttribute('title', val);
+    el.setAttribute('aria-label', val);
   });
 }
