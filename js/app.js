@@ -106,6 +106,11 @@ function switchDeployTab(target) {
   document.getElementById('g3-desc-pages').style.display = isPages ? 'block' : 'none';
   document.getElementById('workerFname').textContent = isPages ? '_worker.js' : 'worker.js';
   document.getElementById('btn-dl-worker-zip').style.display = isPages ? '' : 'none';
+  document.getElementById('wsPortsRow').classList.toggle('disabled', isPages);
+  document.getElementById('wsPortsPagesNote').style.display = isPages ? 'block' : 'none';
+  if (isPages) {
+    document.querySelectorAll('.pws').forEach(el => { el.checked = false; });
+  }
 }
 
 function toggleFrag() {
