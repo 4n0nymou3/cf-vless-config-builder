@@ -214,6 +214,7 @@ function parseSocksHttp(input, protocol) {
   if (qIdx !== -1) hostPort = hostPort.slice(0, qIdx);
   const { address, port } = splitHostPort(hostPort);
   if (!address || !port) throw new Error(t('err.socksHttpInvalid', { proto: protocol === 'socks' ? 'SOCKS' : 'HTTP' }));
+  if (!user || !pass) throw new Error(t('err.socksHttpMissingAuth', { proto: protocol === 'socks' ? 'SOCKS' : 'HTTP' }));
 
   return {
     protocol: protocol,
