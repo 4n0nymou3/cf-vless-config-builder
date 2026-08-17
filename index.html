@@ -29,7 +29,7 @@
       </div>
       <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker و Pages</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.3</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.2</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
@@ -198,7 +198,7 @@
 
     <div class="fg mt-10">
       <label class="mb-9" data-i18n="lbl.wsPorts">پورت‌های WebSocket بدون TLS (برای شبکه‌هایی که TLS بلاک است)</label>
-      <div class="port-row">
+      <div class="port-row" id="wsPortsRow">
         <label class="ck-lbl"><input type="checkbox" class="pws" value="80" checked> 80</label>
         <label class="ck-lbl"><input type="checkbox" class="pws" value="8080"> 8080</label>
         <label class="ck-lbl"><input type="checkbox" class="pws" value="8880"> 8880</label>
@@ -207,6 +207,7 @@
         <label class="ck-lbl"><input type="checkbox" class="pws" value="2086"> 2086</label>
         <label class="ck-lbl"><input type="checkbox" class="pws" value="2095"> 2095</label>
       </div>
+      <p class="hint" id="wsPortsPagesNote" style="display:none" data-i18n="hint.wsPortsPagesDisabled">کانفیگ‌های بدون TLS اصلاً روی Cloudflare Pages پشتیبانی نمی‌شوند (این یک محدودیت دائمی خود Cloudflare است، نه TCB) — برای استفاده از این پورت‌ها باید تب Worker را انتخاب کنید.</p>
     </div>
 
     <div class="alert ao mt-14 mb-0">
