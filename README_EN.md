@@ -21,7 +21,7 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - Direct build and download of the Worker file, or the dedicated Pages ZIP file, both with the Token (VLESS) and Password (Trojan) embedded
 - Automatic UUID and Password generation, or use your own custom values
 - Support for TLS ports: 443, 8443, 2053, 2083, 2087, 2096
-- Support for WebSocket ports without TLS: 80, 8080, 8880, 2052, 2082, 2086, 2095
+- Support for WebSocket ports without TLS: 80, 8080, 8880, 2052, 2082, 2086, 2095 (Worker deployment only; Cloudflare Pages permanently and completely lacks support for these ports)
 - Support for multiple IPs and domains at once
 - TLS Fingerprint selection from 10 options to bypass DPI
 - WebSocket Path selection
@@ -38,6 +38,12 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - One-click dedicated QR Code display for each config — generated fully offline with no external service or API required
 - Unique naming for every single link-format config (including protocol, IP number, and port) so no two configs share the same name
 - A "🔄 Clear All & Start Over" button for instantly restoring the panel to its initial state and securely wiping all entered information — suited for use on public or shared computers
+
+## Limitations
+
+- **Voice/video calls (UDP)**: Cloudflare Workers currently only supports outbound TCP connections, not UDP. Because of this, like any similar tool built on Cloudflare Workers, UDP traffic (including Telegram voice/video calls or similar apps) doesn't work correctly through TCB configs. This is a fundamental limitation of the Cloudflare Workers platform itself, not something fixable by changing the Worker/Pages code.
+- **Daily request limit**: The Cloudflare Workers free plan supports 100,000 requests per day. This is typically more than enough for personal or small-group use.
+- **Minimum client version for ECH**: ECH support in Sing-box and in Clash/Mihomo is relatively recent. If your Sing-box or Clash configs don't connect with ECH enabled, make sure your client is updated to its latest version.
 
 ## How to Use
 
@@ -109,6 +115,16 @@ This setting determines which browser or device your client presents itself as d
 ### WebSocket Path
 
 The WebSocket path used in the configs. Available options: `/vless`, `/proxy`, `/v2ray`, `/ws`, `/`
+
+### Non-TLS Ports and the Cloudflare Pages Limitation
+
+Non-TLS configs (plain WebSocket ports) only work if you've deployed the code to a **Cloudflare Worker**. If you've deployed to **Cloudflare Pages**, these configs will never work, under any circumstances.
+
+This is a permanent, official limitation on Cloudflare's side — not a TCB bug, and not something fixable by changing the Worker/Pages code: Cloudflare Pages always and automatically redirects every HTTP (non-TLS) request to HTTPS — this redirect happens at Cloudflare's own network layer, before the request ever reaches your code. Per Cloudflare's own team, this behavior is intentional and isn't going to change. For this reason, TCB automatically disables the non-TLS ports section whenever you select the **Pages** tab in the panel.
+
+Based on documentation from similar projects, the same limitation also applies to a **Worker with a Custom Domain attached** — meaning even on a Worker (not Pages), if you've connected a custom domain to it, non-TLS configs still won't work. TCB's own guide only ever instructs you to use the default `*.workers.dev` address (no custom domain), which doesn't have this limitation — but if you've chosen to attach a custom domain to your Worker on your own, keep this in mind.
+
+If you need a non-TLS config (for example, for networks where TLS itself is blocked), make sure to use the **Worker** deployment method with its default `*.workers.dev` address (no custom domain).
 
 ### Fragment
 
@@ -182,6 +198,7 @@ Important notes:
 - This feature only applies to JSON configs for Xray, Sing-box, and Clash, not single link-format configs, since chaining requires two coordinated nodes that can only be defined in a complete config file.
 - When this feature is enabled, a ⛓️ emoji is added next to the JSON config names so it's clear which configs are chained.
 - The config you enter in this box must not belong to another Cloudflare Worker or Pages project, since neither has a dedicated fixed IP; be sure to use a config from a real server (like a VPS) with its own dedicated IP.
+- SOCKS5 and HTTP configs must include a username and password (e.g. `socks://user:pass@host:port`); the Xray core requires both for these two protocols, and the Chain config won't work without them. TCB checks for this at config-generation time and shows a clear error if they're missing.
 - To disable this feature, leave the Chain Proxy box empty.
 
 ### Config Output Formats
