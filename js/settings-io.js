@@ -73,7 +73,9 @@ export function collectExportData() {
       },
       chainConfig: document.getElementById('chainConfig').value,
       jsonName: document.getElementById('jsonName').value,
-      deployTarget: document.getElementById('tab-pages') && document.getElementById('tab-pages').classList.contains('active') ? 'pages' : 'worker'
+      deployTarget: document.getElementById('tab-pages') && document.getElementById('tab-pages').classList.contains('active') ? 'pages' : 'worker',
+      customDomainUsed: document.getElementById('customDomainUsed').checked,
+      customDomain: document.getElementById('customDomainInput').value
     }
   };
 }
@@ -210,6 +212,8 @@ export function applyImportedSettings(payload) {
   }
 
   if (typeof d.jsonName === 'string') document.getElementById('jsonName').value = d.jsonName;
+  document.getElementById('customDomainUsed').checked = !!d.customDomainUsed;
+  if (typeof d.customDomain === 'string') document.getElementById('customDomainInput').value = d.customDomain;
 
   return d.deployTarget === 'pages' ? 'pages' : 'worker';
 }
