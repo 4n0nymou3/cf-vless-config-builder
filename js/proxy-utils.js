@@ -26,6 +26,7 @@ export function durationToSeconds(value, fallbackSeconds) {
   return match[2] === 'm' ? amount * 60 : amount;
 }
 
-export function resolveTcbLabel(jsonName, echEnable, fragEnable) {
-  return jsonName || (echEnable ? '👽 Anonymous TCB (ECH) 🚀' : (fragEnable ? '👽 Anonymous TCB (Fragment) 🚀' : '👽 Anonymous TCB (Normal) 🚀'));
+export function resolveTcbLabel(jsonName, echEnable, fragEnable, customDomainUsed) {
+  const base = jsonName || (echEnable ? '👽 Anonymous TCB (ECH) 🚀' : (fragEnable ? '👽 Anonymous TCB (Fragment) 🚀' : '👽 Anonymous TCB (Normal) 🚀'));
+  return base + (customDomainUsed ? ' 🌐' : '');
 }
