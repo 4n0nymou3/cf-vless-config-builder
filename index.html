@@ -29,7 +29,7 @@
       </div>
       <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker و Pages</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.3</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.4</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
@@ -99,6 +99,13 @@
           <div class="gdesc" data-i18n="g4.desc">بعد از Deploy، CF آدرسی مثل <code>myworker.username.workers.dev</code> (برای Worker) یا <code>myproject.pages.dev</code> (برای Pages) نشون میده. هرکدام را ساختی، همان را در مرحله ۲ وارد کن.</div>
         </div>
       </div>
+      <div class="gitem">
+        <div class="gn"></div>
+        <div class="gb2">
+          <div class="gtitle" data-i18n="g5.title">اتصال دامنه شخصی به Worker (اختیاری)</div>
+          <div class="gdesc" data-i18n="g5.desc">اگر یک دامنه شخصی دارید و می‌خواهید به‌جای آدرس <code>workers.dev</code> از آن استفاده کنید، این قابلیت رایگان و رسمی خود Cloudflare است و هیچ نیازی به کد یا تنظیم اضافی در TCB ندارد؛ همان کد Worker بدون هیچ تغییری کار می‌کند. مراحل: ۱) دامنه‌تان را در Cloudflare اضافه کنید (<code>Account Home</code> ← <code>Add a domain</code>) و منتظر بمانید وضعیت آن به <code>Active</code> برسد (معمولاً با تغییر Nameserver دامنه به Nameserver‌هایی که Cloudflare نشان می‌دهد). ۲) به <code>Workers &amp; Pages</code> بروید و Worker خود را انتخاب کنید. ۳) از مسیر <code>Settings</code> ← <code>Domains &amp; Routes</code> ← <code>Add</code> ← <code>Custom Domain</code>، یک زیردامنه دلخواه مثل <code>vpn.yourdomain.ir</code> وارد و اضافه کنید. Cloudflare به‌طور خودکار DNS و گواهی TLS لازم را می‌سازد؛ نیازی به رکورد DNS دستی یا صدور گواهی جداگانه نیست. بعد از چند دقیقه، همان زیردامنه را در مرحله ۲ به‌جای آدرس <code>workers.dev</code> وارد کنید و حتماً چک‌باکس «از دامنه شخصی استفاده می‌کنم» را در همان بخش فعال کنید.</div>
+        </div>
+      </div>
     </div>
    </div>
   </div>
@@ -147,6 +154,11 @@
       </div>
       <input type="text" id="wdom" placeholder="myworker.username.workers.dev" autocomplete="off"/>
       <p class="hint" data-i18n="hint.domainGiven">آدرسی که Cloudflare بعد از Deploy به Worker یا Pages داد</p>
+      <label class="ck-lbl-wide mt-8" id="customDomainRow"><input type="checkbox" id="customDomainUsed"> <span data-i18n="lbl.customDomainUsed">همچنین یک دامنه شخصی هم به Worker متصل کرده‌ام و می‌خواهم کانفیگ‌های آن هم اضافه شود</span></label>
+      <div class="fg mt-8" id="customDomainInputWrap">
+        <input type="text" id="customDomainInput" placeholder="vpn.yourdomain.ir" autocomplete="off" disabled/>
+        <p class="hint" data-i18n="hint.customDomainNote">با پر کردن این کادر، کانفیگ‌های اضافه‌ای با این دامنه (فقط با TLS، چون دامنه شخصی از پورت‌های بدون TLS پشتیبانی نمی‌کند) به‌صورت ترکیبی به کانفیگ‌های JSON/YAML اضافه می‌شوند و نام آن‌ها با 🌐 و کانفیگ‌های تکی لینک با پسوند D- مشخص می‌شوند؛ کانفیگ‌های عادی با آدرس بالا هم دقیقاً مثل قبل ساخته می‌شوند.</p>
+      </div>
     </div>
    </div>
   </div>
