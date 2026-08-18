@@ -6,7 +6,7 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v6.3
+# Tunnel Config Builder (TCB) v6.4
 
 A tool for building VLESS and Trojan configs for Cloudflare Workers and Cloudflare Pages — no VPS or personal server required
 
@@ -38,6 +38,7 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - One-click dedicated QR Code display for each config — generated fully offline with no external service or API required
 - Unique naming for every single link-format config (including protocol, IP number, and port) so no two configs share the same name
 - A "🔄 Clear All & Start Over" button for instantly restoring the panel to its initial state and securely wiping all entered information — suited for use on public or shared computers
+- Step-by-step guide for connecting a custom domain to the Worker (entirely through Cloudflare's official dashboard, with no token or extra setup required in TCB)
 
 ## Limitations
 
@@ -122,9 +123,34 @@ Non-TLS configs (plain WebSocket ports) only work if you've deployed the code to
 
 This is a permanent, official limitation on Cloudflare's side — not a TCB bug, and not something fixable by changing the Worker/Pages code: Cloudflare Pages always and automatically redirects every HTTP (non-TLS) request to HTTPS — this redirect happens at Cloudflare's own network layer, before the request ever reaches your code. Per Cloudflare's own team, this behavior is intentional and isn't going to change. For this reason, TCB automatically disables the non-TLS ports section whenever you select the **Pages** tab in the panel.
 
-Based on documentation from similar projects, the same limitation also applies to a **Worker with a Custom Domain attached** — meaning even on a Worker (not Pages), if you've connected a custom domain to it, non-TLS configs still won't work. TCB's own guide only ever instructs you to use the default `*.workers.dev` address (no custom domain), which doesn't have this limitation — but if you've chosen to attach a custom domain to your Worker on your own, keep this in mind.
+Based on documentation from similar projects, the same limitation also applies to a **Worker with a Custom Domain attached** — meaning even on a Worker (not Pages), if you've connected a custom domain to it, configs built for that specific custom domain can never use non-TLS ports. For this reason, when you use TCB's custom domain feature (full details in the [Connect a Custom Domain to the Worker](#connect-a-custom-domain-to-the-worker) section below), the configs built with that domain are always and automatically generated as TLS-only — without restricting the non-TLS ports for your main `workers.dev` address, since that address still fully supports non-TLS ports.
 
-If you need a non-TLS config (for example, for networks where TLS itself is blocked), make sure to use the **Worker** deployment method with its default `*.workers.dev` address (no custom domain).
+If you only need a non-TLS config (for example, for networks where TLS itself is blocked) and don't intend to use a custom domain, the **Worker** deployment method with the default `*.workers.dev` address is entirely sufficient on its own.
+
+### Connect a Custom Domain to the Worker
+
+If you have a personal domain (for example, an `.ir` domain or any other TLD) and want to use it **in addition to** the default `workers.dev` address to reach your Worker, that's entirely possible — and it's a free, official Cloudflare feature, not something that requires extra setup in TCB. The Worker code TCB generates for you works with a custom domain with no changes at all.
+
+**Why doesn't TCB have a one-click "auto-connect domain" button like some similar panels?**
+Some similar panels (which run as a persistent application on Cloudflare with a KV database) have a Custom Domain field in their settings that connects your domain for you with a single click. That capability is only possible because those panels first collect a **Cloudflare API Token** with access to your account and make the change directly through the Cloudflare API on your behalf. TCB is deliberately, from the ground up, a fully static and offline tool that never collects any token, API secret, or Cloudflare account information from you, and never makes any network call to any server other than the one you're deploying to yourself; collecting such a token from you would directly violate the exact principle of offline simplicity and security TCB is known for. Fortunately, connecting a custom domain doesn't require any token or API at all — it's done entirely through Cloudflare's own official dashboard, in a few simple clicks.
+
+**Steps to connect a domain (current Cloudflare dashboard method):**
+
+1. Add your domain to Cloudflare: sign in to your Cloudflare account, choose the option to add a domain from the homepage, and enter your domain (e.g. `example.ir`) without `https://` and without `www`.
+
+2. Cloudflare will show you two Nameservers. Go to the panel of the company you bought the domain from (the registrar) and, in the domain's settings, replace the current Nameservers with these two.
+
+3. Wait for the domain's status in Cloudflare to become `Active` (usually takes anywhere from a few minutes to a few hours).
+
+4. Go to `Workers & Pages` and click on your Worker.
+
+5. From `Settings` ← `Domains & Routes` ← `Add` ← `Custom Domain`, enter and add a subdomain of your choice (e.g. `vpn.example.ir` — not the bare `example.ir`).
+
+Cloudflare automatically creates the necessary DNS record and a valid TLS certificate for you — no manual DNS record setup or separate certificate issuance is needed.
+
+6. In the TCB panel, in Step 2, right below the main Worker/Pages address box, there's a checkbox labeled "I've also connected a custom domain to the Worker." Enabling it reveals a new text field; enter that same subdomain (e.g. `vpn.example.ir`) there.
+
+**Important note:** These two addresses aren't alternatives to each other — they're combined. The top box (your main Worker/Pages address) stays untouched and builds configs exactly as before; the second box only adds extra configs using your custom domain. The JSON and YAML configs (Xray, Sing-box, Clash) build both sets into one combined file, marked with the 🌐 emoji; the single link-format configs are built separately for both addresses, side by side, with a `-D` suffix on the custom-domain versions. Since a custom domain doesn't support non-TLS ports, its configs are always built as TLS-only — so at least one TLS port must be selected in the "Clean IPs" section, or the panel will warn you when generating configs.
 
 ### Fragment
 
