@@ -100,7 +100,7 @@ function buildChainProxyClash(pc, dialerProxyName, name) {
 export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, leastPingInterval, parsedChain, jsonName
+    remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, leastPingInterval, parsedChain, jsonName, customDomainUsed, customDomain
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -175,7 +175,63 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
     });
   });
 
-  const urltestTag = resolveTcbLabel(jsonName, echEnable, fragEnable) + (parsedChain ? ' ⛓️' : '');
+  const domainMarkApplies = !!(customDomainUsed && customDomain);
+  if (domainMarkApplies) {
+    ips.forEach((ip, ipIdx) => {
+      const ipLabel = `IP${ipIdx + 1}`;
+
+      tlsPorts.forEach(port => {
+        const baseProxy = {
+          server: ip,
+          port: parseInt(port),
+          'packet-encoding': '',
+          udp: false,
+          'ip-version': ipv6Enable ? 'ipv4-prefer' : 'ipv4',
+          tfo: tcpFastOpen,
+          network: 'ws',
+          'ws-opts': {
+            path: basePath,
+            'max-early-data': 2560,
+            'early-data-header-name': 'Sec-WebSocket-Protocol',
+            headers: { Host: customDomain }
+          },
+          tls: true,
+          'client-fingerprint': fp === 'randomized' ? 'random' : fp,
+          'skip-cert-verify': false,
+          alpn: ['http/1.1']
+        };
+
+        if (useVless) {
+          const tag = `VLESS-${ipLabel}-TLS${port}-${fp}-D`;
+          const proxy = { name: tag, type: 'vless', uuid: token, ...baseProxy };
+          proxy.servername = randomizeCase(customDomain);
+          if (echEnable) proxy['ech-opts'] = { enable: true, 'query-server-name': customDomain };
+          proxies.push(proxy);
+          proxyTags.push(tag);
+          if (parsedChain) {
+            const chainTag = 'chain-' + tag;
+            proxies.push(buildChainProxyClash(parsedChain, tag, chainTag));
+            chainProxyTags.push(chainTag);
+          }
+        }
+        if (useTrojan) {
+          const tag = `TROJAN-${ipLabel}-TLS${port}-${fp}-D`;
+          const proxy = { name: tag, type: 'trojan', password: password, ...baseProxy };
+          proxy.sni = randomizeCase(customDomain);
+          if (echEnable) proxy['ech-opts'] = { enable: true, 'query-server-name': customDomain };
+          proxies.push(proxy);
+          proxyTags.push(tag);
+          if (parsedChain) {
+            const chainTag = 'chain-' + tag;
+            proxies.push(buildChainProxyClash(parsedChain, tag, chainTag));
+            chainProxyTags.push(chainTag);
+          }
+        }
+      });
+    });
+  }
+
+  const urltestTag = resolveTcbLabel(jsonName, echEnable, fragEnable, domainMarkApplies) + (parsedChain ? ' ⛓️' : '');
   const selectorTag = parsedChain ? 'Best Ping 🚀 ⛓️' : 'Best Ping 🚀';
   const activeProxyTags = parsedChain ? chainProxyTags : proxyTags;
   const selectorTags = [urltestTag, ...activeProxyTags];
