@@ -73,7 +73,7 @@ function buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEna
   if (security === 'tls') {
     streamSettings.security = 'tls';
     const tlsSettings = {
-      fingerprint: (advTls && advTls.fpUnsafeXray) ? 'unsafe' : fp,
+      fingerprint: (fragEnable && advTls && advTls.fpUnsafeXray) ? 'unsafe' : fp,
       serverName: randomizeCase(dom),
       show: false,
       alpn: ['http/1.1']
@@ -81,7 +81,7 @@ function buildStreamSettings(dom, path, fp, security, echEnable, echDns, fragEna
     if (echEnable) {
       tlsSettings.echConfigList = echDns;
     }
-    if (advTls && advTls.cipherSuitesXray) {
+    if (fragEnable && advTls && advTls.cipherSuitesXray) {
       tlsSettings.cipherSuites = advTls.cipherSuitesXray;
     }
     streamSettings.tlsSettings = tlsSettings;
@@ -172,7 +172,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
     frag2Enable, frag2Packets, frag2Length, frag2Interval, frag2MaxSplit,
     fpUnsafeXray, cipherSuitesXray,
     fakeDnsEnable, ipv6Enable, lanAccess, remoteDnsVal, localDnsVal,
-    tcpFastOpen, echEnable, echDns, jsonName, routingCountries, blockRules,
+    tcpFastOpen, echEnable, echDns, jsonName, customDomainUsed, customDomain, routingCountries, blockRules,
     leastPingInterval, leastLoadInterval, leastLoadMode, leastLoadSampling, leastLoadTimeout, parsedChain
   } = settings;
 
@@ -239,6 +239,48 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
       idx++;
     });
   });
+
+  const domainMarkApplies = !!(customDomainUsed && customDomain);
+  if (domainMarkApplies) {
+    let idxD = 1;
+    ips.forEach(ip => {
+      tlsPorts.forEach(port => {
+        if (useVless) {
+          const tag = 'vless-proxy-d-' + idxD;
+          if (!firstProxyTag) firstProxyTag = tag;
+          outbounds.push({
+            mux: { concurrency: -1, enabled: false },
+            protocol: 'vless',
+            settings: { vnext: [{ address: ip, port: parseInt(port), users: [{ encryption: 'none', id: token, level: 8 }] }] },
+            streamSettings: buildStreamSettings(customDomain, path, fp, 'tls', echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt, advTls),
+            tag: tag
+          });
+          if (parsedChain) {
+            const chainTag = 'chain-' + tag;
+            if (!firstChainTag) firstChainTag = chainTag;
+            outbounds.push(buildChainOutboundXray(parsedChain, tag, chainTag));
+          }
+        }
+        if (useTrojan) {
+          const tag = 'trojan-proxy-d-' + idxD;
+          if (!firstProxyTag) firstProxyTag = tag;
+          outbounds.push({
+            mux: { concurrency: -1, enabled: false },
+            protocol: 'trojan',
+            settings: { servers: [{ address: ip, port: parseInt(port), password: password, level: 8 }] },
+            streamSettings: buildStreamSettings(customDomain, path, fp, 'tls', echEnable, echDns, fragEnable, fragPackets, fragLength, fragInterval, fragMaxSplit, outboundSockopt, advTls),
+            tag: tag
+          });
+          if (parsedChain) {
+            const chainTag = 'chain-' + tag;
+            if (!firstChainTag) firstChainTag = chainTag;
+            outbounds.push(buildChainOutboundXray(parsedChain, tag, chainTag));
+          }
+        }
+        idxD++;
+      });
+    });
+  }
 
   const balancerSelector = [];
   if (parsedChain) {
@@ -326,7 +368,7 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
       levels: { '8': { connIdle: 300, downlinkOnly: 1, handshake: 4, uplinkOnly: 1 } },
       system: { statsOutboundUplink: true, statsOutboundDownlink: true }
     },
-    remarks: resolveTcbLabel(jsonName, echEnable, fragEnable) + (parsedChain ? ' ⛓️' : ''),
+    remarks: resolveTcbLabel(jsonName, echEnable, fragEnable, domainMarkApplies) + (parsedChain ? ' ⛓️' : ''),
     routing: {
       balancers: [{ selector: balancerSelector, strategy: { type: 'leastPing' }, tag: 'proxy-round', fallbackTag: balancerFallbackTag }],
       domainStrategy: 'IPIfNonMatch',
