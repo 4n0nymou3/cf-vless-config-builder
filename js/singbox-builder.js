@@ -99,7 +99,7 @@ function parseDnsUrl(value) {
 export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain, jsonName
+    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain, jsonName, customDomainUsed, customDomain
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -175,7 +175,64 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     });
   });
 
-  const urltestTag = resolveTcbLabel(jsonName, echEnable, fragEnable) + (parsedChain ? ' ⛓️' : '');
+  const domainMarkApplies = !!(customDomainUsed && customDomain);
+  if (domainMarkApplies) {
+    ips.forEach((ip, ipIdx) => {
+      const ipLabel = `IP${ipIdx + 1}`;
+      const domainResolver = isDomainAddr(ip) ? 'dns-direct' : undefined;
+
+      tlsPorts.forEach(port => {
+        const baseOutbound = {
+          server: ip,
+          server_port: parseInt(port),
+          network: 'tcp',
+          tcp_fast_open: tcpFastOpen,
+          transport: {
+            type: 'ws',
+            path: basePath,
+            max_early_data: 2560,
+            early_data_header_name: 'Sec-WebSocket-Protocol',
+            headers: { Host: customDomain }
+          },
+          tls: {
+            enabled: true,
+            server_name: randomizeCase(customDomain),
+            record_fragment: fragEnable,
+            insecure: false,
+            alpn: ['http/1.1'],
+            utls: { enabled: true, fingerprint: fp }
+          }
+        };
+        if (echEnable) {
+          baseOutbound.tls.ech = { enabled: true, query_server_name: customDomain };
+        }
+        if (domainResolver) baseOutbound.domain_resolver = domainResolver;
+
+        if (useVless) {
+          const tag = `VLESS-${ipLabel}-TLS${port}-${fp}-D`;
+          outbounds.push({ type: 'vless', tag: tag, uuid: token, packet_encoding: '', ...baseOutbound });
+          proxyTags.push(tag);
+          if (parsedChain) {
+            const chainTag = 'chain-' + tag;
+            outbounds.push(buildChainOutboundSingbox(parsedChain, tag, chainTag));
+            chainProxyTags.push(chainTag);
+          }
+        }
+        if (useTrojan) {
+          const tag = `TROJAN-${ipLabel}-TLS${port}-${fp}-D`;
+          outbounds.push({ type: 'trojan', tag: tag, password: password, ...baseOutbound });
+          proxyTags.push(tag);
+          if (parsedChain) {
+            const chainTag = 'chain-' + tag;
+            outbounds.push(buildChainOutboundSingbox(parsedChain, tag, chainTag));
+            chainProxyTags.push(chainTag);
+          }
+        }
+      });
+    });
+  }
+
+  const urltestTag = resolveTcbLabel(jsonName, echEnable, fragEnable, domainMarkApplies) + (parsedChain ? ' ⛓️' : '');
   const selectorTag = parsedChain ? 'Best Ping 🚀 ⛓️' : 'Best Ping 🚀';
   const activeProxyTags = parsedChain ? chainProxyTags : proxyTags;
 
