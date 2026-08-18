@@ -95,6 +95,27 @@ async function dlWorkerZip() {
   toast(t('toast.workerZipDownloaded'));
 }
 
+function updateWsPortsAvailability() {
+  const isPages = deployTarget === 'pages';
+  document.getElementById('wsPortsRow').classList.toggle('disabled', isPages);
+  document.getElementById('wsPortsPagesNote').style.display = isPages ? 'block' : 'none';
+  document.getElementById('customDomainRow').style.display = isPages ? 'none' : 'flex';
+  if (isPages) {
+    document.querySelectorAll('.pws').forEach(el => { el.checked = false; });
+    document.getElementById('customDomainUsed').checked = false;
+    updateCustomDomainField();
+  }
+}
+
+function updateCustomDomainField() {
+  const enabled = document.getElementById('customDomainUsed').checked;
+  const input = document.getElementById('customDomainInput');
+  const wrap = document.getElementById('customDomainInputWrap');
+  input.disabled = !enabled;
+  wrap.classList.toggle('disabled', !enabled);
+  if (!enabled) input.value = '';
+}
+
 function switchDeployTab(target) {
   deployTarget = target === 'pages' ? 'pages' : 'worker';
   const isPages = deployTarget === 'pages';
@@ -106,11 +127,7 @@ function switchDeployTab(target) {
   document.getElementById('g3-desc-pages').style.display = isPages ? 'block' : 'none';
   document.getElementById('workerFname').textContent = isPages ? '_worker.js' : 'worker.js';
   document.getElementById('btn-dl-worker-zip').style.display = isPages ? '' : 'none';
-  document.getElementById('wsPortsRow').classList.toggle('disabled', isPages);
-  document.getElementById('wsPortsPagesNote').style.display = isPages ? 'block' : 'none';
-  if (isPages) {
-    document.querySelectorAll('.pws').forEach(el => { el.checked = false; });
-  }
+  updateWsPortsAvailability();
 }
 
 function toggleFrag() {
@@ -195,6 +212,8 @@ function collectSettings() {
     echEnable:    echEnable && !fragEnable,
     echDns:       document.getElementById('echDns').value.trim() || 'https://cloudflare-dns.com/dns-query',
     jsonName:     document.getElementById('jsonName').value.trim(),
+    customDomainUsed: document.getElementById('customDomainUsed').checked,
+    customDomain: document.getElementById('customDomainInput').value.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, ''),
     routingCountries: {
       ir: document.getElementById('routeIr').checked,
       cn: document.getElementById('routeCn').checked,
@@ -240,6 +259,7 @@ function gen() {
   if (!protocols.vless && !protocols.trojan) { toast(t('toast.selectOneProtocol')); return; }
 
   const settings  = collectSettings();
+  if (settings.customDomainUsed && !settings.customDomain) { toast(t('toast.enterCustomDomain')); return; }
   if (!settings.routingCountries.ir && !settings.routingCountries.cn && !settings.routingCountries.ru) {
     toast(t('toast.selectOneCountry'));
     return;
@@ -270,6 +290,7 @@ function gen() {
   const fp       = document.getElementById('fpSelect').value;
 
   if (!tlsPorts.length && !wsPorts.length) { toast(t('toast.selectOnePort')); return; }
+  if (settings.customDomainUsed && settings.customDomain && !tlsPorts.length) { toast(t('toast.customDomainNeedsTls')); return; }
 
   const btn = document.getElementById('gb');
   btn.innerHTML = '<span class="sp"></span> ' + t('gen.building');
@@ -307,6 +328,24 @@ function gen() {
         }
       });
     });
+
+    if (settings.customDomainUsed && settings.customDomain) {
+      ips.forEach((ip, ipIdx) => {
+        const ipLabel = `IP${ipIdx + 1}`;
+        tlsPorts.forEach(port => {
+          if (protocols.vless) {
+            const label = `VLESS-${ipLabel}-TLS${port}-${fp}-D`;
+            allC.push({ cfg: buildConfig(token, settings.customDomain, ip, port, 'tls', fp, settings.basePath, label, settings.echEnable, settings.echDns), tag: `VLESS-TLS-${port}-D`, tagColor: 'var(--blue)' });
+            tlsCount++;
+          }
+          if (protocols.trojan) {
+            const label = `TROJAN-${ipLabel}-TLS${port}-${fp}-D`;
+            allC.push({ cfg: buildTrojanConfig(password, settings.customDomain, ip, port, 'tls', fp, settings.basePath, label, settings.echEnable, settings.echDns), tag: `TROJAN-TLS-${port}-D`, tagColor: 'var(--green)' });
+            tlsCount++;
+          }
+        });
+      });
+    }
 
     document.getElementById('lAll').innerHTML = allC.map((c, i) => row(c, i + 1)).join('');
     document.getElementById('sv').textContent  = tlsCount;
@@ -451,6 +490,7 @@ function resetAll() {
   toggleFrag2();
   toggleEch();
   switchDeployTab('worker');
+  updateCustomDomainField();
 
   const tok = uuid4();
   const p = genPassword();
@@ -516,6 +556,7 @@ function importSettings(file) {
     }
     const restoredTarget = applyImportedSettings(parsed);
     switchDeployTab(restoredTarget);
+    updateCustomDomainField();
     toggleFrag();
     toggleFrag2();
     toggleEch();
@@ -611,6 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-dl-worker-zip').addEventListener('click', dlWorkerZip);
   document.getElementById('tab-worker').addEventListener('click', () => switchDeployTab('worker'));
   document.getElementById('tab-pages').addEventListener('click', () => switchDeployTab('pages'));
+  document.getElementById('customDomainUsed').addEventListener('change', updateCustomDomainField);
   document.getElementById('btn-mk-token').addEventListener('click', mkToken);
   document.getElementById('btn-cp-token').addEventListener('click', cpToken);
   document.getElementById('btn-mk-pw').addEventListener('click', mkPassword);
