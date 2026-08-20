@@ -1,5 +1,5 @@
 const APP_ID = 'tcb';
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 export function collectExportData() {
   return {
@@ -94,126 +94,165 @@ export function isValidImportPayload(payload) {
   );
 }
 
+function isStr(v) {
+  return typeof v === 'string';
+}
+
+function isBool(v) {
+  return typeof v === 'boolean';
+}
+
+function isStrArray(v) {
+  return Array.isArray(v) && v.every(isStr);
+}
+
+function isPlainObject(v) {
+  return !!v && typeof v === 'object' && !Array.isArray(v);
+}
+
+function hasExactExportShape(d) {
+  if (!isPlainObject(d)) return false;
+  if (!isStr(d.token)) return false;
+  if (!isStr(d.trojanPassword)) return false;
+  if (!isPlainObject(d.protocols)) return false;
+  if (!isBool(d.protocols.vless)) return false;
+  if (!isBool(d.protocols.trojan)) return false;
+  if (!isStr(d.workerDomain)) return false;
+  if (!isStr(d.ips)) return false;
+  if (!isStrArray(d.tlsPorts)) return false;
+  if (!isStrArray(d.wsPorts)) return false;
+  if (!isStr(d.fingerprint)) return false;
+  if (!isStr(d.wsPath)) return false;
+
+  if (!isPlainObject(d.fragment)) return false;
+  if (!isBool(d.fragment.enabled)) return false;
+  if (!isStr(d.fragment.packets)) return false;
+  if (!isStr(d.fragment.interval)) return false;
+  if (!isStr(d.fragment.length)) return false;
+  if (!isStr(d.fragment.maxSplit)) return false;
+  if (!isPlainObject(d.fragment.stage2)) return false;
+  if (!isBool(d.fragment.stage2.enabled)) return false;
+  if (!isStr(d.fragment.stage2.packets)) return false;
+  if (!isStr(d.fragment.stage2.interval)) return false;
+  if (!isStr(d.fragment.stage2.length)) return false;
+  if (!isStr(d.fragment.stage2.maxSplit)) return false;
+  if (!isPlainObject(d.fragment.xrayTls)) return false;
+  if (!isBool(d.fragment.xrayTls.unsafeFingerprint)) return false;
+  if (!isStr(d.fragment.xrayTls.cipherSuites)) return false;
+
+  if (!isPlainObject(d.advancedJson)) return false;
+  if (!isStr(d.advancedJson.fakeDns)) return false;
+  if (!isStr(d.advancedJson.ipv6)) return false;
+  if (!isStr(d.advancedJson.lanAccess)) return false;
+  if (!isStr(d.advancedJson.tcpFastOpen)) return false;
+
+  if (!isPlainObject(d.ech)) return false;
+  if (!isBool(d.ech.enabled)) return false;
+  if (!isStr(d.ech.dns)) return false;
+
+  if (!isPlainObject(d.dns)) return false;
+  if (!isStr(d.dns.local)) return false;
+  if (!isStr(d.dns.remote)) return false;
+
+  if (!isPlainObject(d.routingCountries)) return false;
+  if (!isBool(d.routingCountries.ir)) return false;
+  if (!isBool(d.routingCountries.cn)) return false;
+  if (!isBool(d.routingCountries.ru)) return false;
+
+  if (!isPlainObject(d.blockRules)) return false;
+  if (!isBool(d.blockRules.ads)) return false;
+  if (!isBool(d.blockRules.porn)) return false;
+  if (!isBool(d.blockRules.quic)) return false;
+  if (!isBool(d.blockRules.malware)) return false;
+  if (!isBool(d.blockRules.phishing)) return false;
+  if (!isBool(d.blockRules.cryptominers)) return false;
+
+  if (!isPlainObject(d.observatory)) return false;
+  if (!isStr(d.observatory.leastPingInterval)) return false;
+  if (!isStr(d.observatory.leastLoadInterval)) return false;
+  if (d.observatory.leastLoadMode !== 'HEAD' && d.observatory.leastLoadMode !== 'GET') return false;
+  if (!isStr(d.observatory.leastLoadSampling)) return false;
+  if (!isStr(d.observatory.leastLoadTimeout)) return false;
+
+  if (!isStr(d.chainConfig)) return false;
+  if (!isStr(d.jsonName)) return false;
+  if (d.deployTarget !== 'worker' && d.deployTarget !== 'pages') return false;
+  if (!isBool(d.customDomainUsed)) return false;
+  if (!isStr(d.customDomain)) return false;
+
+  return true;
+}
+
+export function isCompatibleExport(payload) {
+  return payload.schemaVersion === SCHEMA_VERSION && hasExactExportShape(payload.data);
+}
+
 export function applyImportedSettings(payload) {
   const d = payload.data;
 
-  if (typeof d.token === 'string') document.getElementById('uid').value = d.token;
-  if (typeof d.trojanPassword === 'string') document.getElementById('tpw').value = d.trojanPassword;
-  if (d.protocols && typeof d.protocols === 'object') {
-    document.getElementById('protoVless').checked = d.protocols.vless !== false;
-    document.getElementById('protoTrojan').checked = !!d.protocols.trojan;
-  }
-  if (typeof d.workerDomain === 'string') document.getElementById('wdom').value = d.workerDomain;
-  if (typeof d.ips === 'string') document.getElementById('ips').value = d.ips;
+  document.getElementById('uid').value = d.token;
+  document.getElementById('tpw').value = d.trojanPassword;
+  document.getElementById('protoVless').checked = d.protocols.vless;
+  document.getElementById('protoTrojan').checked = d.protocols.trojan;
+  document.getElementById('wdom').value = d.workerDomain;
+  document.getElementById('ips').value = d.ips;
 
-  const tlsSet = new Set(Array.isArray(d.tlsPorts) ? d.tlsPorts : []);
+  const tlsSet = new Set(d.tlsPorts);
   document.querySelectorAll('.ptls').forEach(el => { el.checked = tlsSet.has(el.value); });
 
-  const wsSet = new Set(Array.isArray(d.wsPorts) ? d.wsPorts : []);
+  const wsSet = new Set(d.wsPorts);
   document.querySelectorAll('.pws').forEach(el => { el.checked = wsSet.has(el.value); });
 
-  if (typeof d.fingerprint === 'string') document.getElementById('fpSelect').value = d.fingerprint;
-  if (typeof d.wsPath === 'string') document.getElementById('pathSelect').value = d.wsPath;
+  document.getElementById('fpSelect').value = d.fingerprint;
+  document.getElementById('pathSelect').value = d.wsPath;
 
-  if (d.fragment && typeof d.fragment === 'object') {
-    document.getElementById('fragEnable').checked = !!d.fragment.enabled;
-    if (typeof d.fragment.packets === 'string') document.getElementById('fragPackets').value = d.fragment.packets;
-    if (typeof d.fragment.interval === 'string') document.getElementById('fragInterval').value = d.fragment.interval;
-    if (typeof d.fragment.length === 'string') document.getElementById('fragLength').value = d.fragment.length;
-    if (typeof d.fragment.maxSplit === 'string') document.getElementById('fragMaxSplit').value = d.fragment.maxSplit;
+  document.getElementById('fragEnable').checked = d.fragment.enabled;
+  document.getElementById('fragPackets').value = d.fragment.packets;
+  document.getElementById('fragInterval').value = d.fragment.interval;
+  document.getElementById('fragLength').value = d.fragment.length;
+  document.getElementById('fragMaxSplit').value = d.fragment.maxSplit;
 
-    const s2 = d.fragment.stage2 && typeof d.fragment.stage2 === 'object' ? d.fragment.stage2 : null;
-    document.getElementById('frag2Enable').checked = !!(s2 && s2.enabled);
-    document.getElementById('frag2Packets').value = (s2 && typeof s2.packets === 'string') ? s2.packets : '1-1';
-    document.getElementById('frag2Interval').value = (s2 && typeof s2.interval === 'string') ? s2.interval : '10-20';
-    document.getElementById('frag2Length').value = (s2 && typeof s2.length === 'string') ? s2.length : '100-200';
-    document.getElementById('frag2MaxSplit').value = (s2 && typeof s2.maxSplit === 'string') ? s2.maxSplit : '10';
+  document.getElementById('frag2Enable').checked = d.fragment.stage2.enabled;
+  document.getElementById('frag2Packets').value = d.fragment.stage2.packets;
+  document.getElementById('frag2Interval').value = d.fragment.stage2.interval;
+  document.getElementById('frag2Length').value = d.fragment.stage2.length;
+  document.getElementById('frag2MaxSplit').value = d.fragment.stage2.maxSplit;
 
-    const xt = d.fragment.xrayTls && typeof d.fragment.xrayTls === 'object' ? d.fragment.xrayTls : null;
-    document.getElementById('fpUnsafeXray').checked = !!(xt && xt.unsafeFingerprint);
-    document.getElementById('cipherSuitesXray').value = (xt && typeof xt.cipherSuites === 'string') ? xt.cipherSuites : '';
-  } else {
-    document.getElementById('frag2Enable').checked = false;
-    document.getElementById('frag2Packets').value = '1-1';
-    document.getElementById('frag2Interval').value = '10-20';
-    document.getElementById('frag2Length').value = '100-200';
-    document.getElementById('frag2MaxSplit').value = '10';
-    document.getElementById('fpUnsafeXray').checked = false;
-    document.getElementById('cipherSuitesXray').value = '';
-  }
+  document.getElementById('fpUnsafeXray').checked = d.fragment.xrayTls.unsafeFingerprint;
+  document.getElementById('cipherSuitesXray').value = d.fragment.xrayTls.cipherSuites;
 
-  if (d.advancedJson && typeof d.advancedJson === 'object') {
-    if (typeof d.advancedJson.fakeDns === 'string') document.getElementById('fakeDns').value = d.advancedJson.fakeDns;
-    if (typeof d.advancedJson.ipv6 === 'string') document.getElementById('ipv6').value = d.advancedJson.ipv6;
-    if (typeof d.advancedJson.lanAccess === 'string') document.getElementById('lanAccess').value = d.advancedJson.lanAccess;
-    if (typeof d.advancedJson.tcpFastOpen === 'string') document.getElementById('tcpFastOpen').value = d.advancedJson.tcpFastOpen;
-  }
+  document.getElementById('fakeDns').value = d.advancedJson.fakeDns;
+  document.getElementById('ipv6').value = d.advancedJson.ipv6;
+  document.getElementById('lanAccess').value = d.advancedJson.lanAccess;
+  document.getElementById('tcpFastOpen').value = d.advancedJson.tcpFastOpen;
 
-  if (d.ech && typeof d.ech === 'object') {
-    document.getElementById('echEnable').checked = !!d.ech.enabled;
-    if (typeof d.ech.dns === 'string') document.getElementById('echDns').value = d.ech.dns;
-  }
+  document.getElementById('echEnable').checked = d.ech.enabled;
+  document.getElementById('echDns').value = d.ech.dns;
 
-  if (d.dns && typeof d.dns === 'object') {
-    if (typeof d.dns.local === 'string') document.getElementById('localDns').value = d.dns.local;
-    if (typeof d.dns.remote === 'string') document.getElementById('remoteDns').value = d.dns.remote;
-  }
+  document.getElementById('localDns').value = d.dns.local;
+  document.getElementById('remoteDns').value = d.dns.remote;
 
-  if (d.routingCountries && typeof d.routingCountries === 'object') {
-    document.getElementById('routeIr').checked = d.routingCountries.ir !== false;
-    document.getElementById('routeCn').checked = !!d.routingCountries.cn;
-    document.getElementById('routeRu').checked = !!d.routingCountries.ru;
-  } else {
-    document.getElementById('routeIr').checked = true;
-    document.getElementById('routeCn').checked = false;
-    document.getElementById('routeRu').checked = false;
-  }
+  document.getElementById('routeIr').checked = d.routingCountries.ir;
+  document.getElementById('routeCn').checked = d.routingCountries.cn;
+  document.getElementById('routeRu').checked = d.routingCountries.ru;
 
-  if (d.blockRules && typeof d.blockRules === 'object') {
-    document.getElementById('blockPromo').checked = d.blockRules.ads !== false;
-    document.getElementById('blockPorn').checked = d.blockRules.porn !== false;
-    document.getElementById('blockQuic').checked = d.blockRules.quic !== false;
-    document.getElementById('blockMalware').checked = d.blockRules.malware !== false;
-    document.getElementById('blockPhishing').checked = d.blockRules.phishing !== false;
-    document.getElementById('blockCryptominers').checked = d.blockRules.cryptominers !== false;
-  } else {
-    document.getElementById('blockPromo').checked = true;
-    document.getElementById('blockPorn').checked = true;
-    document.getElementById('blockQuic').checked = true;
-    document.getElementById('blockMalware').checked = true;
-    document.getElementById('blockPhishing').checked = true;
-    document.getElementById('blockCryptominers').checked = true;
-  }
+  document.getElementById('blockPromo').checked = d.blockRules.ads;
+  document.getElementById('blockPorn').checked = d.blockRules.porn;
+  document.getElementById('blockQuic').checked = d.blockRules.quic;
+  document.getElementById('blockMalware').checked = d.blockRules.malware;
+  document.getElementById('blockPhishing').checked = d.blockRules.phishing;
+  document.getElementById('blockCryptominers').checked = d.blockRules.cryptominers;
 
-  if (d.observatory && typeof d.observatory === 'object') {
-    document.getElementById('leastPingInterval').value = typeof d.observatory.leastPingInterval === 'string' && d.observatory.leastPingInterval.trim() ? d.observatory.leastPingInterval : '3m';
-    document.getElementById('leastLoadInterval').value = typeof d.observatory.leastLoadInterval === 'string' && d.observatory.leastLoadInterval.trim() ? d.observatory.leastLoadInterval : '5m';
-    document.getElementById('leastLoadMode').value = d.observatory.leastLoadMode === 'GET' ? 'GET' : 'HEAD';
-    document.getElementById('leastLoadSampling').value = typeof d.observatory.leastLoadSampling === 'string' && d.observatory.leastLoadSampling.trim() ? d.observatory.leastLoadSampling : '2';
-    document.getElementById('leastLoadTimeout').value = typeof d.observatory.leastLoadTimeout === 'string' && d.observatory.leastLoadTimeout.trim() ? d.observatory.leastLoadTimeout : '30s';
-  } else if (typeof d.pingInterval === 'string' && d.pingInterval.trim() && parseInt(d.pingInterval) > 0) {
-    document.getElementById('leastPingInterval').value = parseInt(d.pingInterval) + 's';
-    document.getElementById('leastLoadInterval').value = '5m';
-    document.getElementById('leastLoadMode').value = 'HEAD';
-    document.getElementById('leastLoadSampling').value = '2';
-    document.getElementById('leastLoadTimeout').value = '30s';
-  } else {
-    document.getElementById('leastPingInterval').value = '3m';
-    document.getElementById('leastLoadInterval').value = '5m';
-    document.getElementById('leastLoadMode').value = 'HEAD';
-    document.getElementById('leastLoadSampling').value = '2';
-    document.getElementById('leastLoadTimeout').value = '30s';
-  }
+  document.getElementById('leastPingInterval').value = d.observatory.leastPingInterval;
+  document.getElementById('leastLoadInterval').value = d.observatory.leastLoadInterval;
+  document.getElementById('leastLoadMode').value = d.observatory.leastLoadMode;
+  document.getElementById('leastLoadSampling').value = d.observatory.leastLoadSampling;
+  document.getElementById('leastLoadTimeout').value = d.observatory.leastLoadTimeout;
 
-  if (typeof d.chainConfig === 'string') {
-    document.getElementById('chainConfig').value = d.chainConfig;
-  } else {
-    document.getElementById('chainConfig').value = '';
-  }
+  document.getElementById('chainConfig').value = d.chainConfig;
+  document.getElementById('jsonName').value = d.jsonName;
+  document.getElementById('customDomainUsed').checked = d.customDomainUsed;
+  document.getElementById('customDomainInput').value = d.customDomain;
 
-  if (typeof d.jsonName === 'string') document.getElementById('jsonName').value = d.jsonName;
-  document.getElementById('customDomainUsed').checked = !!d.customDomainUsed;
-  if (typeof d.customDomain === 'string') document.getElementById('customDomainInput').value = d.customDomain;
-
-  return d.deployTarget === 'pages' ? 'pages' : 'worker';
+  return d.deployTarget;
 }
