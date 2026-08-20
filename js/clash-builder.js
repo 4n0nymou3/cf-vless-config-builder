@@ -278,12 +278,14 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
       'use-system-hosts': false,
       listen: `${lanAccess ? '0.0.0.0' : '127.0.0.1'}:1053`,
       ipv6: ipv6Enable,
-      hosts: Object.fromEntries(blockProviders.map(p => ['rule-set:' + p.name, 'rcode://refused'])),
       nameserver: [`${remoteDnsVal}#${selectorTag}`],
       'proxy-server-nameserver': [`${localDnsVal}#DIRECT`],
       'direct-nameserver': [`${localDnsVal}#DIRECT`],
       'direct-nameserver-follow-policy': true,
-      'nameserver-policy': Object.fromEntries(selectedCountries.map(c => ['rule-set:geosite-' + c, `${localDnsVal}#DIRECT`])),
+      'nameserver-policy': Object.fromEntries([
+        ...selectedCountries.map(c => ['rule-set:geosite-' + c, `${localDnsVal}#DIRECT`]),
+        ...blockProviders.filter(p => p.behavior === 'domain').map(p => ['rule-set:' + p.name, 'rcode://refused'])
+      ]),
       'enhanced-mode': fakeDnsEnable ? 'fake-ip' : 'redir-host',
       ...(fakeDnsEnable ? {
         'fake-ip-range': '198.18.0.1/16',
