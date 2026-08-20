@@ -4,7 +4,7 @@ import { buildSingboxConfig } from './singbox-builder.js';
 import { buildClashConfig } from './clash-builder.js';
 import { parseChainConfig } from './chain-parser.js';
 import { toast, getChecked, row, downloadFile, renderCodeBlock, highlightJsonLine, highlightYamlLine, highlightJsLine, flashCopied } from './ui.js';
-import { exportSettingsToString, isValidImportPayload, applyImportedSettings } from './settings-io.js';
+import { exportSettingsToString, isValidImportPayload, isCompatibleExport, applyImportedSettings } from './settings-io.js';
 import { generateQRMatrix, qrMatrixToSvg } from './qrcode.js';
 import { t, getLang, setLang, applyI18n } from './i18n.js';
 
@@ -552,6 +552,10 @@ function importSettings(file) {
     }
     if (!isValidImportPayload(parsed)) {
       toast(t('toast.notTcbFile'));
+      return;
+    }
+    if (!isCompatibleExport(parsed)) {
+      toast(t('toast.oldSettingsFile'));
       return;
     }
     const restoredTarget = applyImportedSettings(parsed);
