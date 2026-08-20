@@ -6,7 +6,7 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v6.4
+# Tunnel Config Builder (TCB) v6.5
 
 A tool for building VLESS and Trojan configs for Cloudflare Workers and Cloudflare Pages — no VPS or personal server required
 
@@ -68,7 +68,9 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 
 4. Copy the address Cloudflare shows after deploying (something like `myworker.username.workers.dev` for a Worker, or `myproject.pages.dev` for Pages).
 
-At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker/Pages address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically. This button only accepts files exported from this same tool.
+At any step, you can use the "📤 Export Settings" button to download a backup file of all settings entered on the page (Token, Password, selected protocols, Worker/Pages address, IPs, ports, Fingerprint, WebSocket Path, Fragment settings, advanced JSON settings, ECH, DNS, routing rules, Observatory Settings, Chain Proxy, and the config name). Use the "📥 Import Settings" button to load that same file back into the page so all settings are restored automatically.
+
+This button only accepts a file that was exported from this exact same version of TCB. Settings files from older versions (even if manually edited) are always rejected, so an incomplete or version-mismatched set of settings can never be applied to the page by mistake. If you kept a settings file from an older version of TCB, you'll need to re-enter your settings manually in this version once, then export a fresh file so it can be imported going forward.
 
 ### Step 3 — Build the Config
 
