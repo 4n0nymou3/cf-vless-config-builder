@@ -7,6 +7,7 @@ import { toast, getChecked, row, downloadFile, renderCodeBlock, highlightJsonLin
 import { exportSettingsToString, isValidImportPayload, isCompatibleExport, applyImportedSettings } from './settings-io.js';
 import { generateQRMatrix, qrMatrixToSvg } from './qrcode.js';
 import { t, getLang, setLang, applyI18n } from './i18n.js';
+import { parseCustomRuleList } from './proxy-utils.js';
 
 let allC = [];
 let lastJsonStr = '';
@@ -30,9 +31,9 @@ function genPassword() {
   return out;
 }
 
-async function renderWorker(token, password) {
+async function renderWorker(token, password, fallbackDomain) {
   if (!token || !password) return;
-  const code = await buildWorker(token, password);
+  const code = await buildWorker(token, password, fallbackDomain);
   renderCodeBlock('workerDisplay', code, highlightJsLine);
 }
 
@@ -40,10 +41,14 @@ function currentPassword() {
   return document.getElementById('tpw').value.trim();
 }
 
+function currentFallbackDomain() {
+  return document.getElementById('fallbackDomain').value.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+}
+
 function mkToken() {
   const tok = uuid4();
   document.getElementById('uid').value = tok;
-  renderWorker(tok, currentPassword());
+  renderWorker(tok, currentPassword(), currentFallbackDomain());
   toast(t('toast.tokenUpdated'));
 }
 
@@ -57,7 +62,7 @@ function cpToken(e) {
 function mkPassword() {
   const p = genPassword();
   document.getElementById('tpw').value = p;
-  renderWorker(document.getElementById('uid').value.trim(), p);
+  renderWorker(document.getElementById('uid').value.trim(), p, currentFallbackDomain());
   toast(t('toast.passwordUpdated'));
 }
 
@@ -73,7 +78,7 @@ async function cpWorker(e) {
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
   if (!token || !password) { toast(t('toast.needTokenPassword')); return; }
-  const code = await buildWorker(token, password);
+  const code = await buildWorker(token, password, currentFallbackDomain());
   navigator.clipboard.writeText(code).then(() => { toast(t('toast.workerCopied')); flashCopied(btn); });
 }
 
@@ -81,7 +86,7 @@ async function dlWorker() {
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
   if (!token || !password) { toast(t('toast.needTokenPasswordEnter')); return; }
-  const code = await buildWorker(token, password);
+  const code = await buildWorker(token, password, currentFallbackDomain());
   downloadFile(code, 'worker.js', 'text/javascript');
   toast(t('toast.workerDownloaded'));
 }
@@ -90,7 +95,7 @@ async function dlWorkerZip() {
   const token = document.getElementById('uid').value.trim();
   const password = currentPassword();
   if (!token || !password) { toast(t('toast.needTokenPasswordEnter')); return; }
-  const zipBytes = await buildWorkerZip(token, password);
+  const zipBytes = await buildWorkerZip(token, password, currentFallbackDomain());
   downloadFile(zipBytes, 'tcb-pages-worker.zip', 'application/zip');
   toast(t('toast.workerZipDownloaded'));
 }
@@ -227,6 +232,26 @@ function collectSettings() {
       phishing: document.getElementById('blockPhishing').checked,
       cryptominers: document.getElementById('blockCryptominers').checked
     },
+    sanctionDnsVal: document.getElementById('sanctionDns').value.trim() || '178.22.122.100',
+    sanctionBypass: {
+      openai: document.getElementById('sanctionOpenai').checked,
+      googleai: document.getElementById('sanctionGoogleai').checked,
+      microsoft: document.getElementById('sanctionMicrosoft').checked,
+      oracle: document.getElementById('sanctionOracle').checked,
+      docker: document.getElementById('sanctionDocker').checked,
+      adobe: document.getElementById('sanctionAdobe').checked,
+      epicgames: document.getElementById('sanctionEpicgames').checked,
+      intel: document.getElementById('sanctionIntel').checked,
+      amd: document.getElementById('sanctionAmd').checked,
+      nvidia: document.getElementById('sanctionNvidia').checked,
+      asus: document.getElementById('sanctionAsus').checked,
+      hp: document.getElementById('sanctionHp').checked,
+      lenovo: document.getElementById('sanctionLenovo').checked
+    },
+    customBypassRulesRaw: document.getElementById('customBypassRules').value,
+    customBlockRulesRaw: document.getElementById('customBlockRules').value,
+    customBypassRules: parseCustomRuleList(document.getElementById('customBypassRules').value),
+    customBlockRules: parseCustomRuleList(document.getElementById('customBlockRules').value),
     leastPingInterval: document.getElementById('leastPingInterval').value.trim() || '3m',
     leastLoadInterval: document.getElementById('leastLoadInterval').value.trim() || '5m',
     leastLoadMode: document.getElementById('leastLoadMode').value,
@@ -496,7 +521,7 @@ function resetAll() {
   const p = genPassword();
   document.getElementById('uid').value = tok;
   document.getElementById('tpw').value = p;
-  renderWorker(tok, p);
+  renderWorker(tok, p, currentFallbackDomain());
 
   document.querySelectorAll('.sec-body-wrap.open').forEach(body => body.classList.remove('open'));
   document.querySelectorAll('.sec-hdr-toggle.open').forEach(hdr => hdr.classList.remove('open'));
@@ -564,7 +589,7 @@ function importSettings(file) {
     toggleFrag();
     toggleFrag2();
     toggleEch();
-    renderWorker(document.getElementById('uid').value.trim(), currentPassword());
+    renderWorker(document.getElementById('uid').value.trim(), currentPassword(), currentFallbackDomain());
     toast(t('toast.settingsImported'));
   };
   reader.onerror = () => toast(t('toast.fileReadError'));
@@ -647,10 +672,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const p = genPassword();
   document.getElementById('uid').value = tok;
   document.getElementById('tpw').value = p;
-  renderWorker(tok, p);
+  renderWorker(tok, p, currentFallbackDomain());
 
-  document.getElementById('uid').addEventListener('input', e => renderWorker(e.target.value.trim(), currentPassword()));
-  document.getElementById('tpw').addEventListener('input', e => renderWorker(document.getElementById('uid').value.trim(), e.target.value.trim()));
+  document.getElementById('uid').addEventListener('input', e => renderWorker(e.target.value.trim(), currentPassword(), currentFallbackDomain()));
+  document.getElementById('tpw').addEventListener('input', e => renderWorker(document.getElementById('uid').value.trim(), e.target.value.trim(), currentFallbackDomain()));
+  document.getElementById('fallbackDomain').addEventListener('input', () => renderWorker(document.getElementById('uid').value.trim(), currentPassword(), currentFallbackDomain()));
   document.getElementById('btn-cp-worker').addEventListener('click', cpWorker);
   document.getElementById('btn-dl-worker').addEventListener('click', dlWorker);
   document.getElementById('btn-dl-worker-zip').addEventListener('click', dlWorkerZip);
