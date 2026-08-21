@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, resolveTcbLabel } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, resolveSelectedSanctionRules, resolveTcbLabel } from './proxy-utils.js';
 
 export function buildConfig(token, dom, ip, port, security, fp, path, label, echActive, echDns) {
   const h = ip.includes(':') ? `[${ip}]` : ip;
@@ -61,6 +61,22 @@ const BLOCK_DOMAIN_TAGS = {
 const BLOCK_IP_TAGS = {
   malware: ['geoip:malware'],
   phishing: ['geoip:phishing']
+};
+
+const SANCTION_GEOSITE = {
+  openai: 'geosite:openai',
+  googleai: 'geosite:google-deepmind',
+  microsoft: 'geosite:microsoft',
+  oracle: 'geosite:oracle',
+  docker: 'geosite:docker',
+  adobe: 'geosite:adobe',
+  epicgames: 'geosite:epicgames',
+  intel: 'geosite:intel',
+  amd: 'geosite:amd',
+  nvidia: 'geosite:nvidia',
+  asus: 'geosite:asus',
+  hp: 'geosite:hp',
+  lenovo: 'geosite:lenovo'
 };
 
 function toFinalMaskArray(raw) {
@@ -173,7 +189,8 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
     fpUnsafeXray, cipherSuitesXray,
     fakeDnsEnable, ipv6Enable, lanAccess, remoteDnsVal, localDnsVal,
     tcpFastOpen, echEnable, echDns, jsonName, customDomainUsed, customDomain, routingCountries, blockRules,
-    leastPingInterval, leastLoadInterval, leastLoadMode, leastLoadSampling, leastLoadTimeout, parsedChain
+    leastPingInterval, leastLoadInterval, leastLoadMode, leastLoadSampling, leastLoadTimeout, parsedChain,
+    sanctionDnsVal, sanctionBypass, customBypassRules, customBlockRules
   } = settings;
 
   const advTls = { frag2Enable, frag2Packets, frag2Length, frag2Interval, frag2MaxSplit, fpUnsafeXray, cipherSuitesXray };
@@ -190,6 +207,20 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
   const blockQuic = !!(blockRules && blockRules.quic);
   const blockDomains = [...new Set(selectedBlockRules.flatMap(c => BLOCK_DOMAIN_TAGS[c] || []))];
   const blockIps = [...new Set(selectedBlockRules.flatMap(c => BLOCK_IP_TAGS[c] || []))];
+
+  const selectedSanctionRules = resolveSelectedSanctionRules(sanctionBypass);
+  const sanctionDomains = [...new Set(selectedSanctionRules.map(c => SANCTION_GEOSITE[c]).filter(Boolean))];
+  const sanctionDnsAddr = (sanctionDnsVal || '178.22.122.100').trim();
+
+  const customBypassDomains = (customBypassRules && customBypassRules.domains) || [];
+  const customBypassIps = (customBypassRules && customBypassRules.ips) || [];
+  const customBlockDomains = (customBlockRules && customBlockRules.domains) || [];
+  const customBlockIps = (customBlockRules && customBlockRules.ips) || [];
+
+  const allDirectDomains = [...new Set([...directDomains, ...sanctionDomains, ...customBypassDomains.map(d => `domain:${d}`)])];
+  const allDirectIps = [...new Set([...directIps, ...customBypassIps])];
+  const allBlockDomains = [...new Set([...blockDomains, ...customBlockDomains.map(d => `domain:${d}`)])];
+  const allBlockIps = [...new Set([...blockIps, ...customBlockIps])];
 
   const outboundSockopt = {
     domainStrategy: 'UseIP',
@@ -314,6 +345,15 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
     domesticTags.push(tag);
   });
 
+  if (sanctionDomains.length) {
+    dnsServers.push({
+      address: sanctionDnsAddr,
+      domains: sanctionDomains,
+      skipFallback: true,
+      tag: 'sanction-dns'
+    });
+  }
+
   const sniffingDestOverride = fakeDnsEnable ? ['http', 'tls', 'fakedns'] : ['http', 'tls'];
 
   const configObj = {
@@ -378,10 +418,10 @@ export function buildJsonConfig(token, password, dom, ips, tlsPorts, wsPorts, fp
         { ip: ['geoip:private'], outboundTag: 'direct', type: 'field' },
         { domain: ['geosite:private'], outboundTag: 'direct', type: 'field' },
         ...(blockQuic ? [{ network: 'udp', outboundTag: 'block', type: 'field' }] : []),
-        ...(blockDomains.length ? [{ domain: blockDomains, outboundTag: 'block', type: 'field' }] : []),
-        ...(blockIps.length ? [{ ip: blockIps, outboundTag: 'block', type: 'field' }] : []),
-        { domain: directDomains, outboundTag: 'direct', type: 'field' },
-        { ip: directIps, outboundTag: 'direct', type: 'field' },
+        ...(allBlockDomains.length ? [{ domain: allBlockDomains, outboundTag: 'block', type: 'field' }] : []),
+        ...(allBlockIps.length ? [{ ip: allBlockIps, outboundTag: 'block', type: 'field' }] : []),
+        { domain: allDirectDomains, outboundTag: 'direct', type: 'field' },
+        { ip: allDirectIps, outboundTag: 'direct', type: 'field' },
         { inboundTag: domesticTags, outboundTag: 'direct', type: 'field' },
         { balancerTag: 'proxy-round', inboundTag: ['dns-module'], type: 'field' },
         { balancerTag: 'proxy-round', network: 'tcp,udp', type: 'field' }
