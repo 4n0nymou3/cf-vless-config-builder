@@ -16,12 +16,13 @@ async function fetchWorkerTpl() {
   return _workerTpl;
 }
 
-export async function buildWorker(token, password) {
+export async function buildWorker(token, password, fallbackDomain) {
   const encToken = xenc(token);
   const encPass = xenc(password);
+  const fbLiteral = JSON.stringify(String(fallbackDomain || '').trim());
   const tpl = await fetchWorkerTpl();
   if (tpl) {
-    return tpl.replace('__WORKER_TOKEN_ARRAY__', `[${encToken.join(',')}]`).replace('__WORKER_TROJAN_ARRAY__', `[${encPass.join(',')}]`);
+    return tpl.replace('__WORKER_TOKEN_ARRAY__', `[${encToken.join(',')}]`).replace('__WORKER_TROJAN_ARRAY__', `[${encPass.join(',')}]`).replace('__WORKER_FALLBACK_STRING__', fbLiteral);
   }
 
   const hardcoded = `import{connect as _a}from'cloudflare:sockets';
@@ -62,7 +63,9 @@ return _h.slice(0,7).map(x=>(x>>>0).toString(16).padStart(8,'0')).join('')
 }
 const _th=(()=>_sh(_tw))();
 const _PF=['[2602:fc59:b0:64::]','[2602:fc59:11:64::]','[2a02:898:146:64::]'];
-export default{async fetch(r){if((r.headers.get('upgrade')||'').toLowerCase()!=='websocket')return new Response('',{status:200});return _hw(r)}};
+const _FB=__WORKER_FALLBACK_STRING__;
+async function _fb(r){if(!_FB)return new Response('',{status:200});try{const u=new URL(r.url);u.hostname=_FB;u.protocol='https:';const nr=new Request(u.toString(),{method:r.method,headers:r.headers,body:r.body,redirect:'manual'});return await fetch(nr)}catch(_){return new Response('',{status:200})}}
+export default{async fetch(r){if((r.headers.get('upgrade')||'').toLowerCase()!=='websocket')return _fb(r);return _hw(r)}};
 function _dd(h){if(!h)return null;try{return Uint8Array.from(atob(h.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)).buffer}catch(_){return null}}
 function _ms(ws,ed){return new ReadableStream({start(ctrl){if(ed)ctrl.enqueue(ed);ws.addEventListener('message',({data:m})=>ctrl.enqueue(m));ws.addEventListener('close',()=>ctrl.close());ws.addEventListener('error',e=>ctrl.error(e))}})}
 async function _dns(h){try{const r=await fetch('https://cloudflare-dns.com/dns-query?name='+encodeURIComponent(h)+'&type=A',{headers:{accept:'application/dns-json'}});const d=await r.json();return d.Answer?.find(a=>a.type===1)?.data||null}catch(_){return null}}
@@ -72,10 +75,10 @@ function _pw(sock,ws,vh,onND){let got=false;let hdr=vh;sock.readable.pipeTo(new 
 async function _route(ref,sv,host,port,init,rh,at){const retry=async()=>{try{if(at==='v6'){sv.close();return}const v4=at==='v4'?host:await _dns(host);if(!v4){sv.close();return}const p=_PF[Math.floor(Math.random()*_PF.length)];const v6=_p6(v4,p);if(!v6){sv.close();return}await _oc(ref,v6,port,init);_pw(ref.v,sv,rh,null)}catch(_){try{sv.close()}catch(__){}}};try{await _oc(ref,host,port,init);_pw(ref.v,sv,rh,retry)}catch(_){await retry()}}
 async function _hw(r){const[cl,sv]=Object.values(new WebSocketPair());sv.accept();sv.binaryType='arraybuffer';const ed=_dd(r.headers.get('sec-websocket-protocol')||'');let ref={v:null};_ms(sv,ed).pipeTo(new WritableStream({async write(chunk){if(ref.v){const w=ref.v.writable.getWriter();await w.write(chunk);w.releaseLock();return}const d=chunk instanceof ArrayBuffer?new Uint8Array(chunk):new Uint8Array(await chunk.arrayBuffer());if(d.length>=19&&d[0]===0){const uid=[...d.slice(1,17)].map(v=>v.toString(16).padStart(2,'0')).join('');if(uid!==_e)throw new Error('a');const al=d[17];let i=18+al+1;const port=(d[i]<<8)|d[i+1];i+=2;const at=d[i++];let host='',addrType='';if(at===1){host=[...d.slice(i,i+4)].join('.');i+=4;addrType='v4'}else if(at===2){const n=d[i++];host=new TextDecoder().decode(d.slice(i,i+n));i+=n;addrType='domain'}else if(at===3){const b=d.slice(i,i+16);host=[...Array(8)].map((_,j)=>((b[j*2]<<8)|b[j*2+1]).toString(16)).join(':');i+=16;addrType='v6'}else throw new Error('t');const init=d.slice(i);await _route(ref,sv,host,port,init,new Uint8Array([0,0]),addrType);return}if(d.length>58&&d[56]===13&&d[57]===10){const hdrTxt=String.fromCharCode(...d.slice(0,56)).toLowerCase();if(/^[0-9a-f]{56}$/.test(hdrTxt)){if(hdrTxt!==_th)throw new Error('a');let i=58;i++;const at=d[i++];let host='',addrType='';if(at===1){host=[...d.slice(i,i+4)].join('.');i+=4;addrType='v4'}else if(at===3){const n=d[i++];host=new TextDecoder().decode(d.slice(i,i+n));i+=n;addrType='domain'}else if(at===4){const b=d.slice(i,i+16);host=[...Array(8)].map((_,j)=>((b[j*2]<<8)|b[j*2+1]).toString(16)).join(':');i+=16;addrType='v6'}else throw new Error('t');const port=(d[i]<<8)|d[i+1];i+=2;if(d[i]===13&&d[i+1]===10)i+=2;const init=d.slice(i);await _route(ref,sv,host,port,init,new Uint8Array(0),addrType);return}}throw new Error('u')},close(){try{ref.v?.readable.cancel()}catch(_){}},abort(){try{ref.v?.readable.cancel()}catch(_){}}})).catch(()=>{});return new Response(null,{status:101,webSocket:cl})}`;
 
-  return hardcoded.replace('__WORKER_TOKEN_ARRAY__', `[${encToken.join(',')}]`).replace('__WORKER_TROJAN_ARRAY__', `[${encPass.join(',')}]`);
+  return hardcoded.replace('__WORKER_TOKEN_ARRAY__', `[${encToken.join(',')}]`).replace('__WORKER_TROJAN_ARRAY__', `[${encPass.join(',')}]`).replace('__WORKER_FALLBACK_STRING__', fbLiteral);
 }
 
-export async function buildWorkerZip(token, password) {
-  const code = await buildWorker(token, password);
+export async function buildWorkerZip(token, password, fallbackDomain) {
+  const code = await buildWorker(token, password, fallbackDomain);
   return createZip([{ name: '_worker.js', content: code }]);
 }
