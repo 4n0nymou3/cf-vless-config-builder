@@ -29,7 +29,7 @@
       </div>
       <p class="hdr-sub" data-i18n="hdr.sub">ساخت کانفیگ VLESS/TROJAN برای Cloudflare Worker و Pages</p>
       <div class="badges">
-        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.5</span></span>
+        <span class="badge"><span class="badge-label">TCB</span><span class="badge-value bv-blue">v6.6</span></span>
         <span class="badge"><span class="badge-label">license</span><span class="badge-value bv-purple">MIT</span></span>
       </div>
     </div>
@@ -159,6 +159,11 @@
         <input type="text" id="customDomainInput" placeholder="vpn.yourdomain.ir" autocomplete="off" disabled/>
         <p class="hint" data-i18n="hint.customDomainNote">با پر کردن این کادر، کانفیگ‌های اضافه‌ای با این دامنه (فقط با TLS، چون دامنه شخصی از پورت‌های بدون TLS پشتیبانی نمی‌کند) به‌صورت ترکیبی به کانفیگ‌های JSON/YAML اضافه می‌شوند و نام آن‌ها با 🌐 و کانفیگ‌های تکی لینک با پسوند D- مشخص می‌شوند؛ کانفیگ‌های عادی با آدرس بالا هم دقیقاً مثل قبل ساخته می‌شوند.</p>
       </div>
+    </div>
+    <div class="fg mt-14">
+      <label for="fallbackDomain" data-i18n="lbl.fallbackDomain">دامنه پوششی (اختیاری)</label>
+      <input type="text" id="fallbackDomain" placeholder="www.example.com" autocomplete="off"/>
+      <p class="hint" data-i18n="hint.fallbackDomain">⚠️ در صورت پر بودن، بازدیدکننده‌های غیرمجاز به‌جای صفحه خالی، محتوای این سایت را می‌بینند. تغییر یا حذف این مقدار نیاز به دریافت و اعمال مجدد کد Worker/Pages دارد.</p>
     </div>
    </div>
   </div>
@@ -393,6 +398,36 @@
         <label class="ck-lbl"><input type="checkbox" id="blockCryptominers"> Cryptominers</label>
       </div>
       <p class="hint mt-8" data-i18n="hint.blockInfo">دسته‌هایی که تیک می‌زنید در هر سه فرمت خروجی مسدود می‌شوند. QUIC یعنی مسدود شدن ترافیک UDP (شامل HTTP/3) تا مرورگر به‌صورت خودکار روی HTTPS معمولی که از تانل شما عبور می‌کند سوییچ کند.</p>
+
+      <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.sanctionBypass">Bypass Sanctions — دور زدن مستقیم سرویس‌های تحریمی</label>
+      <div class="fg mb-8">
+        <label class="adv-lbl" for="sanctionDns" data-i18n="lbl.sanctionDns">DNS ضدتحریم</label>
+        <input type="text" id="sanctionDns" value="178.22.122.100" placeholder="178.22.122.100"/>
+      </div>
+      <div class="port-row mb-10">
+        <label class="ck-lbl"><input type="checkbox" id="sanctionOpenai"> ChatGPT</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionGoogleai"> Google AIs</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionMicrosoft"> Microsoft</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionOracle"> Oracle</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionDocker"> Docker</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionAdobe"> Adobe</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionEpicgames"> Epic Games</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionIntel"> Intel</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionAmd"> AMD</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionNvidia"> Nvidia</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionAsus"> Asus</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionHp"> HP</label>
+        <label class="ck-lbl"><input type="checkbox" id="sanctionLenovo"> Lenovo</label>
+      </div>
+      <p class="hint mt-8" data-i18n="hint.sanctionInfo">سرویس‌هایی که تیک می‌زنید همیشه مستقیم (با DNS بالا) مسیریابی می‌شوند، حتی اگر IP خروجی شما ایرانی تشخیص داده شود.</p>
+
+      <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.customBypassRules">Custom Bypass Rules — هر خط یک دامنه/IP/CIDR</label>
+      <textarea id="customBypassRules" placeholder="example.com&#10;192.168.1.1&#10;192.168.1.0/24" autocomplete="off"></textarea>
+      <p class="hint mt-8" data-i18n="hint.customRulesInfo">دامنه‌ی وارد شده و همه زیردامنه‌هایش هم شامل می‌شود.</p>
+
+      <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.customBlockRules">Custom Block Rules — هر خط یک دامنه/IP/CIDR</label>
+      <textarea id="customBlockRules" placeholder="example.com&#10;192.168.1.1&#10;192.168.1.0/24" autocomplete="off"></textarea>
+      <p class="hint mt-8" data-i18n="hint.customRulesInfo">دامنه‌ی وارد شده و همه زیردامنه‌هایش هم شامل می‌شود.</p>
     </div>
 
     <div class="fg mt-14 settings-box">
