@@ -1,4 +1,4 @@
-import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, durationToSeconds, resolveTcbLabel } from './proxy-utils.js';
+import { randomizeCase, resolveSelectedCountries, resolveSelectedBlockRules, resolveSelectedSanctionRules, durationToSeconds, resolveTcbLabel } from './proxy-utils.js';
 
 function isDomainAddr(addr) {
   return /^(?!-)(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,}$/.test(addr);
@@ -86,6 +86,27 @@ const SINGBOX_BLOCK_RULESET_URLS = {
   'geosite-cryptominers': 'geosite-cryptominers.srs'
 };
 
+const SINGBOX_SANCTION_RULESETS = {
+  openai: 'geosite-openai',
+  googleai: 'geosite-google-deepmind',
+  microsoft: 'geosite-microsoft',
+  oracle: 'geosite-oracle',
+  docker: 'geosite-docker',
+  adobe: 'geosite-adobe',
+  epicgames: 'geosite-epicgames',
+  intel: 'geosite-intel',
+  amd: 'geosite-amd',
+  nvidia: 'geosite-nvidia',
+  asus: 'geosite-asus',
+  hp: 'geosite-hp',
+  lenovo: 'geosite-lenovo'
+};
+
+function toSingboxCidr(ip) {
+  if (ip.includes('/')) return ip;
+  return ip.includes(':') ? ip + '/128' : ip + '/32';
+}
+
 function parseDnsUrl(value) {
   try {
     const u = new URL(value);
@@ -99,7 +120,8 @@ function parseDnsUrl(value) {
 export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts, fp, settings, protocols) {
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
-    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain, jsonName, customDomainUsed, customDomain
+    remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain, jsonName, customDomainUsed, customDomain,
+    sanctionDnsVal, sanctionBypass, customBypassRules, customBlockRules
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -109,6 +131,15 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
   const selectedBlockRules = resolveSelectedBlockRules(blockRules);
   const blockQuic = !!(blockRules && blockRules.quic);
   const blockRulesetTags = [...new Set(selectedBlockRules.flatMap(c => SINGBOX_BLOCK_RULESETS[c] || []))];
+
+  const selectedSanctionRules = resolveSelectedSanctionRules(sanctionBypass);
+  const sanctionRulesetTags = [...new Set(selectedSanctionRules.map(c => SINGBOX_SANCTION_RULESETS[c]).filter(Boolean))];
+  const sanctionDnsParsed = parseDnsUrl((sanctionDnsVal || '178.22.122.100').trim());
+
+  const customBypassDomains = (customBypassRules && customBypassRules.domains) || [];
+  const customBypassIps = (customBypassRules && customBypassRules.ips) || [];
+  const customBlockDomains = (customBlockRules && customBlockRules.domains) || [];
+  const customBlockIps = (customBlockRules && customBlockRules.ips) || [];
 
   const intervalSeconds = durationToSeconds(leastPingInterval, 180);
 
@@ -260,6 +291,10 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     { type: localParsed.type, server: localParsed.host, tag: 'dns-direct' }
   ];
 
+  if (sanctionRulesetTags.length) {
+    dnsServers.push({ type: sanctionDnsParsed.type, server: sanctionDnsParsed.host, tag: 'dns-sanction' });
+  }
+
   if (fakeDnsEnable) {
     dnsServers.push({
       type: 'fakeip',
@@ -278,7 +313,15 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     dnsRules.push({ rule_set: blockRulesetTags, action: 'reject' });
   }
 
+  if (customBlockDomains.length) {
+    dnsRules.push({ domain_suffix: customBlockDomains, action: 'reject' });
+  }
+
   dnsRules.push({ rule_set: geositeTags, server: 'dns-direct' });
+
+  if (sanctionRulesetTags.length) {
+    dnsRules.push({ rule_set: sanctionRulesetTags, server: 'dns-sanction' });
+  }
 
   if (fakeDnsEnable) {
     dnsRules.push({ inbound: 'tun-in', query_type: ['A', 'AAAA'], server: 'dns-fake' });
@@ -298,8 +341,25 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     routeRules.push({ rule_set: blockRulesetTags, action: 'reject' });
   }
 
+  if (customBlockDomains.length) {
+    routeRules.push({ domain_suffix: customBlockDomains, action: 'reject' });
+  }
+  if (customBlockIps.length) {
+    routeRules.push({ ip_cidr: customBlockIps.map(toSingboxCidr), action: 'reject' });
+  }
+
   routeRules.push({ rule_set: geositeTags, outbound: 'direct' });
   routeRules.push({ rule_set: geoipTags, outbound: 'direct' });
+
+  if (sanctionRulesetTags.length) {
+    routeRules.push({ rule_set: sanctionRulesetTags, outbound: 'direct' });
+  }
+  if (customBypassDomains.length) {
+    routeRules.push({ domain_suffix: customBypassDomains, outbound: 'direct' });
+  }
+  if (customBypassIps.length) {
+    routeRules.push({ ip_cidr: customBypassIps.map(toSingboxCidr), outbound: 'direct' });
+  }
 
   const countryRulesetDefs = selectedCountries.flatMap(c => [
     {
@@ -323,6 +383,14 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     tag: tag,
     format: 'binary',
     url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/' + SINGBOX_BLOCK_RULESET_URLS[tag],
+    download_detour: 'direct'
+  }));
+
+  const sanctionRulesetDefs = sanctionRulesetTags.map(tag => ({
+    type: 'remote',
+    tag: tag,
+    format: 'binary',
+    url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/' + tag + '.srs',
     download_detour: 'direct'
   }));
 
@@ -362,7 +430,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     outbounds: outbounds,
     route: {
       rules: routeRules,
-      rule_set: [...countryRulesetDefs, ...blockRulesetDefs],
+      rule_set: [...countryRulesetDefs, ...blockRulesetDefs, ...sanctionRulesetDefs],
       auto_detect_interface: true,
       final: selectorTag
     },
