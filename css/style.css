@@ -270,7 +270,7 @@ select option{background:var(--card);color:var(--text)}
   border:1px solid var(--border);border-radius:6px;font-size:11.5px;
   cursor:pointer;background:var(--bg);color:var(--muted);
   transition:.15s;user-select:none;font-family:var(--font-mono);
-  direction:ltr;
+  direction:ltr;white-space:nowrap;
 }
 .ck-lbl:hover{border-color:var(--blue);color:var(--blue)}
 .ck-lbl input[type=checkbox]{accent-color:var(--blue);cursor:pointer}
