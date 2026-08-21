@@ -1,5 +1,5 @@
 const APP_ID = 'tcb';
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 export function collectExportData() {
   return {
@@ -14,6 +14,7 @@ export function collectExportData() {
         trojan: document.getElementById('protoTrojan').checked
       },
       workerDomain: document.getElementById('wdom').value.trim(),
+      fallbackDomain: document.getElementById('fallbackDomain').value.trim(),
       ips: document.getElementById('ips').value,
       tlsPorts: [...document.querySelectorAll('.ptls:checked')].map(el => el.value),
       wsPorts: [...document.querySelectorAll('.pws:checked')].map(el => el.value),
@@ -64,6 +65,24 @@ export function collectExportData() {
         phishing: document.getElementById('blockPhishing').checked,
         cryptominers: document.getElementById('blockCryptominers').checked
       },
+      sanctionDns: document.getElementById('sanctionDns').value,
+      sanctionBypass: {
+        openai: document.getElementById('sanctionOpenai').checked,
+        googleai: document.getElementById('sanctionGoogleai').checked,
+        microsoft: document.getElementById('sanctionMicrosoft').checked,
+        oracle: document.getElementById('sanctionOracle').checked,
+        docker: document.getElementById('sanctionDocker').checked,
+        adobe: document.getElementById('sanctionAdobe').checked,
+        epicgames: document.getElementById('sanctionEpicgames').checked,
+        intel: document.getElementById('sanctionIntel').checked,
+        amd: document.getElementById('sanctionAmd').checked,
+        nvidia: document.getElementById('sanctionNvidia').checked,
+        asus: document.getElementById('sanctionAsus').checked,
+        hp: document.getElementById('sanctionHp').checked,
+        lenovo: document.getElementById('sanctionLenovo').checked
+      },
+      customBypassRules: document.getElementById('customBypassRules').value,
+      customBlockRules: document.getElementById('customBlockRules').value,
       observatory: {
         leastPingInterval: document.getElementById('leastPingInterval').value,
         leastLoadInterval: document.getElementById('leastLoadInterval').value,
@@ -118,6 +137,7 @@ function hasExactExportShape(d) {
   if (!isBool(d.protocols.vless)) return false;
   if (!isBool(d.protocols.trojan)) return false;
   if (!isStr(d.workerDomain)) return false;
+  if (!isStr(d.fallbackDomain)) return false;
   if (!isStr(d.ips)) return false;
   if (!isStrArray(d.tlsPorts)) return false;
   if (!isStrArray(d.wsPorts)) return false;
@@ -167,6 +187,24 @@ function hasExactExportShape(d) {
   if (!isBool(d.blockRules.phishing)) return false;
   if (!isBool(d.blockRules.cryptominers)) return false;
 
+  if (!isStr(d.sanctionDns)) return false;
+  if (!isPlainObject(d.sanctionBypass)) return false;
+  if (!isBool(d.sanctionBypass.openai)) return false;
+  if (!isBool(d.sanctionBypass.googleai)) return false;
+  if (!isBool(d.sanctionBypass.microsoft)) return false;
+  if (!isBool(d.sanctionBypass.oracle)) return false;
+  if (!isBool(d.sanctionBypass.docker)) return false;
+  if (!isBool(d.sanctionBypass.adobe)) return false;
+  if (!isBool(d.sanctionBypass.epicgames)) return false;
+  if (!isBool(d.sanctionBypass.intel)) return false;
+  if (!isBool(d.sanctionBypass.amd)) return false;
+  if (!isBool(d.sanctionBypass.nvidia)) return false;
+  if (!isBool(d.sanctionBypass.asus)) return false;
+  if (!isBool(d.sanctionBypass.hp)) return false;
+  if (!isBool(d.sanctionBypass.lenovo)) return false;
+  if (!isStr(d.customBypassRules)) return false;
+  if (!isStr(d.customBlockRules)) return false;
+
   if (!isPlainObject(d.observatory)) return false;
   if (!isStr(d.observatory.leastPingInterval)) return false;
   if (!isStr(d.observatory.leastLoadInterval)) return false;
@@ -195,6 +233,7 @@ export function applyImportedSettings(payload) {
   document.getElementById('protoVless').checked = d.protocols.vless;
   document.getElementById('protoTrojan').checked = d.protocols.trojan;
   document.getElementById('wdom').value = d.workerDomain;
+  document.getElementById('fallbackDomain').value = d.fallbackDomain;
   document.getElementById('ips').value = d.ips;
 
   const tlsSet = new Set(d.tlsPorts);
@@ -242,6 +281,23 @@ export function applyImportedSettings(payload) {
   document.getElementById('blockMalware').checked = d.blockRules.malware;
   document.getElementById('blockPhishing').checked = d.blockRules.phishing;
   document.getElementById('blockCryptominers').checked = d.blockRules.cryptominers;
+
+  document.getElementById('sanctionDns').value = d.sanctionDns;
+  document.getElementById('sanctionOpenai').checked = d.sanctionBypass.openai;
+  document.getElementById('sanctionGoogleai').checked = d.sanctionBypass.googleai;
+  document.getElementById('sanctionMicrosoft').checked = d.sanctionBypass.microsoft;
+  document.getElementById('sanctionOracle').checked = d.sanctionBypass.oracle;
+  document.getElementById('sanctionDocker').checked = d.sanctionBypass.docker;
+  document.getElementById('sanctionAdobe').checked = d.sanctionBypass.adobe;
+  document.getElementById('sanctionEpicgames').checked = d.sanctionBypass.epicgames;
+  document.getElementById('sanctionIntel').checked = d.sanctionBypass.intel;
+  document.getElementById('sanctionAmd').checked = d.sanctionBypass.amd;
+  document.getElementById('sanctionNvidia').checked = d.sanctionBypass.nvidia;
+  document.getElementById('sanctionAsus').checked = d.sanctionBypass.asus;
+  document.getElementById('sanctionHp').checked = d.sanctionBypass.hp;
+  document.getElementById('sanctionLenovo').checked = d.sanctionBypass.lenovo;
+  document.getElementById('customBypassRules').value = d.customBypassRules;
+  document.getElementById('customBlockRules').value = d.customBlockRules;
 
   document.getElementById('leastPingInterval').value = d.observatory.leastPingInterval;
   document.getElementById('leastLoadInterval').value = d.observatory.leastLoadInterval;
