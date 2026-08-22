@@ -1,5 +1,5 @@
 const APP_ID = 'tcb';
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 export function collectExportData() {
   return {
@@ -79,7 +79,9 @@ export function collectExportData() {
         nvidia: document.getElementById('sanctionNvidia').checked,
         asus: document.getElementById('sanctionAsus').checked,
         hp: document.getElementById('sanctionHp').checked,
-        lenovo: document.getElementById('sanctionLenovo').checked
+        lenovo: document.getElementById('sanctionLenovo').checked,
+        anthropic: document.getElementById('sanctionAnthropic').checked,
+        xai: document.getElementById('sanctionXai').checked
       },
       customBypassRules: document.getElementById('customBypassRules').value,
       customBlockRules: document.getElementById('customBlockRules').value,
@@ -202,6 +204,8 @@ function hasExactExportShape(d) {
   if (!isBool(d.sanctionBypass.asus)) return false;
   if (!isBool(d.sanctionBypass.hp)) return false;
   if (!isBool(d.sanctionBypass.lenovo)) return false;
+  if (!isBool(d.sanctionBypass.anthropic)) return false;
+  if (!isBool(d.sanctionBypass.xai)) return false;
   if (!isStr(d.customBypassRules)) return false;
   if (!isStr(d.customBlockRules)) return false;
 
@@ -296,6 +300,8 @@ export function applyImportedSettings(payload) {
   document.getElementById('sanctionAsus').checked = d.sanctionBypass.asus;
   document.getElementById('sanctionHp').checked = d.sanctionBypass.hp;
   document.getElementById('sanctionLenovo').checked = d.sanctionBypass.lenovo;
+  document.getElementById('sanctionAnthropic').checked = d.sanctionBypass.anthropic;
+  document.getElementById('sanctionXai').checked = d.sanctionBypass.xai;
   document.getElementById('customBypassRules').value = d.customBypassRules;
   document.getElementById('customBlockRules').value = d.customBlockRules;
 
