@@ -254,6 +254,8 @@ function collectSettings() {
     customBlockRulesRaw: document.getElementById('customBlockRules').value,
     customBypassRules: parseCustomRuleList(document.getElementById('customBypassRules').value),
     customBlockRules: parseCustomRuleList(document.getElementById('customBlockRules').value),
+    customSanctionRulesRaw: document.getElementById('customSanctionRules').value,
+    customSanctionRules: parseCustomRuleList(document.getElementById('customSanctionRules').value),
     leastPingInterval: document.getElementById('leastPingInterval').value.trim() || '3m',
     leastLoadInterval: document.getElementById('leastLoadInterval').value.trim() || '5m',
     leastLoadMode: document.getElementById('leastLoadMode').value,
