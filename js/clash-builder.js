@@ -125,7 +125,7 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
     remoteDnsVal, localDnsVal, tcpFastOpen, echEnable, routingCountries, blockRules, leastPingInterval, parsedChain, jsonName, customDomainUsed, customDomain,
-    sanctionDnsVal, sanctionBypass, customBypassRules, customBlockRules
+    sanctionDnsVal, sanctionBypass, customBypassRules, customBlockRules, customSanctionRules
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -142,6 +142,7 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
   const customBypassIps = (customBypassRules && customBypassRules.ips) || [];
   const customBlockDomains = (customBlockRules && customBlockRules.domains) || [];
   const customBlockIps = (customBlockRules && customBlockRules.ips) || [];
+  const customSanctionDomains = (customSanctionRules && customSanctionRules.domains) || [];
 
   const useVless = !protocols || protocols.vless !== false;
   const useTrojan = !!(protocols && protocols.trojan);
@@ -319,7 +320,8 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
       'nameserver-policy': Object.fromEntries([
         ...selectedCountries.map(c => ['rule-set:geosite-' + c, `${localDnsVal}#DIRECT`]),
         ...blockProviders.filter(p => p.behavior === 'domain').map(p => ['rule-set:' + p.name, 'rcode://refused']),
-        ...sanctionProviderNames.map(name => ['rule-set:' + name, `${sanctionDnsAddr}#DIRECT`])
+        ...sanctionProviderNames.map(name => ['rule-set:' + name, `${sanctionDnsAddr}#DIRECT`]),
+        ...customSanctionDomains.map(d => ['+.' + d, `${sanctionDnsAddr}#DIRECT`])
       ]),
       'enhanced-mode': fakeDnsEnable ? 'fake-ip' : 'redir-host',
       ...(fakeDnsEnable ? {
@@ -380,6 +382,7 @@ export function buildClashConfig(token, password, dom, ips, tlsPorts, wsPorts, f
       ...customBlockIps.map(ip => toClashIpRule(ip, 'REJECT')),
       ...selectedCountries.flatMap(c => [`RULE-SET,geosite-${c},DIRECT`, `RULE-SET,geoip-${c},DIRECT`]),
       ...sanctionProviderNames.map(name => `RULE-SET,${name},DIRECT`),
+      ...customSanctionDomains.map(d => `DOMAIN-SUFFIX,${d},DIRECT`),
       ...customBypassDomains.map(d => `DOMAIN-SUFFIX,${d},DIRECT`),
       ...customBypassIps.map(ip => toClashIpRule(ip, 'DIRECT')),
       'MATCH,' + selectorTag
