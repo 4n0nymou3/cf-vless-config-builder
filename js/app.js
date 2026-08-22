@@ -246,7 +246,9 @@ function collectSettings() {
       nvidia: document.getElementById('sanctionNvidia').checked,
       asus: document.getElementById('sanctionAsus').checked,
       hp: document.getElementById('sanctionHp').checked,
-      lenovo: document.getElementById('sanctionLenovo').checked
+      lenovo: document.getElementById('sanctionLenovo').checked,
+      anthropic: document.getElementById('sanctionAnthropic').checked,
+      xai: document.getElementById('sanctionXai').checked
     },
     customBypassRulesRaw: document.getElementById('customBypassRules').value,
     customBlockRulesRaw: document.getElementById('customBlockRules').value,
