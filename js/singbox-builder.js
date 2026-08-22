@@ -123,7 +123,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
   const {
     basePath, fragEnable, fakeDnsEnable, ipv6Enable, lanAccess,
     remoteDnsVal, localDnsVal, tcpFastOpen, routingCountries, blockRules, leastPingInterval, echEnable, parsedChain, jsonName, customDomainUsed, customDomain,
-    sanctionDnsVal, sanctionBypass, customBypassRules, customBlockRules
+    sanctionDnsVal, sanctionBypass, customBypassRules, customBlockRules, customSanctionRules
   } = settings;
 
   const selectedCountries = resolveSelectedCountries(routingCountries);
@@ -142,6 +142,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
   const customBypassIps = (customBypassRules && customBypassRules.ips) || [];
   const customBlockDomains = (customBlockRules && customBlockRules.domains) || [];
   const customBlockIps = (customBlockRules && customBlockRules.ips) || [];
+  const customSanctionDomains = (customSanctionRules && customSanctionRules.domains) || [];
 
   const intervalSeconds = durationToSeconds(leastPingInterval, 180);
 
@@ -293,7 +294,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     { type: localParsed.type, server: localParsed.host, tag: 'dns-direct' }
   ];
 
-  if (sanctionRulesetTags.length) {
+  if (sanctionRulesetTags.length || customSanctionDomains.length) {
     dnsServers.push({ type: sanctionDnsParsed.type, server: sanctionDnsParsed.host, tag: 'dns-sanction' });
   }
 
@@ -323,6 +324,10 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
 
   if (sanctionRulesetTags.length) {
     dnsRules.push({ rule_set: sanctionRulesetTags, server: 'dns-sanction' });
+  }
+
+  if (customSanctionDomains.length) {
+    dnsRules.push({ domain_suffix: customSanctionDomains, server: 'dns-sanction' });
   }
 
   if (fakeDnsEnable) {
@@ -355,6 +360,9 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
 
   if (sanctionRulesetTags.length) {
     routeRules.push({ rule_set: sanctionRulesetTags, outbound: 'direct' });
+  }
+  if (customSanctionDomains.length) {
+    routeRules.push({ domain_suffix: customSanctionDomains, outbound: 'direct' });
   }
   if (customBypassDomains.length) {
     routeRules.push({ domain_suffix: customBypassDomains, outbound: 'direct' });
