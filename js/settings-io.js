@@ -1,5 +1,5 @@
 const APP_ID = 'tcb';
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 export function collectExportData() {
   return {
@@ -85,6 +85,7 @@ export function collectExportData() {
       },
       customBypassRules: document.getElementById('customBypassRules').value,
       customBlockRules: document.getElementById('customBlockRules').value,
+      customSanctionRules: document.getElementById('customSanctionRules').value,
       observatory: {
         leastPingInterval: document.getElementById('leastPingInterval').value,
         leastLoadInterval: document.getElementById('leastLoadInterval').value,
@@ -208,6 +209,7 @@ function hasExactExportShape(d) {
   if (!isBool(d.sanctionBypass.xai)) return false;
   if (!isStr(d.customBypassRules)) return false;
   if (!isStr(d.customBlockRules)) return false;
+  if (!isStr(d.customSanctionRules)) return false;
 
   if (!isPlainObject(d.observatory)) return false;
   if (!isStr(d.observatory.leastPingInterval)) return false;
@@ -304,6 +306,7 @@ export function applyImportedSettings(payload) {
   document.getElementById('sanctionXai').checked = d.sanctionBypass.xai;
   document.getElementById('customBypassRules').value = d.customBypassRules;
   document.getElementById('customBlockRules').value = d.customBlockRules;
+  document.getElementById('customSanctionRules').value = d.customSanctionRules;
 
   document.getElementById('leastPingInterval').value = d.observatory.leastPingInterval;
   document.getElementById('leastLoadInterval').value = d.observatory.leastLoadInterval;
