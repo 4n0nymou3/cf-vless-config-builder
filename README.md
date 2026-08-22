@@ -6,7 +6,7 @@
 
 <div align="right" dir="rtl">
 
-# Tunnel Config Builder (TCB) v6.6
+# Tunnel Config Builder (TCB) v6.7
 
 ابزار ساخت کانفیگ VLESS و Trojan برای Cloudflare Workers و Cloudflare Pages — بدون نیاز به VPS یا سرور شخصی
 
@@ -30,7 +30,7 @@ Tunnel Config Builder یک ابزار تحت وب است که به شما امک
 - تنظیمات پیشرفته JSON: Fake DNS، IPv6، Allow LAN، TCP Fast Open، Local DNS، Remote DNS / DoH
 - پشتیبانی از ECH برای رمزنگاری Client Hello و پنهان کردن SNI از دید DPI
 - قوانین مسیریابی قابل تنظیم: انتخاب کشورهای ایران، چین و روسیه برای مسیریابی مستقیم (Bypass) و انتخاب دسته‌های Ads، Porn، QUIC، Malware، Phishing و Cryptominers برای مسدودسازی؛ هر دو گروه هم‌زمان روی هر سه فرمت خروجی (Xray، Sing-box، Clash) اعمال می‌شوند
-- **Bypass Sanctions**: دور زدن مستقیم سرویس‌های تحریمی (ChatGPT، Google AIs، Microsoft، Oracle، Docker، Adobe، Epic Games، Intel، AMD، Nvidia، Asus، HP، Lenovo) با یک DNS ضدتحریم قابل تنظیم (پیش‌فرض: 178.22.122.100)، حتی اگر IP خروجی شما ایرانی تشخیص داده شود
+- **Bypass Sanctions**: دور زدن مستقیم سرویس‌های تحریمی (OpenAI، Google AIs، Anthropic، xAI، Microsoft، Oracle، Docker، Adobe، Epic Games، Intel، AMD، Nvidia، Asus، HP، Lenovo) با یک DNS ضدتحریم قابل تنظیم (پیش‌فرض: 178.22.122.100)، حتی اگر IP خروجی شما ایرانی تشخیص داده شود
 - **قوانین سفارشی مسیریابی**: دو کادر متنی برای وارد کردن دامنه/IP/CIDR دلخواه جهت Bypass یا Block کردن مستقیم، مستقل از دسته‌بندی‌های آماده بالا
 - تنظیمات Observatory Settings (فاصله زمانی و پارامترهای leastPing/leastLoad) قابل ویرایش توسط کاربر برای هسته‌ی Xray
 - Chain Proxy — امکان زنجیر کردن کانفیگ‌های TCB به یک سرور خارجی (VLESS، Trojan، Shadowsocks، SOCKS5 یا HTTP) برای ثابت نگه‌داشتن IP خروجی، روی هر سه فرمت خروجی JSON (Xray، Sing-box، Clash)
@@ -213,7 +213,7 @@ ECH یک لایه رمزنگاری اضافه روی TLS handshake است که �
 
 ### Bypass Sanctions
 
-این بخش، مستقل از Bypass rules بالا، اجازه می‌دهد سرویس‌هایی که به دلیل تحریم IP‌های ایرانی را مسدود می‌کنند (نه به دلیل فیلترینگ داخلی) به‌صورت مستقیم و با یک DNS اختصاصی مسیریابی شوند: ChatGPT (OpenAI)، Google AIs، Microsoft، Oracle، Docker، Adobe، Epic Games، Intel، AMD، Nvidia، Asus، HP و Lenovo. کادر DNS ضدتحریم بالای این چک‌باکس‌ها به‌صورت پیش‌فرض روی 178.22.122.100 (Shecan) تنظیم شده و قابل تغییر به هر DNS دلخواه دیگر است. این قابلیت کاملاً سمت کلاینت است و روی کد Worker/Pages تاثیری ندارد.
+این بخش، مستقل از Bypass rules بالا، اجازه می‌دهد سرویس‌هایی که به دلیل تحریم IP‌های ایرانی را مسدود می‌کنند (نه به دلیل فیلترینگ داخلی) به‌صورت مستقیم و با یک DNS اختصاصی مسیریابی شوند: OpenAI، Google AIs، Anthropic، xAI، Microsoft، Oracle، Docker، Adobe، Epic Games، Intel، AMD، Nvidia، Asus، HP و Lenovo. کادر DNS ضدتحریم بالای این چک‌باکس‌ها به‌صورت پیش‌فرض روی 178.22.122.100 (Shecan) تنظیم شده و قابل تغییر به هر DNS دلخواه دیگر است. این قابلیت کاملاً سمت کلاینت است و روی کد Worker/Pages تاثیری ندارد.
 
 ### قوانین سفارشی مسیریابی
 
