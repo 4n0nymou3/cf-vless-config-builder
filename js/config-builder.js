@@ -76,7 +76,9 @@ const SANCTION_GEOSITE = {
   nvidia: 'geosite:nvidia',
   asus: 'geosite:asus',
   hp: 'geosite:hp',
-  lenovo: 'geosite:lenovo'
+  lenovo: 'geosite:lenovo',
+  anthropic: 'geosite:anthropic',
+  xai: 'geosite:xai'
 };
 
 function toFinalMaskArray(raw) {
