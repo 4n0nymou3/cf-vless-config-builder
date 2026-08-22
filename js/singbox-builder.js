@@ -99,7 +99,9 @@ const SINGBOX_SANCTION_RULESETS = {
   nvidia: 'geosite-nvidia',
   asus: 'geosite-asus',
   hp: 'geosite-hp',
-  lenovo: 'geosite-lenovo'
+  lenovo: 'geosite-lenovo',
+  anthropic: 'geosite-anthropic',
+  xai: 'geosite-xai'
 };
 
 function toSingboxCidr(ip) {
