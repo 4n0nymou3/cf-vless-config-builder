@@ -6,7 +6,7 @@
 
 <div align="left" dir="ltr">
 
-# Tunnel Config Builder (TCB) v6.6
+# Tunnel Config Builder (TCB) v6.7
 
 A tool for building VLESS and Trojan configs for Cloudflare Workers and Cloudflare Pages — no VPS or personal server required
 
@@ -30,7 +30,7 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - Advanced JSON settings: Fake DNS, IPv6, Allow LAN, TCP Fast Open, Local DNS, Remote DNS / DoH
 - ECH support to encrypt the Client Hello and hide the SNI from DPI systems
 - Configurable routing rules: select Iran, China, and Russia for direct routing (Bypass), and select the Ads, Porn, QUIC, Malware, Phishing, and Cryptominers categories for blocking; both groups apply simultaneously across all three output formats (Xray, Sing-box, Clash)
-- **Bypass Sanctions**: direct routing for sanctioned services (ChatGPT, Google AIs, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, Lenovo) using a configurable anti-sanction DNS (default: 178.22.122.100), even if your outbound IP is detected as Iranian
+- **Bypass Sanctions**: direct routing for sanctioned services (OpenAI, Google AIs, Anthropic, xAI, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, Lenovo) using a configurable anti-sanction DNS (default: 178.22.122.100), even if your outbound IP is detected as Iranian
 - **Custom Routing Rules**: two text boxes for entering your own domains/IPs/CIDRs to directly Bypass or Block, independent of the built-in categories above
 - User-editable Observatory Settings (leastPing/leastLoad interval, mode, sampling, timeout) for the Xray core
 - Chain Proxy — the ability to chain TCB configs to an external server (VLESS, Trojan, Shadowsocks, SOCKS5, or HTTP) to keep the outbound IP fixed, across all three JSON output formats (Xray, Sing-box, Clash)
@@ -213,7 +213,7 @@ For each country and each category, the GeoIP/GeoSite databases specific to that
 
 ### Bypass Sanctions
 
-Independent of the Bypass rules above, this section lets you route services that block Iranian IPs because of sanctions (not local filtering) directly, using a dedicated DNS: ChatGPT (OpenAI), Google AIs, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, and Lenovo. The anti-sanction DNS box above these checkboxes defaults to 178.22.122.100 (Shecan) and can be changed to any DNS you prefer. This feature is entirely client-side and has no effect on the Worker/Pages code.
+Independent of the Bypass rules above, this section lets you route services that block Iranian IPs because of sanctions (not local filtering) directly, using a dedicated DNS: OpenAI, Google AIs, Anthropic, xAI, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, and Lenovo. The anti-sanction DNS box above these checkboxes defaults to 178.22.122.100 (Shecan) and can be changed to any DNS you prefer. This feature is entirely client-side and has no effect on the Worker/Pages code.
 
 ### Custom Routing Rules
 
