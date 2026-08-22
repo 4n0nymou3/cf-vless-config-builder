@@ -48,7 +48,9 @@ const CLASH_SANCTION_NAMES = {
   nvidia: 'nvidia',
   asus: 'asus',
   hp: 'hp',
-  lenovo: 'lenovo'
+  lenovo: 'lenovo',
+  anthropic: 'anthropic',
+  xai: 'xai'
 };
 
 function toClashIpRule(ip, verdict) {
