@@ -37,7 +37,7 @@ return _h.slice(0,7).map(x=>(x>>>0).toString(16).padStart(8,'0')).join('')
 const _th=(()=>_sh(_tw))();
 const _PF=['[2602:fc59:b0:64::]','[2602:fc59:11:64::]','[2a02:898:146:64::]'];
 const _FB=__WORKER_FALLBACK_STRING__;
-async function _fb(r){if(!_FB)return new Response('',{status:200});try{const u=new URL(r.url);u.hostname=_FB;u.protocol='https:';const nr=new Request(u.toString(),{method:r.method,headers:r.headers,body:r.body,redirect:'manual'});return await fetch(nr)}catch(_){return new Response('',{status:200})}}
+async function _fb(r){if(!_FB)return new Response('',{status:200});try{const u=new URL(r.url);u.hostname=_FB;u.protocol='https:';return await fetch(u.toString(),{redirect:'manual'})}catch(_){return new Response('',{status:200})}}
 export default{async fetch(r){if((r.headers.get('upgrade')||'').toLowerCase()!=='websocket')return _fb(r);return _hw(r)}};
 function _dd(h){if(!h)return null;try{return Uint8Array.from(atob(h.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)).buffer}catch(_){return null}}
 function _ms(ws,ed){return new ReadableStream({start(ctrl){if(ed)ctrl.enqueue(ed);ws.addEventListener('message',({data:m})=>ctrl.enqueue(m));ws.addEventListener('close',()=>ctrl.close());ws.addEventListener('error',e=>ctrl.error(e))}})}
