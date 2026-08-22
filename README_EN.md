@@ -215,9 +215,11 @@ For each country and each category, the GeoIP/GeoSite databases specific to that
 
 Independent of the Bypass rules above, this section lets you route services that block Iranian IPs because of sanctions (not local filtering) directly, using a dedicated DNS: OpenAI, Google AIs, Anthropic, xAI, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, and Lenovo. The anti-sanction DNS box above these checkboxes defaults to 178.22.122.100 (Shecan) and can be changed to any DNS you prefer. This feature is entirely client-side and has no effect on the Worker/Pages code.
 
+Right below these checkboxes, a separate text box called "Custom Anti-Sanction Domains" is also available — for specific sanctioned domains or services not covered by the 15 categories above. Domains entered here are, unlike the "Custom Bypass Rules" box further down, both routed directly and resolved using the same anti-sanction DNS above. Note: this box only accepts domains (not IPs or CIDRs), since DNS only resolves domains and has no meaning for a raw IP — use the boxes below for IP/CIDR.
+
 ### Custom Routing Rules
 
-Two independent text boxes ("Custom Bypass Rules" and "Custom Block Rules") let you enter your own domain, IP, or CIDR — one per line — that aren't covered by the built-in checkboxes above. An entered domain also covers all of its subdomains. Both boxes are independent of Bypass Sanctions and are entirely client-side, with no effect on the Worker/Pages code.
+Two independent text boxes ("Custom Bypass Rules" and "Custom Block Rules") let you enter your own domain, IP, or CIDR — one per line — that aren't covered by the built-in checkboxes above. An entered domain also covers all of its subdomains. Note: these two boxes only decide the connection path (direct vs. tunneled) and do not apply the anti-sanction DNS to them — for that, use the "Custom Anti-Sanction Domains" box in the Bypass Sanctions section above. These boxes are entirely client-side, with no effect on the Worker/Pages code.
 
 ### Observatory Settings
 
