@@ -177,7 +177,8 @@
   <div class="sec-body-wrap" id="secBody3">
    <div class="sec-body">
 
-    <div class="fg">
+    <div class="fg settings-box">
+      <label class="box-lbl" data-i18n="lbl.ipSettingsBox">IP های سالم</label>
       <label for="ips" data-i18n="lbl.ipAddresses">آدرس‌های IP (هر خط یک IP)</label>
       <div class="alert ab mb-10">
         <span class="aico">ℹ</span>
@@ -201,7 +202,9 @@
       <p class="hint mt-8" data-i18n="hint.protocolChoice">می‌توانید فقط VLESS، فقط Trojan یا هر دو را همزمان فعال کنید — تمام کانفیگ‌های Link و فایل‌های JSON/YAML بر اساس همین انتخاب ساخته می‌شوند.</p>
     </div>
 
-    <div class="fg mt-14">
+    <div class="fg mt-14 settings-box">
+      <label class="box-lbl" data-i18n="lbl.portsFingerprint">پورت‌ها و Fingerprint</label>
+      <div class="fg">
       <label class="mb-9" data-i18n="lbl.tlsPorts">پورت‌های TLS (امن‌تر — برای یوتیوب، اینستاگرام، اکس)</label>
       <div class="port-row">
         <label class="ck-lbl"><input type="checkbox" class="ptls" value="443" checked> 443</label>
@@ -211,9 +214,9 @@
         <label class="ck-lbl"><input type="checkbox" class="ptls" value="2087"> 2087</label>
         <label class="ck-lbl"><input type="checkbox" class="ptls" value="2096"> 2096</label>
       </div>
-    </div>
+      </div>
 
-    <div class="fg mt-10">
+      <div class="fg mt-10">
       <label class="mb-9" data-i18n="lbl.wsPorts">پورت‌های WebSocket بدون TLS (برای شبکه‌هایی که TLS بلاک است)</label>
       <div class="port-row" id="wsPortsRow">
         <label class="ck-lbl"><input type="checkbox" class="pws" value="80" checked> 80</label>
@@ -225,14 +228,14 @@
         <label class="ck-lbl"><input type="checkbox" class="pws" value="2095"> 2095</label>
       </div>
       <p class="hint" id="wsPortsPagesNote" style="display:none" data-i18n="hint.wsPortsPagesDisabled">کانفیگ‌های بدون TLS اصلاً روی Cloudflare Pages پشتیبانی نمی‌شوند (این یک محدودیت دائمی خود Cloudflare است، نه TCB) — برای استفاده از این پورت‌ها باید تب Worker را انتخاب کنید.</p>
-    </div>
+      </div>
 
-    <div class="alert ao mt-14 mb-0">
+      <div class="alert ao mt-14 mb-0">
       <span class="aico">ℹ</span>
       <div data-i18n="alert.portCombo">هر ترکیب پورت یک کانفیگ مجزاست. با انتخاب بیشتر، کانفیگ‌های متنوع‌تری برای دور زدن فیلترینگ هوشمند ساخته می‌شه. پیشنهاد: ابتدا فقط پورت 443 را تست کنید و اگر کار نکرد پورت‌های دیگر را هم فعال کنید.</div>
-    </div>
+      </div>
 
-    <div class="fg mt-10">
+      <div class="fg mt-10">
       <label class="mb-9" for="fpSelect" data-i18n="lbl.fingerprint">TLS Fingerprint — جهت دور زدن DPI</label>
       <select id="fpSelect">
         <option value="chrome" selected>chrome</option>
@@ -246,9 +249,9 @@
         <option value="random">random</option>
         <option value="randomized">randomized</option>
       </select>
-    </div>
+      </div>
 
-    <div class="fg mt-10">
+      <div class="fg mt-10 mb-0">
       <label class="mb-9" for="pathSelect" data-i18n="lbl.wsPath">مسیر WebSocket Path</label>
       <select id="pathSelect">
         <option value="/proxy">/proxy</option>
@@ -257,6 +260,7 @@
         <option value="/ws">/ws</option>
         <option value="/" selected>/</option>
       </select>
+      </div>
     </div>
 
     <div class="fg mt-14 settings-box">
@@ -423,6 +427,10 @@
       </div>
       <p class="hint mt-8" data-i18n="hint.sanctionInfo">سرویس‌هایی که تیک می‌زنید همیشه مستقیم (با DNS بالا) مسیریابی می‌شوند، حتی اگر IP خروجی شما ایرانی تشخیص داده شود.</p>
 
+      <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.customSanctionRules">دامنه‌های سفارشی ضدتحریم — هر خط یک دامنه (فقط دامنه، بدون IP)</label>
+      <textarea id="customSanctionRules" placeholder="example.com" autocomplete="off"></textarea>
+      <p class="hint mt-8" data-i18n="hint.customSanctionRulesInfo">این دامنه‌ها هم مستقیم مسیریابی می‌شوند و هم از DNS ضدتحریم بالا استفاده می‌کنند. چون DNS فقط دامنه Resolve می‌کند، این کادر فقط دامنه قبول می‌کند؛ برای IP/CIDR از کادر Custom Bypass Rules پایین‌تر استفاده کنید.</p>
+
       <label class="adv-lbl mb-8 mt-12" data-i18n="lbl.customBypassRules">Custom Bypass Rules — هر خط یک دامنه/IP/CIDR</label>
       <textarea id="customBypassRules" placeholder="example.com&#10;192.168.1.1&#10;192.168.1.0/24" autocomplete="off"></textarea>
       <p class="hint mt-8" data-i18n="hint.customRulesInfo">دامنه‌ی وارد شده و همه زیردامنه‌هایش هم شامل می‌شود.</p>
@@ -468,7 +476,8 @@
       <p class="hint mt-8" data-i18n="hint.chainInfo">یک کانفیگ با فرمت URL از یک سرور دیگر (مثلاً یک VPS با IP ثابت) اینجا وارد کنید تا کانفیگ‌های TCB به آن Chain شوند: ابتدا از طریق Worker یا Pages شما (برای عبور از فیلترینگ) و سپس از طریق این سرور به اینترنت متصل می‌شوید — یعنی IP خروجی شما همیشه ثابت و برابر با IP همان سرور خواهد بود. فرمت‌های پشتیبانی‌شده: VLESS (tcp/ws/grpc با none/tls/reality)، Trojan (tcp/ws/grpc با tls)، Shadowsocks، SOCKS5 و HTTP. این قابلیت فقط روی کانفیگ‌های JSON برای Xray، Sing-box و Clash اعمال می‌شود (نه روی کانفیگ‌های تکی فرمت لینک)، چون Chain به دو گره هماهنگ نیاز دارد که فقط در یک فایل کانفیگ کامل قابل تعریف است. وقتی این قابلیت فعال باشد، ایموجی ⛓️ کنار نام کانفیگ‌های JSON اضافه می‌شود. برای غیرفعال کردن، این کادر را خالی بگذارید. نکته مهم: کانفیگی که اینجا وارد می‌کنید نباید مربوط به یک Cloudflare Worker یا Pages دیگر باشد، چون هیچ‌کدام آی‌پی اختصاصی و ثابت ندارند؛ حتماً از کانفیگ یک سرور واقعی (مثل VPS) با آی‌پی اختصاصی خودش استفاده کنید تا هدف ثابت ماندن IP خروجی برآورده شود.</p>
     </div>
 
-    <div class="fg mt-14">
+    <div class="fg mt-14 settings-box">
+      <label class="box-lbl" data-i18n="lbl.configNameBox">نام کانفیگ</label>
       <label for="jsonName" data-i18n="lbl.jsonName">نام کانفیگ (اختیاری)</label>
       <input type="text" id="jsonName" placeholder="در صورت خالی بودن، نام به‌صورت خودکار تعیین می‌شود" data-i18n-placeholder="ph.jsonName" autocomplete="off"/>
       <p class="hint" data-i18n="hint.jsonNameInfo">این نام روی هر سه کانفیگ Xray، Sing-box و Clash و همچنین نام فایل‌های دانلودی اعمال می‌شود. اگر خالی بماند، پنل نام پیش‌فرض را بر اساس Normal، Fragment یا ECH انتخاب خواهد کرد.</p>
