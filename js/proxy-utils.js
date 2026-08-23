@@ -9,7 +9,7 @@ export function randomizeCase(str) {
 
 const ROUTING_COUNTRY_CODES = ['ir', 'cn', 'ru'];
 const BLOCK_RULE_CODES = ['ads', 'porn', 'malware', 'phishing', 'cryptominers'];
-const SANCTION_RULE_CODES = ['openai', 'googleai', 'microsoft', 'oracle', 'docker', 'adobe', 'epicgames', 'intel', 'amd', 'nvidia', 'asus', 'hp', 'lenovo', 'anthropic', 'xai'];
+const SANCTION_RULE_CODES = ['openai', 'googleai', 'anthropic', 'xai', 'microsoft', 'oracle', 'docker', 'adobe', 'epicgames', 'intel', 'amd', 'nvidia', 'asus', 'hp', 'lenovo'];
 
 export function resolveSelectedCountries(routingCountries) {
   const selected = ROUTING_COUNTRY_CODES.filter(c => routingCountries && routingCountries[c]);
