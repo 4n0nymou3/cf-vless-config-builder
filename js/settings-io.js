@@ -9,13 +9,16 @@ export function collectExportData() {
     data: {
       token: document.getElementById('uid').value.trim(),
       trojanPassword: document.getElementById('tpw').value.trim(),
+      deployTarget: document.getElementById('tab-pages') && document.getElementById('tab-pages').classList.contains('active') ? 'pages' : 'worker',
+      workerDomain: document.getElementById('wdom').value.trim(),
+      customDomainUsed: document.getElementById('customDomainUsed').checked,
+      customDomain: document.getElementById('customDomainInput').value,
+      fallbackDomain: document.getElementById('fallbackDomain').value.trim(),
+      ips: document.getElementById('ips').value,
       protocols: {
         vless: document.getElementById('protoVless').checked,
         trojan: document.getElementById('protoTrojan').checked
       },
-      workerDomain: document.getElementById('wdom').value.trim(),
-      fallbackDomain: document.getElementById('fallbackDomain').value.trim(),
-      ips: document.getElementById('ips').value,
       tlsPorts: [...document.querySelectorAll('.ptls:checked')].map(el => el.value),
       wsPorts: [...document.querySelectorAll('.pws:checked')].map(el => el.value),
       fingerprint: document.getElementById('fpSelect').value,
@@ -69,6 +72,8 @@ export function collectExportData() {
       sanctionBypass: {
         openai: document.getElementById('sanctionOpenai').checked,
         googleai: document.getElementById('sanctionGoogleai').checked,
+        anthropic: document.getElementById('sanctionAnthropic').checked,
+        xai: document.getElementById('sanctionXai').checked,
         microsoft: document.getElementById('sanctionMicrosoft').checked,
         oracle: document.getElementById('sanctionOracle').checked,
         docker: document.getElementById('sanctionDocker').checked,
@@ -79,13 +84,11 @@ export function collectExportData() {
         nvidia: document.getElementById('sanctionNvidia').checked,
         asus: document.getElementById('sanctionAsus').checked,
         hp: document.getElementById('sanctionHp').checked,
-        lenovo: document.getElementById('sanctionLenovo').checked,
-        anthropic: document.getElementById('sanctionAnthropic').checked,
-        xai: document.getElementById('sanctionXai').checked
+        lenovo: document.getElementById('sanctionLenovo').checked
       },
+      customSanctionRules: document.getElementById('customSanctionRules').value,
       customBypassRules: document.getElementById('customBypassRules').value,
       customBlockRules: document.getElementById('customBlockRules').value,
-      customSanctionRules: document.getElementById('customSanctionRules').value,
       observatory: {
         leastPingInterval: document.getElementById('leastPingInterval').value,
         leastLoadInterval: document.getElementById('leastLoadInterval').value,
@@ -94,10 +97,7 @@ export function collectExportData() {
         leastLoadTimeout: document.getElementById('leastLoadTimeout').value
       },
       chainConfig: document.getElementById('chainConfig').value,
-      jsonName: document.getElementById('jsonName').value,
-      deployTarget: document.getElementById('tab-pages') && document.getElementById('tab-pages').classList.contains('active') ? 'pages' : 'worker',
-      customDomainUsed: document.getElementById('customDomainUsed').checked,
-      customDomain: document.getElementById('customDomainInput').value
+      jsonName: document.getElementById('jsonName').value
     }
   };
 }
@@ -136,12 +136,15 @@ function hasExactExportShape(d) {
   if (!isPlainObject(d)) return false;
   if (!isStr(d.token)) return false;
   if (!isStr(d.trojanPassword)) return false;
+  if (d.deployTarget !== 'worker' && d.deployTarget !== 'pages') return false;
+  if (!isStr(d.workerDomain)) return false;
+  if (!isBool(d.customDomainUsed)) return false;
+  if (!isStr(d.customDomain)) return false;
+  if (!isStr(d.fallbackDomain)) return false;
+  if (!isStr(d.ips)) return false;
   if (!isPlainObject(d.protocols)) return false;
   if (!isBool(d.protocols.vless)) return false;
   if (!isBool(d.protocols.trojan)) return false;
-  if (!isStr(d.workerDomain)) return false;
-  if (!isStr(d.fallbackDomain)) return false;
-  if (!isStr(d.ips)) return false;
   if (!isStrArray(d.tlsPorts)) return false;
   if (!isStrArray(d.wsPorts)) return false;
   if (!isStr(d.fingerprint)) return false;
@@ -194,6 +197,8 @@ function hasExactExportShape(d) {
   if (!isPlainObject(d.sanctionBypass)) return false;
   if (!isBool(d.sanctionBypass.openai)) return false;
   if (!isBool(d.sanctionBypass.googleai)) return false;
+  if (!isBool(d.sanctionBypass.anthropic)) return false;
+  if (!isBool(d.sanctionBypass.xai)) return false;
   if (!isBool(d.sanctionBypass.microsoft)) return false;
   if (!isBool(d.sanctionBypass.oracle)) return false;
   if (!isBool(d.sanctionBypass.docker)) return false;
@@ -205,11 +210,9 @@ function hasExactExportShape(d) {
   if (!isBool(d.sanctionBypass.asus)) return false;
   if (!isBool(d.sanctionBypass.hp)) return false;
   if (!isBool(d.sanctionBypass.lenovo)) return false;
-  if (!isBool(d.sanctionBypass.anthropic)) return false;
-  if (!isBool(d.sanctionBypass.xai)) return false;
+  if (!isStr(d.customSanctionRules)) return false;
   if (!isStr(d.customBypassRules)) return false;
   if (!isStr(d.customBlockRules)) return false;
-  if (!isStr(d.customSanctionRules)) return false;
 
   if (!isPlainObject(d.observatory)) return false;
   if (!isStr(d.observatory.leastPingInterval)) return false;
@@ -220,9 +223,6 @@ function hasExactExportShape(d) {
 
   if (!isStr(d.chainConfig)) return false;
   if (!isStr(d.jsonName)) return false;
-  if (d.deployTarget !== 'worker' && d.deployTarget !== 'pages') return false;
-  if (!isBool(d.customDomainUsed)) return false;
-  if (!isStr(d.customDomain)) return false;
 
   return true;
 }
@@ -236,11 +236,13 @@ export function applyImportedSettings(payload) {
 
   document.getElementById('uid').value = d.token;
   document.getElementById('tpw').value = d.trojanPassword;
-  document.getElementById('protoVless').checked = d.protocols.vless;
-  document.getElementById('protoTrojan').checked = d.protocols.trojan;
   document.getElementById('wdom').value = d.workerDomain;
+  document.getElementById('customDomainUsed').checked = d.customDomainUsed;
+  document.getElementById('customDomainInput').value = d.customDomain;
   document.getElementById('fallbackDomain').value = d.fallbackDomain;
   document.getElementById('ips').value = d.ips;
+  document.getElementById('protoVless').checked = d.protocols.vless;
+  document.getElementById('protoTrojan').checked = d.protocols.trojan;
 
   const tlsSet = new Set(d.tlsPorts);
   document.querySelectorAll('.ptls').forEach(el => { el.checked = tlsSet.has(el.value); });
@@ -291,6 +293,8 @@ export function applyImportedSettings(payload) {
   document.getElementById('sanctionDns').value = d.sanctionDns;
   document.getElementById('sanctionOpenai').checked = d.sanctionBypass.openai;
   document.getElementById('sanctionGoogleai').checked = d.sanctionBypass.googleai;
+  document.getElementById('sanctionAnthropic').checked = d.sanctionBypass.anthropic;
+  document.getElementById('sanctionXai').checked = d.sanctionBypass.xai;
   document.getElementById('sanctionMicrosoft').checked = d.sanctionBypass.microsoft;
   document.getElementById('sanctionOracle').checked = d.sanctionBypass.oracle;
   document.getElementById('sanctionDocker').checked = d.sanctionBypass.docker;
@@ -302,11 +306,9 @@ export function applyImportedSettings(payload) {
   document.getElementById('sanctionAsus').checked = d.sanctionBypass.asus;
   document.getElementById('sanctionHp').checked = d.sanctionBypass.hp;
   document.getElementById('sanctionLenovo').checked = d.sanctionBypass.lenovo;
-  document.getElementById('sanctionAnthropic').checked = d.sanctionBypass.anthropic;
-  document.getElementById('sanctionXai').checked = d.sanctionBypass.xai;
+  document.getElementById('customSanctionRules').value = d.customSanctionRules;
   document.getElementById('customBypassRules').value = d.customBypassRules;
   document.getElementById('customBlockRules').value = d.customBlockRules;
-  document.getElementById('customSanctionRules').value = d.customSanctionRules;
 
   document.getElementById('leastPingInterval').value = d.observatory.leastPingInterval;
   document.getElementById('leastLoadInterval').value = d.observatory.leastLoadInterval;
@@ -316,8 +318,6 @@ export function applyImportedSettings(payload) {
 
   document.getElementById('chainConfig').value = d.chainConfig;
   document.getElementById('jsonName').value = d.jsonName;
-  document.getElementById('customDomainUsed').checked = d.customDomainUsed;
-  document.getElementById('customDomainInput').value = d.customDomain;
 
   return d.deployTarget;
 }
