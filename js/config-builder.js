@@ -66,6 +66,8 @@ const BLOCK_IP_TAGS = {
 const SANCTION_GEOSITE = {
   openai: 'geosite:openai',
   googleai: 'geosite:google-deepmind',
+  anthropic: 'geosite:anthropic',
+  xai: 'geosite:xai',
   microsoft: 'geosite:microsoft',
   oracle: 'geosite:oracle',
   docker: 'geosite:docker',
@@ -76,9 +78,7 @@ const SANCTION_GEOSITE = {
   nvidia: 'geosite:nvidia',
   asus: 'geosite:asus',
   hp: 'geosite:hp',
-  lenovo: 'geosite:lenovo',
-  anthropic: 'geosite:anthropic',
-  xai: 'geosite:xai'
+  lenovo: 'geosite:lenovo'
 };
 
 function toFinalMaskArray(raw) {
