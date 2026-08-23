@@ -236,6 +236,8 @@ function collectSettings() {
     sanctionBypass: {
       openai: document.getElementById('sanctionOpenai').checked,
       googleai: document.getElementById('sanctionGoogleai').checked,
+      anthropic: document.getElementById('sanctionAnthropic').checked,
+      xai: document.getElementById('sanctionXai').checked,
       microsoft: document.getElementById('sanctionMicrosoft').checked,
       oracle: document.getElementById('sanctionOracle').checked,
       docker: document.getElementById('sanctionDocker').checked,
@@ -246,9 +248,7 @@ function collectSettings() {
       nvidia: document.getElementById('sanctionNvidia').checked,
       asus: document.getElementById('sanctionAsus').checked,
       hp: document.getElementById('sanctionHp').checked,
-      lenovo: document.getElementById('sanctionLenovo').checked,
-      anthropic: document.getElementById('sanctionAnthropic').checked,
-      xai: document.getElementById('sanctionXai').checked
+      lenovo: document.getElementById('sanctionLenovo').checked
     },
     customBypassRulesRaw: document.getElementById('customBypassRules').value,
     customBlockRulesRaw: document.getElementById('customBlockRules').value,
