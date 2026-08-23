@@ -38,6 +38,8 @@ const CLASH_BLOCK_RULES = {
 const CLASH_SANCTION_NAMES = {
   openai: 'openai',
   googleai: 'google-deepmind',
+  anthropic: 'anthropic',
+  xai: 'xai',
   microsoft: 'microsoft',
   oracle: 'oracle',
   docker: 'docker',
@@ -48,9 +50,7 @@ const CLASH_SANCTION_NAMES = {
   nvidia: 'nvidia',
   asus: 'asus',
   hp: 'hp',
-  lenovo: 'lenovo',
-  anthropic: 'anthropic',
-  xai: 'xai'
+  lenovo: 'lenovo'
 };
 
 function toClashIpRule(ip, verdict) {
