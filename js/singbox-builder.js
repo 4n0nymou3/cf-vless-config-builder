@@ -89,6 +89,8 @@ const SINGBOX_BLOCK_RULESET_URLS = {
 const SINGBOX_SANCTION_RULESETS = {
   openai: 'geosite-openai',
   googleai: 'geosite-google-deepmind',
+  anthropic: 'geosite-anthropic',
+  xai: 'geosite-xai',
   microsoft: 'geosite-microsoft',
   oracle: 'geosite-oracle',
   docker: 'geosite-docker',
@@ -99,9 +101,7 @@ const SINGBOX_SANCTION_RULESETS = {
   nvidia: 'geosite-nvidia',
   asus: 'geosite-asus',
   hp: 'geosite-hp',
-  lenovo: 'geosite-lenovo',
-  anthropic: 'geosite-anthropic',
-  xai: 'geosite-xai'
+  lenovo: 'geosite-lenovo'
 };
 
 function toSingboxCidr(ip) {
