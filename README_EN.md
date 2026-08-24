@@ -34,7 +34,7 @@ Tunnel Config Builder is a web-based tool that lets you build VLESS and Trojan c
 - **Custom Routing Rules**: two text boxes for entering your own domains/IPs/CIDRs to directly Bypass or Block, independent of the built-in categories above
 - User-editable Observatory Settings (leastPing/leastLoad interval, mode, sampling, timeout) for the Xray core
 - Chain Proxy — the ability to chain TCB configs to an external server (VLESS, Trojan, Shadowsocks, SOCKS5, or HTTP) to keep the outbound IP fixed, across all three JSON output formats (Xray, Sing-box, Clash)
-- JSON config dedicated to the Xray core, based on the latest stable release of that core (26.7.28)
+- JSON config dedicated to the Xray core, based on the latest known structure and rules of that core (including advanced Finalmask/Fragment)
 - Simultaneous generation of configs in four formats: VLESS/Trojan link, JSON for the Xray core (with least-ping support), JSON for Sing-box, and JSON for Clash / Mihomo
 - Smart config naming: each config's name is automatically determined by its state (Normal, Fragment, or ECH) and applied consistently across all three JSON/YAML output formats (Xray, Sing-box, Clash) as well as the downloaded file names; you can also set a custom name for your config if you'd like
 - Export and import of all page settings as a single file, for backup or quick settings transfer
@@ -155,7 +155,7 @@ Cloudflare automatically creates the necessary DNS record and a valid TLS certif
 
 6. In the TCB panel, in Step 2, right below the main Worker/Pages address box, there's a checkbox labeled "I've also connected a custom domain to the Worker." Enabling it reveals a new text field; enter that same subdomain (e.g. `vpn.example.ir`) there.
 
-**Important note:** These two addresses aren't alternatives to each other — they're combined. The top box (your main Worker/Pages address) stays untouched and builds configs exactly as before; the second box only adds extra configs using your custom domain. The JSON and YAML configs (Xray, Sing-box, Clash) build both sets into one combined file, marked with the 🌐 emoji; the single link-format configs are built separately for both addresses, side by side, with a `-D` suffix on the custom-domain versions. Since a custom domain doesn't support non-TLS ports, its configs are always built as TLS-only — so at least one TLS port must be selected in the "Clean IPs" section, or the panel will warn you when generating configs.
+**Important note:** These two addresses aren't alternatives to each other — they're combined. The top box (your main Worker/Pages address) stays untouched and builds configs exactly as before; the second box only adds extra configs using your custom domain. The JSON and YAML configs (Xray, Sing-box, Clash) build both sets into one combined file, marked with the 🌐 emoji; the single link-format configs are built separately for both addresses, side by side, with a `-D` suffix on the custom-domain versions. Since a custom domain doesn't support non-TLS ports, its configs are always built as TLS-only — so at least one TLS port must be selected in the "Ports & Fingerprint" section, or the panel will warn you when generating configs.
 
 ### Fallback Domain
 
@@ -165,7 +165,7 @@ In Step 2, below the Worker/Pages address box, there's an optional field labeled
 
 ### Fragment
 
-Enabling Fragment splits the TLS handshake data into smaller pieces, making it harder for DPI to detect. This setting only applies to the JSON config and has no effect on VLESS configs. Fragment and ECH cannot be enabled at the same time.
+Enabling Fragment splits the TLS handshake data into smaller pieces, making it harder for DPI to detect. This setting fully and precisely applies to the JSON config dedicated to the Xray core; it also applies to the Sing-box JSON config, but only as a simple on/off flag (without precise control over piece length or timing, since Sing-box doesn't offer that level of control). The Clash/Mihomo format and the single-link URL configs (`vless://`, `trojan://`) don't support Fragment at all, and this setting has no effect on them. Fragment and ECH cannot be enabled at the same time.
 
 Fragment settings:
 - **Fragment Packets**: the type of data that gets fragmented. The value `tlshello` is recommended for fragmenting the TLS Client Hello.
@@ -180,7 +180,7 @@ In the Fragment Interval and Fragment Length fields, instead of a simple range (
 This section is a sub-part of the Fragment settings, designed for users facing severe upload restrictions on mobile or fixed networks. These settings only apply to the Xray core JSON config and have no effect on the Sing-box or Clash configs.
 
 - **Enable a second Fragment stage (two-layer)**: when enabled, the output of the first Fragment stage is split once more (equivalent to adding a second fragment object to the `finalmask.tcp` array). The Stage 2 Packets, Stage 2 Interval, Stage 2 Length, and Stage 2 Max Split fields work exactly like the first stage's fields and support the same comma-separated sequential-values syntax.
-- **Use the unsafe fingerprint instead of the one above**: when enabled, instead of mimicking a specific browser's fingerprint (e.g. Chrome or Firefox), the Xray core builds a raw ClientHello packet with a fixed, predictable length. This option only affects the Xray core JSON output; the link format, Sing-box, and Clash still use the fingerprint selected at the top of the page.
+- **Use the unsafe fingerprint instead of the selected one**: when enabled, instead of mimicking a specific browser's fingerprint (e.g. Chrome or Firefox), the Xray core builds a raw ClientHello packet with a fixed, predictable length. This option only affects the Xray core JSON output; the link format, Sing-box, and Clash still use the same fingerprint you selected in the "Ports & Fingerprint" section.
 - **Custom Cipher Suites**: optionally enter a custom list of cipher suites. This value is also only added to the Xray core JSON, and if the field is left empty, no extra field is added to the output at all.
 
 The point of combining these three options is to keep the real length of the ClientHello packet fixed and predictable, so the Fragment split points (in both the first and second stage) always land accurately — which is what improves upload speed on severely-restricted networks.
@@ -213,7 +213,7 @@ For each country and each category, the GeoIP/GeoSite databases specific to that
 
 ### Bypass Sanctions
 
-Independent of the Bypass rules above, this section lets you route services that block Iranian IPs because of sanctions (not local filtering) directly, using a dedicated DNS: OpenAI, Google AIs, Anthropic, xAI, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, and Lenovo. The anti-sanction DNS box above these checkboxes defaults to 178.22.122.100 (Shecan) and can be changed to any DNS you prefer. This feature is entirely client-side and has no effect on the Worker/Pages code.
+Independent of the Bypass rules above (the "Routing Rules" section further up), this section lets you route services that block Iranian IPs because of sanctions (not local filtering) directly, using a dedicated DNS: OpenAI, Google AIs, Anthropic, xAI, Microsoft, Oracle, Docker, Adobe, Epic Games, Intel, AMD, Nvidia, Asus, HP, and Lenovo. The anti-sanction DNS box above these checkboxes defaults to 178.22.122.100 (Shecan) and can be changed to any DNS you prefer. This feature is entirely client-side and has no effect on the Worker/Pages code.
 
 Right below these checkboxes, a separate text box called "Custom Anti-Sanction Domains" is also available — for specific sanctioned domains or services not covered by the 15 categories above. Domains entered here are, unlike the "Custom Bypass Rules" box further down, both routed directly and resolved using the same anti-sanction DNS above. Note: this box only accepts domains (not IPs or CIDRs), since DNS only resolves domains and has no meaning for a raw IP — use the boxes below for IP/CIDR.
 
@@ -261,7 +261,7 @@ All four formats are built from the same settings (IPs, ports, Fingerprint, Frag
 
 ### Config Naming
 
-The name of all three JSON/YAML formats (Xray, Sing-box, Clash) is determined automatically and consistently based on the config's state: `Normal` for the regular mode, `Fragment` if Fragment is enabled, or `ECH` if ECH is enabled. In the optional "Config Name" field below the advanced JSON settings, you can also enter a custom name; this name is applied to the config itself (across all three formats) as well as to the downloaded file names. If Chain Proxy is enabled, the ⛓️ emoji is also appended to this name.
+The name of all three JSON/YAML formats (Xray, Sing-box, Clash) is determined automatically and consistently based on the config's state: `Normal` for the regular mode, `Fragment` if Fragment is enabled, or `ECH` if ECH is enabled. In the optional "Config Name" field (at the end of Step 3's settings, after Chain Proxy), you can also enter a custom name; this name is applied to the config itself (across all three formats) as well as to the downloaded file names. If Chain Proxy is enabled, the ⛓️ emoji is also appended to this name.
 
 ### Clear All & Security
 
