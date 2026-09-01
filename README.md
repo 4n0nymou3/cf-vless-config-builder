@@ -6,7 +6,7 @@
 
 <div align="right" dir="rtl">
 
-# Tunnel Config Builder (TCB) v6.7
+# Tunnel Config Builder (TCB) v6.8
 
 ابزار ساخت کانفیگ VLESS و Trojan برای Cloudflare Workers و Cloudflare Pages — بدون نیاز به VPS یا سرور شخصی
 
