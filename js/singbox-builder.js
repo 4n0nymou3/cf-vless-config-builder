@@ -133,6 +133,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
   const selectedBlockRules = resolveSelectedBlockRules(blockRules);
   const blockQuic = !!(blockRules && blockRules.quic);
   const blockRulesetTags = [...new Set(selectedBlockRules.flatMap(c => SINGBOX_BLOCK_RULESETS[c] || []))];
+  const blockDomainRulesetTags = blockRulesetTags.filter(tag => tag.startsWith('geosite-'));
 
   const selectedSanctionRules = resolveSelectedSanctionRules(sanctionBypass);
   const sanctionRulesetTags = [...new Set(selectedSanctionRules.map(c => SINGBOX_SANCTION_RULESETS[c]).filter(Boolean))];
@@ -312,8 +313,8 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     { clash_mode: 'Global', server: 'dns-remote' }
   ];
 
-  if (blockRulesetTags.length) {
-    dnsRules.push({ rule_set: blockRulesetTags, action: 'reject' });
+  if (blockDomainRulesetTags.length) {
+    dnsRules.push({ rule_set: blockDomainRulesetTags, action: 'reject' });
   }
 
   if (customBlockDomains.length) {
@@ -377,14 +378,14 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
       tag: 'geosite-' + SINGBOX_GEOSITE_SUFFIX[c],
       format: 'binary',
       url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geosite-' + SINGBOX_GEOSITE_SUFFIX[c] + '.srs',
-      download_detour: 'direct'
+      http_client: { detour: 'direct' }
     },
     {
       type: 'remote',
       tag: 'geoip-' + SINGBOX_GEOIP_SUFFIX[c],
       format: 'binary',
       url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geoip-' + SINGBOX_GEOIP_SUFFIX[c] + '.srs',
-      download_detour: 'direct'
+      http_client: { detour: 'direct' }
     }
   ]);
 
@@ -393,7 +394,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     tag: tag,
     format: 'binary',
     url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/' + SINGBOX_BLOCK_RULESET_URLS[tag],
-    download_detour: 'direct'
+    http_client: { detour: 'direct' }
   }));
 
   const sanctionRulesetDefs = sanctionRulesetTags.map(tag => ({
@@ -401,7 +402,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     tag: tag,
     format: 'binary',
     url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/' + tag + '.srs',
-    download_detour: 'direct'
+    http_client: { detour: 'direct' }
   }));
 
   const configObj = {
@@ -409,8 +410,7 @@ export function buildSingboxConfig(token, password, dom, ips, tlsPorts, wsPorts,
     dns: {
       servers: dnsServers,
       rules: dnsRules,
-      strategy: ipv6Enable ? 'prefer_ipv4' : 'ipv4_only',
-      independent_cache: true
+      strategy: ipv6Enable ? 'prefer_ipv4' : 'ipv4_only'
     },
     ntp: {
       enabled: true,
